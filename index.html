@@ -162,6 +162,17 @@
   .prev-body .t { margin-top: auto; padding-top: 10px; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--faint); }
   a.prev-card { text-decoration: none; color: inherit; }
   a.prev-card:hover h3 { color: var(--accent); }
+  .status {
+    display: flex; align-items: center; gap: 7px;
+    font-family: "JetBrains Mono", monospace; font-size: 10.5px;
+    letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint);
+  }
+  .status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); flex: none; }
+  .status.live { color: var(--accent); }
+  .status.live .dot { background: var(--accent); }
+  .status.shipped { color: #9BB4FF; }
+  .status.shipped .dot { background: #9BB4FF; }
+  @media (min-width: 561px) { .prev-grid { grid-template-columns: repeat(3, 1fr); } }
   .archive-note {
     margin-top: 36px; font-size: 14px; color: var(--muted);
     padding: 16px 0 40px; border-top: 1px solid var(--line);
@@ -396,38 +407,61 @@
     <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
       <img src="assets/prev-matchmate.jpg" alt="MatchMate" loading="lazy" />
       <div class="prev-body">
+        <p class="status live"><span class="dot"></span>live · 1,000s of matches automated</p>
         <h3>MatchMate</h3>
         <p>Intelligent matching that pairs students with the right tutors at scale.</p>
+        <p class="t">full stack · ux/ui · 2025</p>
+      </div>
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">
+      <img src="assets/prev-onboarding.jpg" alt="Step Up onboarding portal" loading="lazy" />
+      <div class="prev-body">
+        <p class="status live"><span class="dot"></span>live · ~600 applicants/week</p>
+        <h3>Onboarding Portal</h3>
+        <p>Step Up's guided tutor onboarding, from application through background check to first match.</p>
+        <p class="t">step up · product · 2021—now</p>
+      </div>
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">
+      <img src="assets/prev-tutorportal.jpg" alt="Tutor portal early wireframe sketch" loading="lazy" />
+      <div class="prev-body">
+        <p class="status live"><span class="dot"></span>live · 1,000s of tutors</p>
+        <h3>Tutor Portal</h3>
+        <p>From this hand sketch to the tutors' home base: scheduling, resources, and auto-translated parent messaging.</p>
+        <p class="t">step up · product · 2021—now</p>
+      </div>
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
+      <img src="assets/prev-hero-chat.jpg" alt="Hero Chat" loading="lazy" />
+      <div class="prev-body">
+        <p class="status live"><span class="dot"></span>live · app store · 1,000+ users</p>
+        <h3>Hero Chat</h3>
+        <p>AI-powered chatbots that answer your questions and let you explore others' anonymous conversations.</p>
         <p class="t">full stack · ux/ui · 2025</p>
       </div>
     </a>
     <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
       <img src="assets/prev-swayzee.jpg" alt="Swayzee" loading="lazy" />
       <div class="prev-body">
+        <p class="status"><span class="dot"></span>prototype</p>
         <h3>Swayzee</h3>
         <p>A social game with daily challenges where players persuade AI personas by pitching, negotiating, and more.</p>
         <p class="t">product · ux/ui · 2025</p>
       </div>
     </a>
-    <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
-      <img src="assets/prev-hero-chat.jpg" alt="Hero Chat" loading="lazy" />
-      <div class="prev-body">
-        <h3>Hero Chat</h3>
-        <p>AI-powered chatbots that answer your questions and let you explore others' anonymous conversations.</p>
-        <p class="t">full stack · ux/ui · 2025</p>
-      </div>
-    </a>
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/troops" target="_blank" rel="noopener">
       <img src="assets/prev-troops.jpg" alt="Troops" loading="lazy" />
       <div class="prev-body">
+        <p class="status shipped"><span class="dot"></span>shipped · 100s of deliveries · yc interview</p>
         <h3>Troops</h3>
-        <p>A campus delivery service app; hundreds of deliveries and a Y Combinator interview.</p>
+        <p>A campus delivery service app for college students, by college students.</p>
         <p class="t">case study · 2017</p>
       </div>
     </a>
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/that-feeling-when-card-game" target="_blank" rel="noopener">
       <img src="assets/prev-tfw.jpg" alt="That Feeling When" loading="lazy" />
       <div class="prev-body">
+        <p class="status shipped"><span class="dot"></span>shipped</p>
         <h3>That Feeling When</h3>
         <p>A party card game about relatable moments, plus its online multiplayer version.</p>
         <p class="t">case study · 2020</p>
@@ -436,14 +470,16 @@
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/quikstik" target="_blank" rel="noopener">
       <img src="assets/prev-quikstik.jpg" alt="Quikstik" loading="lazy" />
       <div class="prev-body">
+        <p class="status"><span class="dot"></span>concept · presented to ikea</p>
         <h3>Quikstik</h3>
-        <p>Compact, social home-workout equipment, designed with IKEA and presented to their product team.</p>
+        <p>Compact, social home-workout equipment with sensor-tracked handles and a companion app.</p>
         <p class="t">case study · 2019</p>
       </div>
     </a>
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/essential-bills" target="_blank" rel="noopener">
       <img src="assets/prev-essential-bills.jpg" alt="Essential Bills" loading="lazy" />
       <div class="prev-body">
+        <p class="status"><span class="dot"></span>client design</p>
         <h3>Essential Bills</h3>
         <p>An app where donors pay strangers' overdue essential bills; designed for a venture studio.</p>
         <p class="t">case study · 2019</p>
