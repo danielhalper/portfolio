@@ -160,6 +160,8 @@
   .prev-body h3 { font-size: 15.5px; font-weight: 600; letter-spacing: -0.01em; }
   .prev-body p { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
   .prev-body .t { margin-top: auto; padding-top: 10px; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--faint); }
+  a.prev-card { text-decoration: none; color: inherit; }
+  a.prev-card:hover h3 { color: var(--accent); }
   .archive-note {
     margin-top: 36px; font-size: 14px; color: var(--muted);
     padding: 16px 0 40px; border-top: 1px solid var(--line);
@@ -255,6 +257,8 @@
       <div class="media">
         <img src="assets/sidekick-tool.jpg" alt="Sidekick during a live tutoring session, scaffolded practice problems beside a shared whiteboard" loading="lazy" />
         <p class="cap">sidekick in a live session: scaffolded practice + shared whiteboard</p>
+        <img src="assets/sidekick-briefing.jpg" alt="From the session briefing: the headline for the tutor and a research-backed coaching tip" loading="lazy" />
+        <p class="cap">from the live alpha: the briefing headline, and one coaching tip</p>
       </div>
       <div class="p-body">
         <p class="p-kicker">01 · 2024—now · <b>Co-founder, Head of Product &amp; Technology</b></p>
@@ -264,10 +268,10 @@
         <ul class="p-points">
           <li>Watches every session: the recording (student work, dialogue, the tutor's own teaching moves) becomes a one-minute briefing before the next one.</li>
           <li>Coaches the coach with research-backed feedback on teaching moves like wait time, praise, and talk moves, plus suggested phrasing to try next session.</li>
-          <li>Spots prerequisite gaps, generates scaffolded practice with talk-moves baked in, and tracks skill mastery across sessions.</li>
+          <li>A knowledge graph of skills spots prerequisite gaps, generates scaffolded practice with talk-moves baked in, and tracks mastery across sessions.</li>
         </ul>
         <p class="p-stats"><span>2–4</span> extra months of learning<i>/</i><span>1,000s</span> of tutoring hours a week</p>
-        <p class="p-tags">LLM pipelines · React · Node · Firebase · Claude agents</p>
+        <p class="p-tags">LLM pipelines · knowledge graph · React · Node · Firebase · Claude agents</p>
         <div class="p-links">
           <a href="https://danielhalper.github.io/sidekick-homepage/" target="_blank" rel="noopener">Sidekick homepage</a>
           <a href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">More Step Up interfaces</a>
@@ -280,10 +284,10 @@
   <article class="project reveal">
     <div class="p-grid">
       <div class="media">
+        <img src="assets/flows.jpg" alt="A zoomed-out view of the sprawling FigJam board mapping Step Up's automated flows" loading="lazy" />
+        <p class="cap">one zoom level of the flow map: onboarding, family, and portal automations</p>
         <img src="assets/team-summary.jpg" alt="The weekly AI team summary from the Work Tracker" loading="lazy" />
         <p class="cap">the weekly ai summary, generated for the whole team</p>
-        <img src="assets/worktracker.jpg" alt="A personal Work Tracker panel with workstreams and a daily breakdown assembled automatically" loading="lazy" />
-        <p class="cap">my own tracker panel, assembled from prs, tickets, docs, and meetings</p>
       </div>
       <div class="p-body">
         <p class="p-kicker">02 · 2020—now · <b>Ops, Automation &amp; Internal Tools</b></p>
@@ -389,30 +393,62 @@
 <section id="previews" class="wrap">
   <p class="section-label"><span>Product previews</span><span>smaller builds</span></p>
   <div class="prev-grid">
-    <div class="prev-card reveal">
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
       <img src="assets/prev-matchmate.jpg" alt="MatchMate" loading="lazy" />
       <div class="prev-body">
         <h3>MatchMate</h3>
         <p>Intelligent matching that pairs students with the right tutors at scale.</p>
-        <p class="t">full stack · ux/ui</p>
+        <p class="t">full stack · ux/ui · 2025</p>
       </div>
-    </div>
-    <div class="prev-card reveal">
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
       <img src="assets/prev-swayzee.jpg" alt="Swayzee" loading="lazy" />
       <div class="prev-body">
         <h3>Swayzee</h3>
         <p>A social game with daily challenges where players persuade AI personas by pitching, negotiating, and more.</p>
-        <p class="t">product · ux/ui</p>
+        <p class="t">product · ux/ui · 2025</p>
       </div>
-    </div>
-    <div class="prev-card reveal">
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
       <img src="assets/prev-hero-chat.jpg" alt="Hero Chat" loading="lazy" />
       <div class="prev-body">
         <h3>Hero Chat</h3>
         <p>AI-powered chatbots that answer your questions and let you explore others' anonymous conversations.</p>
-        <p class="t">full stack · ux/ui</p>
+        <p class="t">full stack · ux/ui · 2025</p>
       </div>
-    </div>
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/works/troops" target="_blank" rel="noopener">
+      <img src="assets/prev-troops.jpg" alt="Troops" loading="lazy" />
+      <div class="prev-body">
+        <h3>Troops</h3>
+        <p>A campus delivery service app; hundreds of deliveries and a Y Combinator interview.</p>
+        <p class="t">case study · 2017</p>
+      </div>
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/works/that-feeling-when-card-game" target="_blank" rel="noopener">
+      <img src="assets/prev-tfw.jpg" alt="That Feeling When" loading="lazy" />
+      <div class="prev-body">
+        <h3>That Feeling When</h3>
+        <p>A party card game about relatable moments, plus its online multiplayer version.</p>
+        <p class="t">case study · 2020</p>
+      </div>
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/works/quikstik" target="_blank" rel="noopener">
+      <img src="assets/prev-quikstik.jpg" alt="Quikstik" loading="lazy" />
+      <div class="prev-body">
+        <h3>Quikstik</h3>
+        <p>Compact, social home-workout equipment, designed with IKEA and presented to their product team.</p>
+        <p class="t">case study · 2019</p>
+      </div>
+    </a>
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/works/essential-bills" target="_blank" rel="noopener">
+      <img src="assets/prev-essential-bills.jpg" alt="Essential Bills" loading="lazy" />
+      <div class="prev-body">
+        <h3>Essential Bills</h3>
+        <p>An app where donors pay strangers' overdue essential bills; designed for a venture studio.</p>
+        <p class="t">case study · 2019</p>
+      </div>
+    </a>
   </div>
   <p class="archive-note reveal">older in-depth case studies →
     <a href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">step up tutoring</a> ·
