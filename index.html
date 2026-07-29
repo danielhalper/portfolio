@@ -265,9 +265,8 @@
           <li>Watches every session: the recording (student work, dialogue, the tutor's own teaching moves) becomes a one-minute briefing before the next one.</li>
           <li>Coaches the coach with research-backed feedback on teaching moves like wait time, praise, and talk moves, plus suggested phrasing to try next session.</li>
           <li>Spots prerequisite gaps, generates scaffolded practice with talk-moves baked in, and tracks skill mastery across sessions.</li>
-          <li>Tutors tag Claude on product feedback and it ships preview builds and PRs for review.</li>
         </ul>
-        <p class="p-stats"><span>2–4</span> extra months of learning<i>/</i><span>1,000s</span> of sessions a week</p>
+        <p class="p-stats"><span>2–4</span> extra months of learning<i>/</i><span>1,000s</span> of tutoring hours a week</p>
         <p class="p-tags">LLM pipelines · React · Node · Firebase · Claude agents</p>
         <div class="p-links">
           <a href="https://danielhalper.github.io/sidekick-homepage/" target="_blank" rel="noopener">Sidekick homepage</a>
@@ -294,6 +293,7 @@
         <ul class="p-points">
           <li>Built a workflow auditor, a Gemini tool that logs how the team works and flags what to automate next; its successor turns those workflows into Claude agent skills.</li>
           <li>Built the Work Tracker: per-person workstreams assembled automatically from PRs, tickets, docs, and meetings, with a weekly AI team summary posted for the whole org so everyone stays aligned.</li>
+          <li>Product feedback closes its own loop: tutors tag Claude on feedback and it ships preview builds and PRs for review.</li>
           <li>Onboarding portal used by roughly 600 tutor applicants a week; replacing the application's video screener with an automated interview system took completion from 10% to 60%.</li>
           <li>Tutor dashboard auto-connects tutors and parents over SMS and web, with automatic translation.</li>
           <li>Growth ops that worked: an ambassador program with automated referral tracking drove 1,000+ tutor applications.</li>
@@ -319,13 +319,13 @@
         <p class="p-kicker">03 · 2026 · <b>Founder</b></p>
         <h2>Jimmy AI</h2>
         <p class="p-one">Better websites for Main Street: generated, previewed, claimed.</p>
-        <p class="p-desc">An AI pipeline that finds local businesses with poor websites, extracts their brand, generates a fully rebuilt site as a live preview, and lets the owner claim it. The pipeline runs end to end (brand extraction → site config → rendered preview → outreach → claim) and has generated <b>250+ websites</b>, now <b>in production with paying customers</b>.</p>
+        <p class="p-desc">One AI pipeline runs the whole cycle: it <b>finds</b> local businesses with poor websites, <b>extracts</b> each brand, <b>generates</b> a fully rebuilt site as a live preview, <b>sends</b> it to the owner, and lets them <b>claim it</b>. No hand-built sites, no manual outreach. <b>250+ websites</b> generated, now <b>in production with paying customers</b>.</p>
         <ul class="p-points">
           <li>Schema-first architecture: Zod-validated BusinessProfile → SiteConfig → pure-function renderer.</li>
           <li>AI brand extraction and site generation with Gemini, plus competitor analysis and outreach automation.</li>
           <li>Agentic dev process: Claude plans work nightly via GitHub Actions against a documented roadmap and ADRs.</li>
         </ul>
-        <p class="p-stats"><span>250+</span> websites generated<i>/</i><span>paying customers</span> in production<i>/</i><span>end-to-end</span> find → generate → claim</p>
+        <p class="p-stats"><span>250+</span> websites generated<i>/</i><span>paying customers</span> in production<i>/</i><span>end-to-end</span> find → generate → send → claim</p>
         <p class="p-tags">TypeScript · Next.js · Zod · Gemini · Claude Code · pnpm monorepo</p>
         <div class="p-links">
           <a href="https://jimmyaiweb-production.up.railway.app/previews/quick-response-plumbing" target="_blank" rel="noopener">Live example: Quick Response Plumbing</a>
@@ -347,14 +347,14 @@
         <p class="p-one">Tidy your tabs. Find your work.</p>
         <p class="p-desc">A Chrome extension that snapshots every open tab into memory-light sessions, auto-organized into folders by workstream, then finds anything again with plain-English search. <b>Live on the Chrome Web Store.</b> Privacy-first: no account, no server, no telemetry.</p>
         <ul class="p-points">
-          <li>Proactive nudges when it's time to tidy: it knows which tabs you're done with and reminds you to close them.</li>
+          <li>Gentle, proactive nudges: when open tabs cross your threshold it offers to tidy, already knowing which tabs you're done with. Ignore it and it backs off.</li>
           <li>Local association-graph clustering, with an optional LLM pass for workstream-aware folder names.</li>
           <li>Natural-language search over every saved tab ("ux applicants I looked up?"), ranked by an LLM.</li>
           <li>Full product surface shipped solo: MV3 service worker, onboarding, manager UI, store listing.</li>
         </ul>
         <p class="p-tags">Chrome MV3 · JavaScript · LLM search · local-first</p>
         <div class="p-links">
-          <a href="https://github.com/danielhalper/neat-freak" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://neat-freak.netlify.app/" target="_blank" rel="noopener">neat-freak.netlify.app</a>
         </div>
       </div>
     </div>
