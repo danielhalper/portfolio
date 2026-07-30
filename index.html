@@ -227,6 +227,21 @@
     .project:nth-of-type(even) .media { order: 0; }
     .about-grid { grid-template-columns: 1fr; gap: 32px; }
   }
+  /* ---------- Sub-projects within a role ---------- */
+  .subs { display: grid; grid-template-columns: 1fr 1fr; gap: 44px; margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--line); }
+  .sub-label {
+    font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: var(--accent);
+    letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px;
+  }
+  .sub h3 { font-size: 19px; font-weight: 650; letter-spacing: -0.015em; }
+  .sub .sub-one { margin-top: 4px; color: var(--muted); font-size: 14.5px; }
+  .sub img {
+    width: 100%; margin-top: 16px; border-radius: 8px; border: 1px solid var(--line-strong); display: block;
+  }
+  .sub .p-points li { font-size: 14px; padding: 6px 0 6px 18px; }
+  .sub .p-tags { font-size: 11.5px; }
+  @media (max-width: 860px) { .subs { grid-template-columns: 1fr; gap: 36px; } }
+
   @media (max-width: 560px) {
     .prev-grid { grid-template-columns: 1fr; }
     .nav-links a:not(:last-child) { display: none; }
@@ -260,118 +275,58 @@
 
 <main>
 <section id="work" class="wrap">
-  <p class="section-label"><span>Selected work</span><span>2020 — now</span></p>
+  <p class="section-label"><span>Where I've worked</span><span>2020 — now</span></p>
 
-  <!-- 01 Sidekick -->
+  <!-- 01 Step Up Tutoring -->
   <article class="project reveal">
-    <div class="p-grid">
-      <div class="media">
-        <img src="assets/sidekick-collage.jpg" alt="Sidekick in a live session, with the knowledge-graph learning path and the tutor's session briefing" loading="lazy" />
-        <p class="cap">the live alpha: a session, the learning path, and the tutor's briefing</p>
-      </div>
+    <div class="p-grid solo">
       <div class="p-body">
-        <p class="p-kicker">01 · 2024—now · <b>Co-founder, Head of Product &amp; Technology</b></p>
-        <h2>Sidekick</h2>
-        <p class="p-one">A master teacher, in every tutoring session.</p>
-        <p class="p-desc">Step Up pairs under-resourced students with volunteer tutors who drive <b>2–4 additional months of learning</b>. Sidekick is the AI copilot that makes every one of those sessions better: it analyzes session recordings, briefs the tutor in one minute, diagnoses what the student knows, and generates the right next lesson.</p>
-        <ul class="p-points">
-          <li>Watches every session: the recording (student work, dialogue, the tutor's own teaching moves) becomes a one-minute briefing before the next one.</li>
-          <li>Coaches the coach with research-backed feedback on teaching moves like wait time, praise, and talk moves, plus suggested phrasing to try next session.</li>
-          <li>A knowledge graph of skills spots prerequisite gaps, generates scaffolded practice with talk-moves baked in, and tracks mastery across sessions.</li>
-        </ul>
-        <p class="p-stats"><span>2–4</span> extra months of learning<i>/</i><span>1,000s</span> of tutoring hours a week</p>
-        <p class="p-tags">LLM pipelines · knowledge graph · React · Node · Firebase · Claude agents</p>
-        <div class="p-links">
-          <a href="https://danielhalper.github.io/sidekick-homepage/" target="_blank" rel="noopener">Sidekick homepage</a>
-          <a href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">More Step Up interfaces</a>
-        </div>
+        <p class="p-kicker">01 · 2020—now · <b>Co-founder, Head of Product &amp; Technology</b></p>
+        <h2>Step Up Tutoring</h2>
+        <p class="p-one">A tutoring non-profit that runs on the systems and AI products I built.</p>
       </div>
     </div>
-  </article>
+    <div class="media" style="margin-top:26px;">
+      <img src="assets/impact.jpg" alt="300,000+ tutoring hours delivered, 200,000+ automations every month, 6,000+ active tutors and families" loading="lazy" />
+      <p class="cap">a 5-year partnership with LA Unified, the nation's second-largest school district</p>
+    </div>
 
-  <!-- 02 Step Up efficiency engine -->
-  <article class="project reveal">
-    <div class="p-grid">
-      <div class="media">
-        <img src="assets/engine-collage.jpg" alt="One automated flow, a Work Tracker panel, and the weekly AI team summary" loading="lazy" />
-        <p class="cap">one automated flow, one tracked workstream, one weekly summary</p>
-      </div>
-      <div class="p-body">
-        <p class="p-kicker">02 · 2020—now · <b>Ops, Automation &amp; Internal Tools</b></p>
-        <h2>The Step Up efficiency engine</h2>
-        <p class="p-one">Six years of automating a 20-person org, from Zapier to AI agents.</p>
-        <p class="p-desc">Step Up runs on systems I built: Airtable and Bubble wired through Zapier, webhooks, and custom APIs into every app we use, automating communication, onboarding, and backend data management. It runs <b>200,000+ automations a month</b> for 6,000+ active users, and workflows that started on Zapier are steadily becoming AI agents.</p>
+    <div class="subs">
+      <div class="sub">
+        <p class="sub-label">Core project 01 · ops &amp; automation</p>
+        <h3>The efficiency engine</h3>
+        <p class="sub-one">Six years of automating a 20-person org, from Zapier to AI agents.</p>
+        <img src="assets/engine-collage.jpg" alt="An automated tutor application flow, a Work Tracker panel, and the weekly AI team summary" loading="lazy" />
         <ul class="p-points">
-          <li>Built a workflow auditor, a Gemini tool that logs how the team works and flags what to automate next; its successor turns those workflows into Claude agent skills.</li>
-          <li>Built the Work Tracker: per-person workstreams assembled automatically from PRs, tickets, docs, and meetings, with a weekly AI team summary posted for the whole org so everyone stays aligned.</li>
-          <li>Product feedback closes its own loop: tutors tag Claude on feedback and it ships preview builds and PRs for review.</li>
-          <li>Replaced the application's video screener with an automated interview system, taking completion from 10% to 60%.</li>
-          <li>Growth ops that worked: an ambassador program with automated referral tracking drove 1,000+ tutor applications.</li>
-          <li>Own the 5-year LAUSD MOU and funder relationships: Gates Foundation, CZI, NewSchools.</li>
+          <li>100+ automated sequences run onboarding, matching, comms, and data for 6,000+ users.</li>
+          <li>A workflow auditor flags what to automate next; its successor turns those workflows into Claude agent skills.</li>
+          <li>A work tracker assembles everyone's workstreams from PRs, tickets, docs, and meetings, then posts a weekly AI summary to keep the org aligned.</li>
         </ul>
-        <p class="p-stats"><span>300,000+</span> tutoring hours<i>/</i><span>200,000+</span> automations/mo<i>/</i><span>5-yr</span> LAUSD MOU</p>
-        <p class="p-tags">Zapier → Claude agents · Airtable · Bubble.io · Gemini · webhooks · Cloud Run</p>
+        <p class="p-tags">Zapier → Claude agents · Airtable · Bubble.io · Gemini · Cloud Run</p>
         <div class="p-links">
           <a href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">Full case study</a>
         </div>
       </div>
-    </div>
-  </article>
 
-  <!-- 03 Jimmy AI -->
-  <article class="project reveal">
-    <div class="p-grid">
-      <div class="media">
-        <img src="assets/jimmy.jpg" alt="Quick Response Plumbing, a website generated by Jimmy AI, live in production" loading="lazy" />
-        <p class="cap">quickresponse-plumbing.com: generated by jimmy, claimed by the owner</p>
-      </div>
-      <div class="p-body">
-        <p class="p-kicker">03 · 2026 · <b>Founder</b></p>
-        <h2>Jimmy AI</h2>
-        <p class="p-one">Better websites for Main Street: generated, previewed, claimed.</p>
-        <p class="p-desc">One AI pipeline runs the whole cycle: it <b>finds</b> local businesses with poor websites, <b>extracts</b> each brand, <b>generates</b> a fully rebuilt site as a live preview, <b>sends</b> it to the owner, and lets them <b>claim it</b>. No hand-built sites, no manual outreach. <b>250+ websites</b> generated, now <b>in production with paying customers</b>.</p>
+      <div class="sub">
+        <p class="sub-label">Core project 02 · ai product</p>
+        <h3>Sidekick</h3>
+        <p class="sub-one">A master teacher, in every tutoring session. Funded by the Gates Foundation and CZI.</p>
+        <img src="assets/sidekick-clean.jpg" alt="Sidekick during a live tutoring session: scaffolded practice problems beside a shared whiteboard" loading="lazy" />
         <ul class="p-points">
-          <li>Schema-first architecture: Zod-validated BusinessProfile → SiteConfig → pure-function renderer.</li>
-          <li>AI brand extraction and site generation with Gemini, plus competitor analysis and outreach automation.</li>
-          <li>Agentic dev process: Claude plans work nightly via GitHub Actions against a documented roadmap and ADRs.</li>
+          <li>Analyzes every session recording into a one-minute briefing before the tutor's next one.</li>
+          <li>Coaches the tutor on research-backed teaching moves, with phrasing to try next time.</li>
+          <li>A knowledge graph of skills finds prerequisite gaps and generates the right next lesson.</li>
         </ul>
-        <p class="p-stats"><span>250+</span> websites generated<i>/</i><span>paying customers</span> in production<i>/</i><span>end-to-end</span> find → generate → send → claim</p>
-        <p class="p-tags">TypeScript · Next.js · Zod · Gemini · Claude Code · pnpm monorepo</p>
+        <p class="p-tags">LLM pipelines · knowledge graph · React · Node · Firebase · Claude agents</p>
         <div class="p-links">
-          <a href="https://www.quickresponse-plumbing.com/" target="_blank" rel="noopener">Live customer site: Quick Response Plumbing</a>
+          <a href="https://danielhalper.github.io/sidekick-homepage/" target="_blank" rel="noopener">Sidekick homepage</a>
         </div>
       </div>
     </div>
   </article>
 
-  <!-- 04 Neat Freak -->
-  <article class="project reveal">
-    <div class="p-grid">
-      <div class="media">
-        <img src="assets/neatfreak-ui.jpg" alt="Neat Freak in action: the popup, the tidy confirmation with workstream folders, and a proactive nudge at 35 open tabs" loading="lazy" />
-        <p class="cap">the frontend: one-click tidy, workstream folders, and a nudge when tabs pile up</p>
-      </div>
-      <div class="p-body">
-        <p class="p-kicker">04 · 2026 · <b>Creator</b></p>
-        <h2>Neat Freak</h2>
-        <p class="p-one">Tidy your tabs. Find your work.</p>
-        <p class="p-desc">A Chrome extension that snapshots every open tab into memory-light sessions, auto-organized into folders by workstream, then finds anything again with plain-English search. <b>Live on the Chrome Web Store.</b> Privacy-first: no account, no server, no telemetry.</p>
-        <ul class="p-points">
-          <li>Gentle, proactive nudges: when open tabs cross your threshold it offers to tidy, already knowing which tabs you're done with. Ignore it and it backs off.</li>
-          <li>Local association-graph clustering, with an optional LLM pass for workstream-aware folder names.</li>
-          <li>Natural-language search over every saved tab ("ux applicants I looked up?"), ranked by an LLM.</li>
-          <li>Full product surface shipped solo: MV3 service worker, onboarding, manager UI, store listing.</li>
-        </ul>
-        <p class="p-tags">Chrome MV3 · JavaScript · LLM search · local-first</p>
-        <div class="p-links">
-          <a href="https://chromewebstore.google.com/detail/neat-freak/gmojchpnnkacfighmaoiofkddbaohpan" target="_blank" rel="noopener">Chrome Web Store</a>
-          <a href="https://neat-freak.netlify.app/" target="_blank" rel="noopener">About Neat Freak</a>
-        </div>
-      </div>
-    </div>
-  </article>
-
-  <!-- 05 Kyron -->
+  <!-- 02 Kyron -->
   <article class="project reveal">
     <div class="p-grid">
       <div class="media">
@@ -379,10 +334,10 @@
         <p class="cap">kyron: ai-driven interactive video</p>
       </div>
       <div class="p-body">
-        <p class="p-kicker">05 · 2022—2024 · <b>Founding UX Engineer</b></p>
+        <p class="p-kicker">02 · 2022—2024 · <b>Founding UX Engineer</b></p>
         <h2>Kyron Learning</h2>
         <p class="p-one">Early designs for an AI-powered education platform.</p>
-        <p class="p-desc">Kyron was founded by Google Cloud's former VP of AI (with the founder of Qwiklabs) to make great teaching interactive at scale, backed by a <b>$14.6M Series A</b> led by GSV Ventures and a Gates Foundation grant. Its platform lets students talk back to video lessons by voice or text. I was recruited by the CEO off the back of my Step Up work, building experimental designs and prototypes beyond the existing product scope.</p>
+        <p class="p-desc">Founded by Google Cloud's former VP of AI to make great teaching interactive at scale, backed by a <b>$14.6M Series A</b> and a Gates Foundation grant. Its platform lets students talk back to video lessons. The CEO recruited me off the back of my Step Up work to build experimental designs and prototypes beyond the existing product scope.</p>
         <ul class="p-points">
           <li>Designed interfaces for students, teachers, and creators across the AI learning experience.</li>
           <li>Shipped front-end improvements in the codebase and high-fidelity prototypes to the team.</li>
@@ -398,96 +353,125 @@
 </section>
 
 <section id="previews" class="wrap">
-  <p class="section-label"><span>Product previews</span><span>smaller builds</span></p>
+  <p class="section-label"><span>Projects</span><span>things I've built</span></p>
   <div class="prev-grid">
-    <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
-      <img src="assets/prev-matchmate.jpg" alt="MatchMate" loading="lazy" />
+
+    <a class="prev-card reveal" href="https://www.quickresponse-plumbing.com/" target="_blank" rel="noopener">
+      <img src="assets/jimmy.jpg" alt="Quick Response Plumbing, a website generated by Jimmy AI" loading="lazy" />
       <div class="prev-body">
-        <p class="status live"><span class="dot"></span>live · 1,000s of matches automated</p>
-        <h3>MatchMate</h3>
-        <p>Intelligent matching that pairs students with the right tutors at scale.</p>
-        <p class="t">full stack · ux/ui · 2025</p>
+        <p class="status live"><span class="dot"></span>live · 250+ sites generated · 2 deployed for businesses</p>
+        <h3>Jimmy AI</h3>
+        <p>An AI pipeline that finds local businesses with bad websites, rebuilds each site, and sends it to the owner to claim.</p>
+        <p class="t">2026 · typescript · gemini · claude code</p>
       </div>
     </a>
+
+    <a class="prev-card reveal" href="https://chromewebstore.google.com/detail/neat-freak/gmojchpnnkacfighmaoiofkddbaohpan" target="_blank" rel="noopener">
+      <img src="assets/neatfreak-ui.jpg" alt="Neat Freak Chrome extension" loading="lazy" />
+      <div class="prev-body">
+        <p class="status live"><span class="dot"></span>live on the chrome web store</p>
+        <h3>Neat Freak</h3>
+        <p>Tidies your tabs into workstream folders, nudges you when they pile up, and finds anything again in plain English.</p>
+        <p class="t">2026 · chrome mv3 · llm search · local-first</p>
+      </div>
+    </a>
+
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">
       <img src="assets/prev-onboarding.jpg" alt="Step Up onboarding portal" loading="lazy" />
       <div class="prev-body">
         <p class="status live"><span class="dot"></span>live · ~600 applicants/week</p>
         <h3>Onboarding Portal</h3>
         <p>Step Up's guided tutor onboarding, from application through background check to first match.</p>
-        <p class="t">step up · product · 2021—now</p>
+        <p class="t">step up · 2021—now</p>
       </div>
     </a>
+
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">
-      <img src="assets/prev-tutorportal.jpg" alt="Tutor portal early wireframe sketch" loading="lazy" />
+      <img src="assets/prev-tutorportal.jpg" alt="Step Up tutor portal dashboard" loading="lazy" />
       <div class="prev-body">
         <p class="status live"><span class="dot"></span>live · 1,000s of tutors</p>
         <h3>Tutor Portal</h3>
-        <p>From this hand sketch to the tutors' home base: scheduling, resources, and auto-translated parent messaging.</p>
-        <p class="t">step up · product · 2021—now</p>
+        <p>The tutors' home base: scheduling, resources, and auto-translated parent messaging.</p>
+        <p class="t">step up · 2021—now</p>
       </div>
     </a>
+
+    <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
+      <img src="assets/prev-matchmate.jpg" alt="MatchMate" loading="lazy" />
+      <div class="prev-body">
+        <p class="status live"><span class="dot"></span>live · 1,000s of matches automated</p>
+        <h3>MatchMate</h3>
+        <p>Intelligent matching that pairs students with the right tutors at scale.</p>
+        <p class="t">step up · 2025</p>
+      </div>
+    </a>
+
     <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
       <img src="assets/prev-hero-chat.jpg" alt="Hero Chat" loading="lazy" />
       <div class="prev-body">
-        <p class="status shipped"><span class="dot"></span>shipped to app store · 1,000+ users</p>
+        <p class="status shipped"><span class="dot"></span>shipped to app store · 500+ reviews</p>
         <h3>Hero Chat</h3>
-        <p>AI-powered chatbots that answer your questions and let you explore others' anonymous conversations.</p>
-        <p class="t">full stack · ux/ui · 2025</p>
+        <p>AI chatbots that answer your questions and let you explore others' anonymous conversations.</p>
+        <p class="t">2023 · full stack · ux/ui</p>
       </div>
     </a>
+
     <a class="prev-card reveal" href="https://dhalps.webflow.io/#projects" target="_blank" rel="noopener">
       <img src="assets/prev-swayzee.jpg" alt="Swayzee" loading="lazy" />
       <div class="prev-body">
         <p class="status"><span class="dot"></span>in development</p>
         <h3>Swayzee</h3>
-        <p>A social game with daily challenges where players persuade AI personas by pitching, negotiating, and more.</p>
-        <p class="t">product · ux/ui · 2025</p>
+        <p>A social game with daily challenges where players persuade AI personas by pitching and negotiating.</p>
+        <p class="t">2025 · product · ux/ui</p>
       </div>
     </a>
+
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/troops" target="_blank" rel="noopener">
       <img src="assets/prev-troops.jpg" alt="Troops" loading="lazy" />
       <div class="prev-body">
         <p class="status shipped"><span class="dot"></span>shipped · 100s of deliveries · yc interview</p>
         <h3>Troops</h3>
         <p>A campus delivery service app for college students, by college students.</p>
-        <p class="t">case study · 2017</p>
+        <p class="t">2017 · case study</p>
       </div>
     </a>
+
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/that-feeling-when-card-game" target="_blank" rel="noopener">
       <img src="assets/prev-tfw.jpg" alt="That Feeling When" loading="lazy" />
       <div class="prev-body">
         <p class="status shipped"><span class="dot"></span>shipped</p>
         <h3>That Feeling When</h3>
         <p>A party card game about relatable moments, plus its online multiplayer version.</p>
-        <p class="t">case study · 2020</p>
+        <p class="t">2020 · case study</p>
       </div>
     </a>
+
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/quikstik" target="_blank" rel="noopener">
       <img src="assets/prev-quikstik.jpg" alt="Quikstik" loading="lazy" />
       <div class="prev-body">
         <p class="status"><span class="dot"></span>concept · presented to ikea</p>
         <h3>Quikstik</h3>
         <p>Compact, social home-workout equipment with sensor-tracked handles and a companion app.</p>
-        <p class="t">case study · 2019</p>
+        <p class="t">2019 · case study</p>
       </div>
     </a>
+
     <a class="prev-card reveal" href="https://dhalps.webflow.io/works/essential-bills" target="_blank" rel="noopener">
       <img src="assets/prev-essential-bills.jpg" alt="Essential Bills" loading="lazy" />
       <div class="prev-body">
         <p class="status"><span class="dot"></span>client design</p>
         <h3>Essential Bills</h3>
         <p>An app where donors pay strangers' overdue essential bills; designed for a venture studio.</p>
-        <p class="t">case study · 2019</p>
+        <p class="t">2019 · case study</p>
       </div>
     </a>
+
   </div>
-  <p class="archive-note reveal">older in-depth case studies →
+  <p class="archive-note reveal">deeper case studies →
     <a href="https://dhalps.webflow.io/works/step-up-tutoring" target="_blank" rel="noopener">step up tutoring</a> ·
     <a href="https://dhalps.webflow.io/works/troops" target="_blank" rel="noopener">troops</a> ·
     <a href="https://dhalps.webflow.io/works/quikstik" target="_blank" rel="noopener">quikstik</a> ·
     <a href="https://dhalps.webflow.io/works/essential-bills" target="_blank" rel="noopener">essential bills</a> ·
-    <a href="https://dhalps.webflow.io/works/that-feeling-when-card-game" target="_blank" rel="noopener">that feeling when</a> ·
     <a href="https://dhalps.webflow.io/works/more-projects" target="_blank" rel="noopener">more</a>
   </p>
 </section>
