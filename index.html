@@ -543,7 +543,7 @@ const STEP=[
    kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
    or 'demo' (a clickable look-alike in assets/demos/<id>.js). aspect: the frame's shape.
    chapters: buttons under it, {id,label}, plus t (seconds) for a video. lookalike: adds the "Demo · sample data" label.
-   size: a look-alike's drawing size in px (default 1280×800); it's scaled to fit the frame. */
+   A look-alike carries the size it was built to be drawn at (size.json); it's scaled to fit the frame. */
 const WALK={
  sidekick:{kind:'demo',lookalike:true,chapters:[{id:'feedback',label:'Feedback'},{id:'problems',label:'Problems'},{id:'explain',label:'Explanations'}]},
  engine:{kind:'pan',imgs:[{src:'assets/engine-collage.jpg',alt:'An automated tutor application flow, the work tracker and the weekly AI team summary'},
@@ -920,7 +920,7 @@ const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const CURSOR=`<svg viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.4L20.5 11z" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
 function walkStill(id){ const f=frameOf(id); if(f.querySelector('.wk-still')) return; // the demo didn't load: show its screenshot instead
   const im=new Image(); im.className='wk-still'; im.alt=(byId[id]||{}).name||''; im.src=PREV[id]; f.appendChild(im); }
-function mountDemo(id){ const d=DEMOS[id], s=wsOf(id), f=frameOf(id), [W,H]=WALK[id].size||[1280,800];
+function mountDemo(id){ const d=DEMOS[id], s=wsOf(id), f=frameOf(id), [W,H]=d.size||[1280,800];
   if(d.fonts&&!document.getElementById('wkf-'+id)){ const st=document.createElement('style'); st.id='wkf-'+id; st.textContent=d.fonts; document.head.appendChild(st); } // fonts must live in the page
   const host=document.createElement('div'); host.className='wk-demo'; f.appendChild(host);
   const root=host.attachShadow({mode:'open'});
@@ -932,6 +932,7 @@ function mountDemo(id){ const d=DEMOS[id], s=wsOf(id), f=frameOf(id), [W,H]=WALK
 .wk-cursor.tap::after{animation:wkTap .45s ease-out}@keyframes wkTap{from{transform:scale(.2);opacity:1}to{transform:scale(1.6);opacity:0}}</style>
 <style>${d.css}</style><div class="wk-stage">${d.html}<div class="wk-cursor" aria-hidden="true">${CURSOR}</div></div>`;
   Object.assign(s,{root,demo:d,host,stage:root.querySelector('.wk-stage'),cursor:root.querySelector('.wk-cursor'),scale:1,cx:W/2,cy:H/2});
+  s.stage.style.width=W+'px'; s.stage.style.height=H+'px';
   const fit=()=>{ const k=Math.min(f.clientWidth/W,f.clientHeight/H)||1; s.scale=k; s.stage.style.transform=`translate(${(f.clientWidth-W*k)/2}px,${(f.clientHeight-H*k)/2}px) scale(${k})`; };
   new ResizeObserver(fit).observe(f); fit(); s.cursor.style.transform=`translate(${s.cx}px,${s.cy}px)`;
   if(d.init) d.init(root);
