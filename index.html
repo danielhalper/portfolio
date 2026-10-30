@@ -546,9 +546,7 @@ const STEP=[
    A look-alike carries the size it was built to be drawn at (size.json); it's scaled to fit the frame. */
 const WALK={
  sidekick:{kind:'demo',lookalike:true,chapters:[{id:'feedback',label:'Feedback'},{id:'problems',label:'Problems'},{id:'explain',label:'Explanations'}]},
- engine:{kind:'pan',imgs:[{src:'assets/engine-collage.jpg',alt:'An automated tutor application flow, the work tracker and the weekly AI team summary'},
-   {src:'assets/auditor.jpg',alt:'The workflow auditor: observe the team’s tasks, detect repetitive work, propose automations ranked by hours saved'},
-   {src:'assets/stepup-ops.jpg',alt:'The Airtable ops base and some of the Zapier automations that run on it'}]},
+ engine:{kind:'demo',chapters:[]}, // a live board rather than a copied app, so no sample-data label
  onboard:{kind:'demo',lookalike:true,chapters:[{id:'apply',label:'Application'},{id:'check',label:'Background check'},{id:'train',label:'Training'},{id:'ready',label:'Ready to match'}]},
  portal:{kind:'demo',lookalike:true,chapters:[{id:'home',label:'Home'},{id:'messages',label:'Messages'},{id:'updates',label:'Updates'},{id:'tasks',label:'Tasks'}]},
  match:{kind:'video',lookalike:true,src:'assets/match-walk.mp4',poster:'assets/match-walk.jpg',alt:'MatchMate, the real app running on sample students and tutors: match settings, Generate Matches and its recommended pairs, then the student and tutor tables',
@@ -941,11 +939,11 @@ function mountDemo(id){ const d=DEMOS[id], s=wsOf(id), f=frameOf(id), [W,H]=d.si
   if(d.init) d.init(root);
   root.addEventListener('click',e=>{ const g=e.target.closest&&e.target.closest('[data-go]'); if(g) walkChapter(id,g.dataset.go,{user:e.isTrusted}); });
   ['pointerdown','keydown','focusin'].forEach(ev=>host.addEventListener(ev,()=>walkTakeover(id))); // a visitor takes over
-  walkShow(id,d.chapters[0]);
+  if(d.chapters.length) walkShow(id,d.chapters[0]);
   if(s.running) walkPlay(id); }
 function walkShow(id,ch){ const s=WS[id]; s.chapter=ch; s.demo.show(s.root,ch); s.host.dataset.chapter=ch;
   secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch)); }
-async function walkTour(id){ const s=WS[id], d=s.demo; if(reduce||!d.steps) return; const tok=++s.run, live=()=>s.run===tok&&s.running;
+async function walkTour(id){ const s=WS[id], d=s.demo; if(reduce||!d.steps||!d.chapters.length) return; // a board with no chapters animates itself (play/pause) const tok=++s.run, live=()=>s.run===tok&&s.running;
   clearTimeout(s.idle); let i=Math.max(0,d.chapters.indexOf(s.chapter));
   while(live()){ walkShow(id,d.chapters[i]);
     for(const st of d.steps[d.chapters[i]]||[]){ if(!live()) return; await walkStep(s,st,live); }
