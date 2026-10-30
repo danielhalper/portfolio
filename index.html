@@ -292,7 +292,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 /* the tape menu: every project as a small tape down the left; the one on screen is lit */
 .rail{position:absolute;left:14px;top:64px;bottom:24px;z-index:28;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:5px;pointer-events:none;
   --rh:min(34px,calc((100% - 75px)/16))}
-.rt{position:relative;display:block;flex:none;height:var(--rh);aspect-ratio:240/152;pointer-events:auto;transform-origin:0 0;opacity:0} /* fly() moves them in from the shelf */
+.rt{position:relative;display:block;flex:none;height:var(--rh);aspect-ratio:240/152;pointer-events:auto;transform-origin:50% 50%;opacity:0} /* fly() moves them in from the shelf */
 .rail.fade .rt{transition:opacity .3s}
 .rt.box{aspect-ratio:300/190}
 .rt.sub{height:calc(var(--rh)*.84);margin-left:12px}
@@ -600,7 +600,7 @@ const items=ITEMS.map((it,i)=>{
     el.innerHTML=`<div class="hop"><div class="face front">${faceHTML(it)}</div><div class="face back"><div class="backlabel"></div><div class="trap"></div></div>
       <div class="face topf"><div class="spine">${it.contact?'Your track here':it.name+' · '+it.year}</div></div><div class="face botf"></div><div class="face rgt"></div><div class="face lft"></div></div>`;
   }
-  el.tabIndex=0; el.setAttribute('role','button');
+  el.tabIndex=0; el.setAttribute('role','button'); el.dataset.id=it.id;
   el.style.width=it.w+'px'; el.style.height=it.h+'px'; el.style.left=(-it.w/2)+'px'; el.style.top=(BASE-it.h)+'px';
   el.style.transform=`translateZ(${Z[i]}px)`;
   row.appendChild(el);
@@ -850,19 +850,23 @@ const easeOut=x=>1-Math.pow(1-x,3);
 function measureFly(){ // where each menu tape starts (its tape on the shelf, at the top of the page) and where it ends
   const sr=stage.getBoundingClientRect(), y0=$('scroller').scrollTop;
   TRACKS.forEach(t=>{ const st = t.box||t.step ? items[0] : items.find(x=>x.it.id===t.id), r=st.front.getBoundingClientRect(), o=t.step ? 6*(STEP.indexOf(t)+1) : 0;
-    SRC[t.id]={cx:r.left-sr.left+r.width/2+o, cy:r.top-sr.top+r.height/2+y0+o, w:r.width}; SLOT[t.id]=railSlot(t.id); });
+    SRC[t.id]={cx:r.left-sr.left+r.width/2+o, cy:r.top-sr.top+r.height/2+y0+o, w:r.width*(t.step?240/270:1), h:r.height*(t.step?152/178:1)}; SLOT[t.id]=railSlot(t.id); }); // the five tools leave the box tape-sized
   fly(); }
 function fly(){
   const sc=$('scroller'), p=clamp(sc.scrollTop/$('hero').offsetHeight,0,1), still=reduce||phone.matches;
   $('scenew').style.opacity=(1-clamp(p*1.6,0,1)).toFixed(3);
   $('rail').classList.toggle('fade',still); $('rail').classList.toggle('landed',p>=.98); $('rail').classList.toggle('show',p>.5);
+  if(still) items.forEach(x=>{ x.el.style.visibility=''; });
   $('rail').querySelectorAll('.rt').forEach((a,i)=>{
     if(still){ a.style.transform=''; a.style.opacity=p>.5?1:0; return; }
-    const s=SRC[a.dataset.id], d=SLOT[a.dataset.id]; if(!s||!d) return;
-    const e=easeOut(clamp((p-i*.02)/.6,0,1)), k=lerp(s.w/d.w,1,e); // centre travels from the shelf tape's centre to the menu slot's
+    const id=a.dataset.id, s=SRC[id], d=SLOT[id]; if(!s||!d) return;
+    const e=easeOut(clamp((p-i*.02)/.6,0,1)), shelf=items.find(x=>x.it.id===id); // one set of tapes: the shelf copy goes the moment its twin leaves
+    if(shelf) shelf.el.style.visibility = e>0 ? 'hidden' : '';
+    // it leaves at the shelf tape's on-screen size and slant (the shelf turns 52° and tips 16°, about a 19° slope) and straightens as it lands
+    const W=lerp(s.w,d.w,e), H=lerp(s.h,d.h,e), sk=19*(1-e), sx=W/d.w, sy=Math.max(.05,(H-W*Math.tan(sk*Math.PI/180))/d.h);
     const cx=lerp(s.cx,d.x+d.w/2,e), cy=lerp(s.cy-sc.scrollTop,d.y+d.h/2,e);
-    a.style.transform = e>=1 ? '' : `translate(${(cx-k*d.w/2-d.x).toFixed(1)}px,${(cy-k*d.h/2-d.y).toFixed(1)}px) scale(${k.toFixed(3)})`;
-    a.style.opacity=clamp(e*3,0,1).toFixed(3); }); }
+    a.style.transform = e>=1 ? '' : `translate(${(cx-d.x-d.w/2).toFixed(1)}px,${(cy-d.y-d.h/2).toFixed(1)}px) skewY(${sk.toFixed(2)}deg) scale(${sx.toFixed(3)},${sy.toFixed(3)})`;
+    a.style.opacity = e>0 ? 1 : 0; }); }
 let flyQ=false;
 $('scroller').addEventListener('scroll',()=>{ if(flyQ) return; flyQ=true; requestAnimationFrame(()=>{ flyQ=false; fly(); }); },{passive:true});
 let fpT=0; // the tape follows you once you stop on a section, not for every section a fast scroll passes
