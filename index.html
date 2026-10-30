@@ -686,7 +686,7 @@ onboard:a=>{ // applicant journey
   return `<line x1="60" y1="150" x2="330" y2="150" stroke="${FAINT}" stroke-width="4"/>
   <line x1="60" y1="150" x2="60" y2="150" stroke="${a}" stroke-width="4">${loop('60;330;330;60','0;.7;.95;1',5,'x2')}</line>
   ${xs.map((x,i)=>`<circle cx="${x}" cy="150" r="14" fill="#141418" stroke="${W}" stroke-width="2"><animate attributeName="fill" values="#141418;#141418;${a};${a};#141418" keyTimes="0;${(i*.23).toFixed(2)};${(i*.23+.02).toFixed(2)};.95;1" dur="5s" repeatCount="indefinite"/></circle>${txt(x-20,186,10,W,lab[i])}`).join('')}
-  ${txt(60,100,26,W,'~600 a week','font-weight="700"')}`; },
+  ${txt(60,100,26,W,'7,500+ this year','font-weight="700"')}`; },
 portal:a=>{ // schedule + translated messages
   let s=''; for(let r=0;r<4;r++) for(let c=0;c<7;c++){ const i=r*7+c, on=[2,9,11,16,20,24].includes(i);
     s+=`<rect x="${40+c*28}" y="${70+r*28}" width="22" height="22" rx="4" fill="${on?a:'#1a1a1f'}" ${on?'opacity="0"':''}>${on?loop('0;0;1;1;0',`0;${(.1+i*.02).toFixed(2)};${(.12+i*.02).toFixed(2)};.92;1`,6):''}</rect>`; }
@@ -710,8 +710,8 @@ const ACC={neat:'#f5c518',jimmy:'#f08a24',swayzee:'#ff5c6c',kyron:'#9ad1f5',hero
 const STEP=[
  {id:"sidekick",name:"Sidekick",result:"Novice tutors teach like **experts**",what:"Runs on our own video platform. Session analysis drives a one-minute briefing, in-session curriculum and coaching",tags:["Video platform","Session analysis","LLM pipelines"],link:"https://sidekick.stepuptutoring.org",linkLabel:"Visit"},
  {id:"engine",name:"Efficiency Engine",result:"**100+** workflows on autopilot",what:"AI in all four parts of Step Up, a handbook that updates itself from CRM tickets, and MatchLink messaging",tags:["Claude agents","CRM","Zapier"],link:CASE,linkLabel:"Case study"},
- {id:"onboard",name:"Onboarding Portal",result:"**~600** applicants a week",what:"From application to a tutor's first match",tags:["Bubble.io","Automation","Checks"],link:CASE,linkLabel:"Case study"},
- {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Scheduling, resources and auto-translated parent messages",tags:["Scheduling","Translation","Resources"],link:CASE,linkLabel:"Case study"},
+ {id:"onboard",name:"Onboarding Portal",result:"**7,500+** applicants this year",what:"From application to a tutor's first match",tags:["Bubble.io","Automation","Checks"],link:CASE,linkLabel:"Case study"},
+ {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Schedule, resources, announcements and events in one place",tags:["Scheduling","Translation","Resources"],link:CASE,linkLabel:"Case study"},
  {id:"match",name:"MatchMate",result:"**1,000s** of matches automated",what:"Pairs every student with the right tutor",tags:["Matching","AI ranking","Scale"],link:MORE,linkLabel:"See it"}
 ].map((t,i)=>Object.assign(t,{style:'gold',c1:'#f5c518',c2:['#7cffc4','#9ad1f5','#f2a7c3','#f2f2f2','#f08a24'][i],c3:'#111',ink2:'#111',year:'Step Up',role:'Inside Step Up',step:true}));
 /* ===== EDIT: SCREENSHOTS — real images for each project, shown before the animated scene =====
