@@ -537,7 +537,7 @@ const STEP=[
  {id:"engine",name:"Efficiency Engine",result:"**100+** workflows on autopilot",what:"AI in all four parts of Step Up, a handbook that updates itself from CRM tickets, and MatchLink messaging",tags:["Claude agents","CRM","Zapier"],link:CASE,linkLabel:"Case study"},
  {id:"onboard",name:"Onboarding Portal",result:"**100,000+** people have used it",what:"From application to a tutor's first match",tags:["Bubble.io","Automation","Checks"],link:CASE,linkLabel:"Case study"},
  {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Schedule, resources, announcements and events in one place",tags:["Scheduling","Translation","Resources"],link:CASE,linkLabel:"Case study"},
- {id:"match",name:"MatchMate",result:"**1,000s** of matches automated",what:"Pairs every student with the right tutor",tags:["Matching","AI ranking","Scale"],link:MORE,linkLabel:"See it"}
+ {id:"match",name:"MatchMate",result:"**1,000s** of matches automated",what:"Pairs every student with the right tutor",tags:["Matching","AI ranking","Scale"]}
 ].map((t,i)=>Object.assign(t,{style:'gold',c1:'#f5c518',c2:['#7cffc4','#9ad1f5','#f2a7c3','#f2f2f2','#f08a24'][i],c3:'#111',ink2:'#111',year:'Step Up',role:'Inside Step Up',step:true}));
 /* ===== EDIT: WALKTHROUGHS — the one moving piece each project shows =====
    kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
@@ -551,7 +551,8 @@ const WALK={
    {src:'assets/stepup-ops.jpg',alt:'The Airtable ops base and some of the Zapier automations that run on it'}]},
  onboard:{kind:'demo',lookalike:true,chapters:[{id:'apply',label:'Application'},{id:'check',label:'Background check'},{id:'train',label:'Training'},{id:'ready',label:'Ready to match'}]},
  portal:{kind:'demo',lookalike:true,chapters:[{id:'home',label:'Home'},{id:'messages',label:'Messages'},{id:'updates',label:'Updates'},{id:'tasks',label:'Tasks'}]},
- match:{kind:'demo',lookalike:true,chapters:[{id:'settings',label:'Settings'},{id:'generate',label:'Generate'},{id:'tables',label:'Students & tutors'}]},
+ match:{kind:'video',lookalike:true,src:'assets/match-walk.mp4',poster:'assets/match-walk.jpg',alt:'MatchMate, the real app running on sample students and tutors: match settings, Generate Matches and its recommended pairs, then the student and tutor tables',
+   chapters:[{id:'settings',label:'Settings',t:0},{id:'generate',label:'Generate',t:7.6},{id:'tables',label:'Students & tutors',t:17.4}]},
  neat:{kind:'pan',imgs:[{src:'assets/neatfreak-ui.jpg',alt:'Neat Freak tidying open tabs into folders, and its nudge when tabs pile up'},
    {src:'assets/neatfreak-code.jpg',alt:'Part of the Neat Freak source'}]},
  jimmy:{kind:'pan',imgs:[{src:'assets/jimmy.jpg',alt:'Quick Response Plumbing, a website Jimmy AI rebuilt'}]},
@@ -799,7 +800,7 @@ function pauseSVG(card){ const s=card.querySelector('svg'); if(s&&reduce&&s.paus
 function sectionHTML(t){
   const isC=!!t.contact;
   const kick = isC ? 'The next track' : t.step ? (t===STEP[0] ? 'Inside Step Up · Flagship' : 'Inside Step Up') : `${t.year} · ${t.role}`;
-  const link = t.link ? `<a class="cta" href="${t.link}" ${isC?'':'target="_blank" rel="noopener"'}>${t.linkLabel} <span aria-hidden="true">↗</span></a>` : `<span class="cta soon">${t.linkLabel}</span>`;
+  const link = t.link ? `<a class="cta" href="${t.link}" ${isC?'':'target="_blank" rel="noopener"'}>${t.linkLabel} <span aria-hidden="true">↗</span></a>` : t.linkLabel ? `<span class="cta soon">${t.linkLabel}</span>` : '';
   const more = isC ? '<a class="small" href="https://linkedin.com/in/daniel-halper" target="_blank" rel="noopener">LinkedIn</a><a class="small" href="https://github.com/danielhalper" target="_blank" rel="noopener">GitHub</a>' : `<span class="small built">${t.tags.join(' · ')}</span>`;
   return `<div class="dmain">${walkHTML(t)}
     <div class="dtext"><div class="kick">${kick}</div><h2>${t.name}</h2><div class="result">${md(t.result)}</div><div class="what">${md(t.what)}</div>
@@ -882,7 +883,7 @@ function walkHTML(t){
   const media = w.kind==='video' ? `<video muted loop playsinline preload="none" aria-label="${w.alt}"></video>`
     : w.kind==='pan' ? `<div class="wk-pan">${w.imgs.map((m,k)=>`<img alt="${m.alt}" decoding="async"${k?'':' class="on"'}>`).join('')}</div>`
     : w.kind==='scene' ? sceneSVG(t.id,ACC[t.id]||t.c1) : '';
-  const ch=(w.chapters||[]).map((c,k)=>`<button class="wk-c" role="tab" data-ch="${c.id}" aria-selected="${k===0}">${c.label}</button>`).join('');
+  const ch=(w.chapters||[]).map((c,k)=>`<button class="wk-c" role="tab" data-ch="${c.id}"${c.t!=null?` data-t="${c.t}"`:''} aria-selected="${k===0}">${c.label}</button>`).join('');
   return `<div class="card wk" style="--ar:${ar};--arv:${(x/y).toFixed(3)}"><div class="glow"></div><div class="wk-frame">${media}</div>
     <div class="wk-bar"><div class="wk-ch" role="tablist" aria-label="${t.contact?'Contact':t.name}">${ch}</div>${w.lookalike?'<span class="small wk-tag">Demo · sample data</span>':''}<button class="wk-full" aria-label="Full screen"><svg viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button></div></div>`;
 }
@@ -894,7 +895,9 @@ function walkLoad(id){ const s=wsOf(id); if(s.loaded) return s.ready; s.loaded=t
     const done=()=>{ if(window.DEMOS&&DEMOS[id]) mountDemo(id); else walkStill(id); res(); };
     if(window.DEMOS&&DEMOS[id]) return done();
     const sc=document.createElement('script'); sc.src=`assets/demos/${id}.js`; sc.onload=done; sc.onerror=()=>{ walkStill(id); res(); }; document.head.appendChild(sc); });
-  if(w.kind==='video'){ const v=f.querySelector('video'); v.poster=w.poster; v.src=w.src; }
+  if(w.kind==='video'){ const v=f.querySelector('video'); v.poster=w.poster; v.src=w.src;
+    if(w.chapters&&w.chapters.length) v.addEventListener('timeupdate',()=>{ const c=[...w.chapters].reverse().find(c=>v.currentTime>=c.t-.05); // the lit chapter follows the video
+      if(c) secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===c.id)); }); }
   if(w.kind==='pan') f.querySelectorAll('img').forEach((im,k)=>{ im.src=w.imgs[k].src; });
   return s.ready=Promise.resolve(); }
 function walkPlay(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=true; f.parentNode.classList.add('run');
