@@ -195,6 +195,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .wk.run .wk-pan img{animation-play-state:running}
 @keyframes kb{from{transform:scale(1.02) translate(-1%,1%)}to{transform:scale(1.1) translate(1.5%,-1.5%)}}
 .wk-frame:fullscreen{background:#000}
+.wk-demo{position:absolute;inset:0}
+.wk-still{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .wk-bar{position:relative;flex:none;display:flex;align-items:center;gap:10px;height:40px;padding:0 6px 0 10px;border-top:1px solid rgba(255,255,255,.1)}
 .wk-ch{display:flex;gap:6px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
 .wk-ch::-webkit-scrollbar{display:none}
@@ -540,17 +542,16 @@ const STEP=[
 /* ===== EDIT: WALKTHROUGHS — the one moving piece each project shows =====
    kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
    or 'demo' (a clickable look-alike in assets/demos/<id>.js). aspect: the frame's shape.
-   chapters: buttons under it, {id,label}, plus t (seconds) for a video. lookalike: adds the "Demo · sample data" label. */
+   chapters: buttons under it, {id,label}, plus t (seconds) for a video. lookalike: adds the "Demo · sample data" label.
+   size: a look-alike's drawing size in px (default 1280×800); it's scaled to fit the frame. */
 const WALK={
- sidekick:{kind:'pan',imgs:[{src:'assets/sidekick-clean.jpg',alt:'Sidekick in a live session: scaffolded practice problems beside the shared whiteboard'}]},
+ sidekick:{kind:'demo',lookalike:true,chapters:[{id:'feedback',label:'Feedback'},{id:'problems',label:'Problems'},{id:'explain',label:'Explanations'}]},
  engine:{kind:'pan',imgs:[{src:'assets/engine-collage.jpg',alt:'An automated tutor application flow, the work tracker and the weekly AI team summary'},
    {src:'assets/auditor.jpg',alt:'The workflow auditor: observe the team’s tasks, detect repetitive work, propose automations ranked by hours saved'},
    {src:'assets/stepup-ops.jpg',alt:'The Airtable ops base and some of the Zapier automations that run on it'}]},
- onboard:{kind:'pan',imgs:[{src:'assets/prev-onboarding.jpg',alt:'The onboarding portal: every step a new tutor completes before their first match'},
-   {src:'assets/flow-tutor-app.jpg',alt:'The tutor application flow, from applying to a first match'},
-   {src:'assets/flows.jpg',alt:'The planning board for the onboarding and tutor portal flows'}]},
- portal:{kind:'pan',imgs:[{src:'assets/prev-tutorportal.jpg',alt:'The tutor portal home: students, sessions, tutoring hours and tasks'}]},
- match:{kind:'pan',imgs:[{src:'assets/prev-matchmate.jpg',alt:'The MatchMate dashboard: match by language, LiveScan and preferences (student names blurred)'}]},
+ onboard:{kind:'demo',lookalike:true,chapters:[{id:'apply',label:'Application'},{id:'check',label:'Background check'},{id:'train',label:'Training'},{id:'ready',label:'Ready to match'}]},
+ portal:{kind:'demo',lookalike:true,chapters:[{id:'home',label:'Home'},{id:'messages',label:'Messages'},{id:'updates',label:'Updates'},{id:'tasks',label:'Tasks'}]},
+ match:{kind:'demo',lookalike:true,chapters:[{id:'settings',label:'Settings'},{id:'generate',label:'Generate'},{id:'tables',label:'Students & tutors'}]},
  neat:{kind:'pan',imgs:[{src:'assets/neatfreak-ui.jpg',alt:'Neat Freak tidying open tabs into folders, and its nudge when tabs pile up'},
    {src:'assets/neatfreak-code.jpg',alt:'Part of the Neat Freak source'}]},
  jimmy:{kind:'pan',imgs:[{src:'assets/jimmy.jpg',alt:'Quick Response Plumbing, a website Jimmy AI rebuilt'}]},
@@ -889,22 +890,77 @@ const wsOf=id=>WS[id]||(WS[id]={loaded:false,root:null,chapter:null,running:fals
 const frameOf=id=>secOf(id).querySelector('.wk-frame');
 function walkLoad(id){ const s=wsOf(id); if(s.loaded) return s.ready; s.loaded=true; // fetched only when its section is on screen or next door
   const w=WALK[id], f=frameOf(id);
+  if(w.kind==='demo') return s.ready=new Promise(res=>{ // a classic script, so it also works from file://
+    const done=()=>{ if(window.DEMOS&&DEMOS[id]) mountDemo(id); else walkStill(id); res(); };
+    if(window.DEMOS&&DEMOS[id]) return done();
+    const sc=document.createElement('script'); sc.src=`assets/demos/${id}.js`; sc.onload=done; sc.onerror=()=>{ walkStill(id); res(); }; document.head.appendChild(sc); });
   if(w.kind==='video'){ const v=f.querySelector('video'); v.poster=w.poster; v.src=w.src; }
   if(w.kind==='pan') f.querySelectorAll('img').forEach((im,k)=>{ im.src=w.imgs[k].src; });
   return s.ready=Promise.resolve(); }
 function walkPlay(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=true; f.parentNode.classList.add('run');
   if(reduce) return;
+  if(w.kind==='demo'&&s.root){ if(s.demo.play) s.demo.play(s.root); walkTour(id); }
   if(w.kind==='video') f.querySelector('video').play().catch(()=>{});
   if(w.kind==='scene'){ const svg=f.querySelector('svg'); if(svg&&svg.unpauseAnimations) svg.unpauseAnimations(); }
   if(w.kind==='pan'&&w.imgs.length>1&&!s.xf) s.xf=setInterval(()=>{ const ims=[...f.querySelectorAll('img')], k=ims.findIndex(i=>i.classList.contains('on'));
     ims[k].classList.remove('on'); ims[(k+1)%ims.length].classList.add('on'); },6000); }
 function walkPause(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=false; f.parentNode.classList.remove('run');
   clearInterval(s.xf); s.xf=0;
+  if(w.kind==='demo'){ s.run++; clearTimeout(s.idle); if(s.root){ cursorOff(s); if(s.demo.pause) s.demo.pause(s.root); } }
   if(w.kind==='video') f.querySelector('video').pause();
   if(w.kind==='scene'){ const svg=f.querySelector('svg'); if(svg&&svg.pauseAnimations) svg.pauseAnimations(); } }
-function walkChapter(id,ch,opt){ const w=WALK[id], c=(w.chapters||[]).find(x=>x.id===ch); if(!c) return; wsOf(id).chapter=ch;
+function walkChapter(id,ch,opt){ const w=WALK[id], c=(w.chapters||[]).find(x=>x.id===ch); if(!c) return;
+  if(w.kind==='demo'){ const s=wsOf(id); if(!s.root||!s.demo.chapters.includes(ch)) return; walkShow(id,ch); if(opt&&opt.user) walkTakeover(id); return; }
+  wsOf(id).chapter=ch;
   secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch));
   if(w.kind==='video'&&c.t!=null){ const v=frameOf(id).querySelector('video'); v.currentTime=c.t; } }
+/* ---- look-alikes: a copy of the real app in a shadow root, drawn at laptop size and scaled to fit, with a cursor giving the tour ---- */
+const RESUME_MS=6000, CURSOR_MS=650; // the tour waits this long after the last click or key inside it; one cursor move
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const CURSOR=`<svg viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.4L20.5 11z" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
+function walkStill(id){ const f=frameOf(id); if(f.querySelector('.wk-still')) return; // the demo didn't load: show its screenshot instead
+  const im=new Image(); im.className='wk-still'; im.alt=(byId[id]||{}).name||''; im.src=PREV[id]; f.appendChild(im); }
+function mountDemo(id){ const d=DEMOS[id], s=wsOf(id), f=frameOf(id), [W,H]=WALK[id].size||[1280,800];
+  if(d.fonts&&!document.getElementById('wkf-'+id)){ const st=document.createElement('style'); st.id='wkf-'+id; st.textContent=d.fonts; document.head.appendChild(st); } // fonts must live in the page
+  const host=document.createElement('div'); host.className='wk-demo'; f.appendChild(host);
+  const root=host.attachShadow({mode:'open'});
+  root.innerHTML=`<style>:host{position:absolute;inset:0;overflow:hidden;contain:strict}
+.wk-stage{position:absolute;left:0;top:0;width:${W}px;height:${H}px;transform-origin:0 0;overflow:hidden}
+.wk-cursor{position:absolute;left:0;top:0;width:30px;height:30px;z-index:2147483000;pointer-events:none;opacity:0;transition:transform ${CURSOR_MS}ms cubic-bezier(.45,0,.2,1),opacity .3s}
+.wk-cursor.on{opacity:1}.wk-cursor svg{display:block;width:100%;height:100%;filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+.wk-cursor::after{content:"";position:absolute;left:-12px;top:-12px;width:28px;height:28px;border-radius:50%;background:rgba(70,150,255,.4);opacity:0}
+.wk-cursor.tap::after{animation:wkTap .45s ease-out}@keyframes wkTap{from{transform:scale(.2);opacity:1}to{transform:scale(1.6);opacity:0}}</style>
+<style>${d.css}</style><div class="wk-stage">${d.html}<div class="wk-cursor" aria-hidden="true">${CURSOR}</div></div>`;
+  Object.assign(s,{root,demo:d,host,stage:root.querySelector('.wk-stage'),cursor:root.querySelector('.wk-cursor'),scale:1,cx:W/2,cy:H/2});
+  const fit=()=>{ const k=Math.min(f.clientWidth/W,f.clientHeight/H)||1; s.scale=k; s.stage.style.transform=`translate(${(f.clientWidth-W*k)/2}px,${(f.clientHeight-H*k)/2}px) scale(${k})`; };
+  new ResizeObserver(fit).observe(f); fit(); s.cursor.style.transform=`translate(${s.cx}px,${s.cy}px)`;
+  if(d.init) d.init(root);
+  root.addEventListener('click',e=>{ const g=e.target.closest&&e.target.closest('[data-go]'); if(g) walkChapter(id,g.dataset.go,{user:e.isTrusted}); });
+  ['pointerdown','keydown','focusin'].forEach(ev=>host.addEventListener(ev,()=>walkTakeover(id))); // a visitor takes over
+  walkShow(id,d.chapters[0]);
+  if(s.running) walkPlay(id); }
+function walkShow(id,ch){ const s=WS[id]; s.chapter=ch; s.demo.show(s.root,ch); s.host.dataset.chapter=ch;
+  secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch)); }
+async function walkTour(id){ const s=WS[id], d=s.demo; if(reduce||!d.steps) return; const tok=++s.run, live=()=>s.run===tok&&s.running;
+  clearTimeout(s.idle); let i=Math.max(0,d.chapters.indexOf(s.chapter));
+  while(live()){ walkShow(id,d.chapters[i]);
+    for(const st of d.steps[d.chapters[i]]||[]){ if(!live()) return; await walkStep(s,st,live); }
+    if(!live()) return; i=(i+1)%d.chapters.length; } }
+async function walkStep(s,st,live){
+  if(st.wait) return sleep(st.wait);
+  if(st.run) return st.run(s.root);
+  const el=s.root.querySelector(st.to||st.click||st.in); if(!el) return;
+  await cursorTo(s,el); if(!live()) return;
+  if(st.click){ s.cursor.classList.remove('tap'); void s.cursor.offsetWidth; s.cursor.classList.add('tap'); el.click(); await sleep(300); }
+  if(st.type!=null) for(const c of st.type){ if(!live()) return; el.value+=c; el.dispatchEvent(new Event('input',{bubbles:true})); await sleep(55); } } // never focus: that's a visitor's move
+function cursorTo(s,el){ const r=el.getBoundingClientRect(), sr=s.stage.getBoundingClientRect(), k=s.scale; // measured now, in drawing coordinates, so resizes can't throw it off
+  s.cx=(r.left-sr.left+r.width/2)/k; s.cy=(r.top-sr.top+r.height/2)/k;
+  s.cursor.classList.add('on'); s.cursor.dataset.moving=''; s.cursor.style.transform=`translate(${s.cx-4}px,${s.cy-3}px)`;
+  return sleep(CURSOR_MS).then(()=>{ delete s.cursor.dataset.moving; }); }
+function cursorOff(s){ s.cursor.classList.remove('on'); delete s.cursor.dataset.moving; }
+function walkTakeover(id){ const s=wsOf(id); if(!s.root) return; s.run++; clearTimeout(s.idle); cursorOff(s); // stop, let them drive, pick up again once they've been still a while
+  if(s.running&&!reduce) s.idle=setTimeout(()=>{ if(s.running) walkTour(id); },RESUME_MS); }
+
 function walkSync(id){ const i=TRACKS.findIndex(t=>t.id===id); // the section on screen plays; it and its neighbours load; the rest stay still
   TRACKS.forEach((t,j)=>{ if(!WALK[t.id]) return;
     if(i>=0&&Math.abs(j-i)<=1) walkLoad(t.id);
