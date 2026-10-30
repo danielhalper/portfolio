@@ -943,7 +943,7 @@ function mountDemo(id){ const d=DEMOS[id], s=wsOf(id), f=frameOf(id), [W,H]=d.si
   if(s.running) walkPlay(id); }
 function walkShow(id,ch){ const s=WS[id]; s.chapter=ch; s.demo.show(s.root,ch); s.host.dataset.chapter=ch;
   secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch)); }
-async function walkTour(id){ const s=WS[id], d=s.demo; if(reduce||!d.steps||!d.chapters.length) return; // a board with no chapters animates itself (play/pause) const tok=++s.run, live=()=>s.run===tok&&s.running;
+async function walkTour(id){ const s=WS[id], d=s.demo; if(reduce||!d.steps||!d.chapters.length) return; /* a board with no chapters animates itself (play/pause) */ const tok=++s.run, live=()=>s.run===tok&&s.running;
   clearTimeout(s.idle); let i=Math.max(0,d.chapters.indexOf(s.chapter));
   while(live()){ walkShow(id,d.chapters[i]);
     for(const st of d.steps[d.chapters[i]]||[]){ if(!live()) return; await walkStep(s,st,live); }
