@@ -180,26 +180,31 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .view{position:absolute;inset:0;z-index:20;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
 .view.on{opacity:1;visibility:visible;transition:opacity .5s .1s,visibility 0s}
 .view .ia{pointer-events:auto}
-.dmain{position:absolute;left:var(--railw);right:clamp(56px,7vw,110px);top:70px;bottom:96px;
-  display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
-.card{position:relative;width:100%;max-height:100%;aspect-ratio:4/3;border-radius:16px;border:1px solid rgba(255,255,255,.16);
+.dmain{position:absolute;left:var(--railw);right:clamp(28px,3.4vw,64px);top:70px;bottom:96px;
+  display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:clamp(24px,3.4vw,56px);align-items:center}
+.card{position:relative;width:100%;max-height:100%;border-radius:16px;border:1px solid rgba(255,255,255,.16);
   background:radial-gradient(120% 90% at 50% 0%,#17171c,#09090b);overflow:hidden;justify-self:center;align-self:center}
-.card svg{position:absolute;inset:0;width:100%;height:100%}
+.wk-frame>svg{position:absolute;inset:0;width:100%;height:100%}
 .card .glow{position:absolute;inset:auto -20% -40% -20%;height:70%;background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 22%,transparent),transparent);pointer-events:none}
-/* screenshots first, the animated scene last */
-.slide{position:absolute;inset:16px 16px 42px;margin:0;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
-.slide.on{opacity:1;visibility:visible;transition:opacity .35s}
-.slide.art{inset:0}
-.card.multi .slide.art{inset:0 0 30px}
-.shot{width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:none;cursor:zoom-in}
-.shot img,.shot video{display:block;max-width:100%;max-height:100%;width:auto;height:auto;border-radius:10px;box-shadow:0 0 0 1px rgba(255,255,255,.09),0 18px 40px -12px rgba(0,0,0,.8)}
-.gbar{position:absolute;left:18px;right:10px;bottom:8px;height:26px;display:flex;align-items:center;gap:10px}
-.gcap{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(255,255,255,.6)}
-.gdots{display:flex;margin-left:auto}
-.gd{width:24px;height:24px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
-.gd::before{content:"";width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.35);transition:background .2s,transform .2s}
-.gd.ill::before{border-radius:2px}
-.gd[aria-current="true"]::before{background:var(--a);transform:scale(1.3)}
+/* walkthroughs: one big moving piece per project, with buttons for its parts underneath */
+.wk{display:flex;flex-direction:column;max-width:calc((100vh - 230px)*var(--arv,1.6))}
+.wk-frame{position:relative;flex:none;width:100%;aspect-ratio:var(--ar,16/10);overflow:hidden;background:#09090b}
+.wk-frame>video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.wk-pan img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 1.2s;animation:kb 16s ease-in-out infinite alternate;animation-play-state:paused}
+.wk-pan img.on{opacity:1}
+.wk.run .wk-pan img{animation-play-state:running}
+@keyframes kb{from{transform:scale(1.02) translate(-1%,1%)}to{transform:scale(1.1) translate(1.5%,-1.5%)}}
+.wk-frame:fullscreen{background:#000}
+.wk-bar{position:relative;flex:none;display:flex;align-items:center;gap:10px;height:40px;padding:0 6px 0 10px;border-top:1px solid rgba(255,255,255,.1)}
+.wk-ch{display:flex;gap:6px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+.wk-ch::-webkit-scrollbar{display:none}
+.wk-c{flex:none;background:none;border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 11px;cursor:pointer;color:rgba(255,255,255,.75);font:700 10px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.wk-c:hover{border-color:rgba(255,255,255,.6);color:#fff}
+.wk-c[aria-selected="true"]{border-color:var(--a);color:var(--a)}
+.wk-tag{flex:none;color:rgba(255,255,255,.45)}
+.wk-full{flex:none;width:30px;height:30px;border:0;border-radius:50%;background:none;color:rgba(255,255,255,.7);cursor:pointer;display:grid;place-items:center}
+.wk-full:hover{background:rgba(255,255,255,.1);color:#fff}
+.wk-full svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6}
 /* voice notes: listen button and captions */
 .listen{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:12px 16px;cursor:pointer;
   font:700 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#f2f2f2}
@@ -211,14 +216,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .cc span{color:var(--mint)}
 .cc p{margin:6px 0 0;font:400 clamp(18px,1.8vw,24px)/1.3 var(--serif);color:#fff}
 .cc-on .hint{opacity:0}
-/* lightbox */
-.lb{position:absolute;inset:0;z-index:60;background:rgba(0,0,0,.93);display:flex;align-items:center;justify-content:center;padding:58px 76px 28px;animation:lbin .2s ease-out}
-@keyframes lbin{from{opacity:0}}
-.lb figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:14px;max-width:100%}
-.lb img,.lb video{display:block;max-width:100%;max-height:calc(100vh - 150px);max-height:calc(100dvh - 150px);border-radius:10px;box-shadow:0 0 0 1px rgba(255,255,255,.14)}
-.lb figcaption{color:rgba(255,255,255,.7);text-align:center;max-width:60em}
-.lbx{position:absolute;top:16px;right:16px}
-.lb .arrow{top:50%;bottom:auto;transform:translateY(-50%)}
 /* hover preview on the shelf */
 .pv{flex:none;width:0;height:clamp(58px,5.6vw,80px);border-radius:7px;overflow:hidden;background:#111;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 12px 30px rgba(0,0,0,.6);
   opacity:0;transition:width .25s cubic-bezier(.2,.9,.2,1),margin .25s cubic-bezier(.2,.9,.2,1),opacity .2s}
@@ -239,13 +236,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .cta.soon,.cta.soon:hover{background:none;color:rgba(255,255,255,.8);padding-left:0;padding-right:4px;cursor:default} /* a status, not a link */
 .cta.soon::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--a);box-shadow:0 0 10px var(--a)}
 .built{color:rgba(255,255,255,.42)}
-.arrow{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.45);background:rgba(0,0,0,.5);color:#f2f2f2;cursor:pointer;display:grid;place-items:center}
-.arrow:hover{background:rgba(255,255,255,.12)}
-.arrow[disabled]{opacity:.25;cursor:default}
-.arrow svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
-.arrow.prev{left:14px}.arrow.next{right:14px}
-
 .rbot{position:absolute;left:50%;bottom:calc(100% + 7px);width:clamp(62px,7.5vw,92px);transform:translateX(-50%)}
 .rbot .rbody{animation:rb .28s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
 .rbot .legA{animation:legA .28s linear infinite;transform-box:fill-box;transform-origin:50% 0}
@@ -344,7 +334,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .dmain,.su{position:static;padding:112px 16px 110px}
   .dmain{display:flex;flex-direction:column;gap:12px;align-items:stretch}
   .dtext{order:-1}
-  .card{flex:none;height:min(44vh,360px);width:auto;aspect-ratio:auto;max-height:none;align-self:stretch}
+  .card{flex:none;height:min(44vh,360px);width:auto;max-height:none;max-width:none;align-self:stretch}
+  .wk-frame{flex:1;min-height:0;aspect-ratio:auto}
   .dtext h2{font-size:clamp(46px,13vw,64px)}
   .result{font-size:clamp(22px,6.4vw,28px);margin-top:8px}
   .result::before{margin-bottom:8px;width:34px}
@@ -353,7 +344,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .built{display:none}
   .cta{padding:11px 16px}
   .listen{padding:10px 13px;font-size:10px}
-  .arrow.prev{left:10px}.arrow.next{right:10px}
   .su{justify-content:flex-start}
   .sut{font-size:32px}
   .mets{grid-template-columns:1fr;gap:12px;margin-top:14px}
@@ -365,13 +355,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .hls{font-size:14px;margin-top:14px}
   .suhead{gap:8px 16px}
   .wide{display:none}
-  .slide{inset:10px 10px 34px}
-  .card.multi .slide.art{inset:0 0 26px}
-  .gbar{left:10px;right:6px;bottom:4px}
-  .gcap{display:none}
-  .lb{padding:56px 12px 76px}
-  .lb img{max-height:calc(100vh - 190px);max-height:calc(100dvh - 190px)}
-  .lb .arrow{top:auto;bottom:16px;transform:none}
   .about{left:18px;right:18px;top:60px;bottom:150px;justify-content:flex-start;overflow:auto;overflow-x:hidden}
   .me{left:auto;right:4px;top:2px;width:74px;transform:rotate(5deg)}
   .about h2{font-size:30px;padding-right:82px}
@@ -383,8 +366,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .li em{display:block;margin:6px 0 0}
 }
 @media (prefers-reduced-motion:reduce){
-  .rbot *,.eyes,.bulb,.spinning .reel,.lb,.press::before,.eq i{animation:none!important}
-  .scene,.slide,.slide.on,.pv,.rail.fade .rt{transition:none}
+  .rbot *,.eyes,.bulb,.spinning .reel,.press::before,.eq i,.wk-pan img{animation:none!important}
+  .scene,.wk-pan img,.pv,.rail.fade .rt{transition:none}
 }
 </style>
 </head>
@@ -460,12 +443,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 
   <div class="cc" id="cc" hidden aria-hidden="true"><span class="small">Daniel</span><p id="ccLine"></p></div>
 
-  <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Screenshot" hidden>
-    <figure><img id="lbImg" alt=""><video id="lbVid" muted loop playsinline hidden></video><figcaption class="small" id="lbCap"></figcaption></figure>
-    <button class="pill small lbx" id="lbClose">Close</button>
-    <button class="arrow prev" id="lbPrev" aria-label="Previous screenshot"><svg viewBox="0 0 16 16"><path d="M10 3 5 8l5 5"/></svg></button>
-    <button class="arrow next" id="lbNext" aria-label="Next screenshot"><svg viewBox="0 0 16 16"><path d="m6 3 5 5-5 5"/></svg></button>
-  </div>
 </section>
 </main>
 <script>
@@ -533,172 +510,18 @@ const loop=(vals,kt,dur,attr,extra)=>`<animate attributeName="${attr||'opacity'}
 const mv=(vals,kt,dur)=>`<animateTransform attributeName="transform" type="translate" values="${vals}" keyTimes="${kt}" dur="${dur}s" repeatCount="indefinite" calcMode="spline" keySplines="${kt.split(';').slice(1).map(()=> '.4 0 .2 1').join(';')}"/>`;
 const rot=(from,to,dur,cx,cy)=>`<animateTransform attributeName="transform" type="rotate" from="${from} ${cx} ${cy}" to="${to} ${cx} ${cy}" dur="${dur}s" repeatCount="indefinite"/>`;
 const txt=(x,y,s,c,t,extra)=>`<text x="${x}" y="${y}" font-family="${MONO}" font-size="${s}" fill="${c}" ${extra||''}>${t}</text>`;
-const browser=(x,y,w,h)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="10" fill="#0c0c0f" stroke="${DIM}"/>
-  <circle cx="${x+14}" cy="${y+13}" r="3.5" fill="#ff5f57"/><circle cx="${x+26}" cy="${y+13}" r="3.5" fill="#febc2e"/><circle cx="${x+38}" cy="${y+13}" r="3.5" fill="#28c840"/>
-  <line x1="${x}" y1="${y+26}" x2="${x+w}" y2="${y+26}" stroke="${FAINT}"/>`;
-const bubble=(x,y,w,h,fill,stroke,t,tc,tail)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="${h/2}" fill="${fill}" ${stroke?`stroke="${stroke}"`:''}/>
-  ${tail==='l'?`<path d="M${x+10} ${y+h-2} l-8 8 l14 -4z" fill="${fill}"/>`:tail==='r'?`<path d="M${x+w-10} ${y+h-2} l8 8 l-14 -4z" fill="${fill}"/>`:''}
-  ${txt(x+12,y+h/2+4,11,tc,t)}`;
 const person=(x,y,c,s)=>{ s=s||1; return `<g transform="translate(${x} ${y}) scale(${s})"><circle cx="0" cy="-9" r="4.5" fill="${c}"/><path d="M-7 6 q0 -10 7 -10 q7 0 7 10z" fill="${c}"/></g>`; };
 const gear=(cx,cy,r,c,dur,dir)=>`<g>${rot(0,(dir||1)*360,dur,cx,cy)}<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${c}" stroke-width="${r*.36}" stroke-dasharray="${(r*.42).toFixed(1)} ${(r*.42).toFixed(1)}"/>
   <circle cx="${cx}" cy="${cy}" r="${r*.78}" fill="${c}"/><circle cx="${cx}" cy="${cy}" r="${r*.28}" fill="#0b0b0d"/></g>`;
 
 /* ===== EDIT: ANIMATED SCENES — one looping illustration per project ===== */
-const SCENES={
-neat:a=>{ // messy tabs sort themselves into folders
-  const tabs=[[70,70,-8],[150,96,6],[230,64,-4],[300,92,9],[96,130,5],[190,150,-10],[262,128,4],[130,176,-6],[290,170,7]];
-  const dest=[[78,252],[98,246],[118,252],[178,252],[198,246],[218,252],[278,252],[298,246],[318,252]];
-  return `${browser(36,28,328,186)}
-  ${tabs.map(([x,y,r],i)=>{ const [dx,dy]=dest[i]; const t=(.14+i*.025).toFixed(3), t2=(+t+.3).toFixed(3);
-    return `<g>${mv(`${x} ${y};${x} ${y};${dx-14} ${dy-30};${dx-14} ${dy-30};${x} ${y}`,`0;${t};${t2};.9;1`,6)}
-      <g transform="rotate(${r})"><rect x="0" y="0" width="38" height="16" rx="4" fill="${i%3===0?a:'#2a2a30'}" stroke="${DIM}"/><rect x="6" y="6" width="${14+i%3*4}" height="3" rx="1.5" fill="${i%3===0?'#111':W}" opacity=".7"/></g></g>`; }).join('')}
-  ${[70,170,270].map((x,i)=>`<path d="M${x} 232 h22 l6 6 h32 v38 h-60z" fill="#121216" stroke="${a}" stroke-width="1.5"/>${txt(x+8,266,10,W,['WORK','TRIP','READ'][i])}`).join('')}
-  ${txt(36,22,10,DIM,'47 TABS → 3 FOLDERS')}`; },
-
-jimmy:a=>{ // ugly site gets rebuilt by a scanning AI
-  return `${browser(40,26,320,230)}
-  <g><rect x="52" y="64" width="150" height="34" fill="#39ff14" transform="rotate(-3 120 80)"/>${txt(58,86,15,'#ff00ff','BEST PLUMBR!!!','transform="rotate(-3 120 80)" font-weight="700"')}
-  <rect x="220" y="60" width="120" height="70" fill="#ff00ff" opacity=".7"/><rect x="60" y="112" width="70" height="90" fill="#ffff00" opacity=".6" transform="rotate(4 95 157)"/>
-  <rect x="150" y="150" width="190" height="16" fill="#00ffff" opacity=".5"/><rect x="150" y="176" width="120" height="16" fill="#ff7700" opacity=".5"/>
-  ${txt(150,222,11,'#39ff14','click HERE for qoute','font-weight="700"')}</g>
-  <clipPath id="jc"><rect x="40" y="52" width="320" height="0">${loop('0;0;204;204;0','0;.15;.55;.9;1',5,'height')}</rect></clipPath>
-  <g clip-path="url(#jc)"><rect x="41" y="53" width="318" height="202" fill="#0f0f12"/>
-    <rect x="56" y="64" width="60" height="8" rx="4" fill="${W}"/><rect x="250" y="64" width="26" height="6" rx="3" fill="${DIM}"/><rect x="284" y="64" width="26" height="6" rx="3" fill="${DIM}"/><rect x="318" y="62" width="30" height="12" rx="6" fill="${a}"/>
-    <rect x="56" y="96" width="190" height="16" rx="3" fill="${W}"/><rect x="56" y="118" width="140" height="16" rx="3" fill="${W}"/>
-    <rect x="56" y="144" width="200" height="6" rx="3" fill="${DIM}"/><rect x="56" y="156" width="170" height="6" rx="3" fill="${DIM}"/>
-    <rect x="56" y="174" width="82" height="22" rx="11" fill="${a}"/>${txt(66,189,10,'#111','GET A QUOTE','font-weight="700"')}
-    <rect x="270" y="92" width="76" height="104" rx="8" fill="#1d1d22" stroke="${FAINT}"/><circle cx="308" cy="128" r="16" fill="${a}" opacity=".85"/>
-    ${[56,156,256].map(x=>`<rect x="${x}" y="212" width="90" height="34" rx="6" fill="#1a1a1f" stroke="${FAINT}"/>`).join('')}</g>
-  <line x1="40" x2="360" y1="52" y2="52" stroke="${a}" stroke-width="2.5" filter="url(#glw)">${loop('52;52;256;256;52','0;.15;.55;.9;1',5,'y1')}${loop('52;52;256;256;52','0;.15;.55;.9;1',5,'y2')}${loop('0;1;1;0;0','0;.15;.55;.6;1',5)}</line>
-  <defs><filter id="glw"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
-  ${txt(40,20,10,DIM,'250+ SITES REBUILT BY AI')}`; },
-
-swayzee:a=>{ // persuade the AI from no to yes
-  return `${txt(26,24,10,DIM,'TODAY: PITCH AN AI INVESTOR')}<circle cx="282" cy="108" r="54" fill="#18181c" stroke="${DIM}"/>
-  <g>${loop('0;0;1;1;0','0;.65;.7;.95;1',6)}<path d="M262 96 q6 -8 12 0 M290 96 q6 -8 12 0" stroke="${a}" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M262 120 q20 20 40 0" stroke="${a}" stroke-width="3.5" fill="none" stroke-linecap="round"/></g>
-  <g>${loop('1;1;0;0;1','0;.65;.7;.95;1',6)}<circle cx="268" cy="98" r="4" fill="${W}"/><circle cx="296" cy="98" r="4" fill="${W}"/><path d="M266 126 h32" stroke="${W}" stroke-width="3" stroke-linecap="round"/></g>
-  <path d="M222 238 a60 60 0 0 1 120 0" fill="none" stroke="${FAINT}" stroke-width="10" stroke-linecap="round"/>
-  <path d="M222 238 a60 60 0 0 1 120 0" fill="none" stroke="${a}" stroke-width="10" stroke-linecap="round" stroke-dasharray="190" stroke-dashoffset="190">${loop('190;190;0;0;190','0;.1;.66;.95;1',6,'stroke-dashoffset')}</path>
-  <line x1="282" y1="238" x2="282" y2="190" stroke="${W}" stroke-width="3" stroke-linecap="round"><animateTransform attributeName="transform" type="rotate" values="-70 282 238;-70 282 238;70 282 238;70 282 238;-70 282 238" keyTimes="0;.1;.66;.95;1" dur="6s" repeatCount="indefinite"/></line>
-  ${txt(212,258,10,DIM,'NO')}${txt(334,258,10,a,'YES')}
-  <g>${loop('0;1;1;0','0;.06;.92;1',6)}${bubble(26,52,150,30,'#2a2a30','','Hear me out…','#fff','r')}</g>
-  <g>${loop('0;0;1;1;0','0;.25;.3;.92;1',6)}${bubble(40,100,150,30,'#2a2a30','','What if it’s free?','#fff','r')}</g>
-  <g>${loop('0;0;1;1;0','0;.45;.5;.92;1',6)}${bubble(26,148,150,30,'#2a2a30','','…and it’s fun?','#fff','r')}</g>
-  <g>${loop('0;0;1;1;0','0;.7;.74;.95;1',6)}${bubble(250,26,70,28,a,'','YES!','#fff','')}</g>`; },
-
-kyron:a=>{ // a video lesson that talks back
-  return `<rect x="30" y="30" width="250" height="170" rx="12" fill="#101014" stroke="${DIM}"/>
-  ${person(155,130,a,3.2)}
-  <rect x="44" y="182" width="222" height="4" rx="2" fill="${FAINT}"/><rect x="44" y="182" width="0" height="4" rx="2" fill="${a}">${loop('0;222','0;1',8,'width')}</rect>
-  <path d="M44 166 l10 6 l-10 6z" fill="${W}"/>
-  <g>${loop('0;0;1;1;0','0;.15;.2;.9;1',8)}${bubble(216,214,150,32,W,'','Wait, why?','#111','r')}</g>
-  <g>${loop('0;0;1;1;0','0;.42;.47;.9;1',8)}${bubble(40,226,170,32,a,'','Great question!','#0d2b6b','l')}</g>
-  ${txt(30,22,10,DIM,'VIDEO LESSONS THAT TALK BACK')}`; },
-
-hero:a=>{ // anonymous AI chats stacking up
-  const msgs=[[0,'l','Who’d win: 100 ducks…'],[1,'r','Great debate. Here’s…'],[2,'l','Explain black holes'],[3,'r','Imagine a drain…'],[4,'l','Rate my excuse']];
-  return `<rect x="130" y="16" width="140" height="268" rx="22" fill="#0e0e12" stroke="${DIM}"/><rect x="180" y="24" width="40" height="6" rx="3" fill="${FAINT}"/>
-  ${txt(150,52,10,W,'HERO CHAT','font-weight="700"')}${txt(150,64,8,DIM,'ANONYMOUS FEED')}
-  ${msgs.map(([i,s,t])=>{ const k=(.08+i*.15).toFixed(2); const y=78+i*40; const x=s==='l'?140:160;
-    return `<g>${loop('0;0;1;1;0',`0;${k};${(+k+.04).toFixed(2)};.92;1`,7)}<rect x="${x}" y="${y}" width="100" height="30" rx="10" fill="${s==='l'?'#26262c':a}"/>${txt(x+8,y+19,7.5,s==='l'?W:'#2a0016',t)}</g>`; }).join('')}
-  ${txt(286,120,22,a,'★★★★★')}${txt(292,144,11,W,'500+ REVIEWS')}`; },
-
-tfw:a=>{ // a hand of party cards
-  const cols=['#2a2a30','#f5c518','#e63946','#2a2a30',a];
-  return `${cols.map((c,i)=>{ const ang=(i-2)*13; return `<g><animateTransform attributeName="transform" type="rotate" values="0 200 270;0 200 270;${ang} 200 270;${ang} 200 270;0 200 270" keyTimes="0;.1;.35;.9;1" dur="6s" repeatCount="indefinite" calcMode="spline" keySplines=".4 0 .2 1;.4 0 .2 1;.4 0 .2 1;.4 0 .2 1"/>
-    <rect x="140" y="70" width="120" height="170" rx="12" fill="${c}" stroke="${W}" stroke-opacity=".5"/>
-    ${i===4?`${txt(156,112,30,'#111','TFW','font-weight="700"')}${txt(156,140,10,'#111','your phone')}${txt(156,154,10,'#111','hits 1%')}${txt(156,226,8,'#111','THAT FEELING WHEN')}`:''}</g>`; }).join('')}
-  ${txt(20,24,10,DIM,'IN PRINT + ONLINE')}`; },
-
-quikstik:a=>{ // sensor handles counting reps
-  return `${[[90,140,-25],[180,150,25]].map(([x,y,r],i)=>`<g transform="rotate(${r} ${x} ${y})">
-    <rect x="${x-12}" y="${y-60}" width="24" height="120" rx="12" fill="#1c1c22" stroke="${a}" stroke-width="2"/><rect x="${x-6}" y="${y-30}" width="12" height="60" rx="6" fill="${a}" opacity=".35"/></g>
-    <circle cx="${x}" cy="${y}" r="10" fill="none" stroke="${a}" stroke-width="2">${loop('10;46','0;1',1.6,'r',`begin="${i*.8}s"`)}${loop('.9;0','0;1',1.6,'opacity',`begin="${i*.8}s"`)}</circle>`).join('')}
-  <rect x="262" y="60" width="100" height="180" rx="16" fill="#0e0e12" stroke="${DIM}"/>
-  ${txt(278,92,9,DIM,'REPS')}
-  ${Array.from({length:10},(_,i)=>`<rect x="${278+(i%5)*14}" y="${110+Math.floor(i/5)*16}" width="10" height="10" rx="2" fill="${a}" opacity="0">${loop('0;0;1;1;0',`0;${(.05+i*.08).toFixed(2)};${(.07+i*.08).toFixed(2)};.95;1`,8)}</rect>`).join('')}
-  ${txt(278,180,30,W,'10','font-weight="700"')}${txt(278,206,9,a,'NICE WORK')}
-  ${txt(20,24,10,DIM,'PITCHED TO IKEA')}`; },
-
-bills:a=>{ // a stranger pays an overdue bill
-  return `<rect x="110" y="40" width="180" height="220" rx="8" fill="#efe9dc"/>
-  ${txt(128,72,12,'#111','ELECTRIC BILL','font-weight="700"')}<line x1="128" y1="84" x2="272" y2="84" stroke="#111" stroke-opacity=".3"/>
-  ${[100,116,132,148].map(y=>`<rect x="128" y="${y}" width="${90+y%40}" height="5" rx="2" fill="#111" opacity=".25"/>`).join('')}
-  ${txt(128,190,26,'#111','$86.40','font-weight="700"')}
-  <g>${loop('1;1;0;0;1','0;.5;.52;.95;1',6)}${txt(128,224,13,'#c62828','OVERDUE','font-weight="700"')}</g>
-  <g>${mv('200 -40;200 -40;200 150;200 150;200 -40','0;.15;.45;.5;1',6)}${loop('1;1;1;0;0','0;.15;.47;.5;1',6)}<path d="M0 6 C-14 -10 -26 4 0 22 C26 4 14 -10 0 6Z" fill="#ff5c8a"/></g>
-  <g>${loop('0;0;1;1;0','0;.5;.52;.95;1',6)}<g transform="rotate(-12 200 214)"><rect x="132" y="190" width="136" height="48" rx="6" fill="none" stroke="${a}" stroke-width="4"/>${txt(152,226,30,a,'PAID','font-weight="700"')}</g></g>
-  ${txt(20,24,10,DIM,'A STRANGER PAID IT')}`; },
-
-troops:a=>{ // campus delivery route
-  const path="M80 230 L80 170 L180 170 L180 100 L300 100 L300 60";
-  return `${[60,120,180,240,300,360].map(x=>`<line x1="${x}" y1="30" x2="${x}" y2="270" stroke="${FAINT}"/>`).join('')}${[50,100,150,200,250].map(y=>`<line x1="20" y1="${y}" x2="380" y2="${y}" stroke="${FAINT}"/>`).join('')}
-  ${[[96,186,60,40],[196,114,80,40],[310,140,50,80],[40,40,60,60],[220,190,90,50]].map(([x,y,w,h])=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="4" fill="#17171b" stroke="${DIM}"/>`).join('')}
-  <path d="${path}" fill="none" stroke="${a}" stroke-width="3" stroke-dasharray="6 7"/>
-  <circle r="9" fill="${a}"><animateMotion dur="4s" repeatCount="indefinite" path="${path}"/></circle>
-  <path d="M80 236 l-8 -14 a9 9 0 1 1 16 0z" fill="${W}"/>${txt(56,258,9,W,'DORM')}
-  <path d="M300 66 l-8 -14 a9 9 0 1 1 16 0z" fill="${a}"/>${txt(318,62,9,W,'SNACKS')}
-  ${txt(20,24,10,DIM,'BY STUDENTS, FOR STUDENTS')}`; },
-
+const SCENES={ // only the contact tape keeps a drawing; every project shows its real work
 contact:a=>{ // an envelope with your idea in it
   return `<rect x="90" y="110" width="220" height="140" rx="8" fill="#17171b" stroke="${DIM}"/>
   <g>${mv('0 40;0 40;0 -30;0 -30;0 40','0;.15;.45;.85;1',5)}<rect x="110" y="90" width="180" height="120" rx="6" fill="#efe9dc"/>
     ${txt(126,122,14,'#111','Your idea here','font-family="Permanent Marker, cursive"')}<rect x="126" y="138" width="130" height="5" rx="2" fill="#111" opacity=".2"/><rect x="126" y="152" width="100" height="5" rx="2" fill="#111" opacity=".2"/></g>
   <path d="M90 140 L200 200 L310 140 L310 250 L90 250Z" fill="#1f1f25" stroke="${DIM}"/>
   <path d="M200 40 l4 10 l10 4 l-10 4 l-4 10 l-4 -10 l-10 -4 l10 -4z" fill="${a}">${loop('.2;1;.2','0;.5;1',2)}</path>`; },
-
-/* --- Step Up --- */
-stepup0:a=>{ // a tutor and a student over a book
-  return `<rect x="70" y="200" width="260" height="14" rx="7" fill="#26262c"/>
-  ${person(140,182,W,3.4)}${person(262,186,a,2.8)}
-  <path d="M168 196 L200 188 L232 196 L232 204 L200 198 L168 204Z" fill="${a}"/><path d="M200 188 L200 198" stroke="#111"/>
-  ${[0,1,2].map(i=>`<path d="M${180+i*22} ${110-i*14} l3 8 l8 3 l-8 3 l-3 8 l-3 -8 l-8 -3 l8 -3z" fill="${a}">${loop('.15;1;.15','0;.5;1',2,'opacity',`begin="${i*.5}s"`)}</path>`).join('')}
-  ${txt(70,250,10,DIM,'ONE-ON-ONE TUTORING · LA')}`; },
-stepup1:a=>{ // thousands of people
-  let s=''; const cols=16, rows=7;
-  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){ const i=r*cols+c, k=(.02+i/(cols*rows)*.4).toFixed(3);
-    s+=`<g opacity="0">${loop('0;0;1;1;0',`0;${k};${(+k+.03).toFixed(3)};.94;1`,6)}${person(36+c*22,62+r*30,(i%9===0)?a:W,1)}</g>`; }
-  return s; },
-stepup2:a=>{ // hours on the clock
-  return `<circle cx="200" cy="150" r="104" fill="#121216" stroke="${DIM}" stroke-width="2"/>
-  ${Array.from({length:12},(_,i)=>{ const an=i/12*Math.PI*2; return `<line x1="${200+Math.sin(an)*90}" y1="${150-Math.cos(an)*90}" x2="${200+Math.sin(an)*98}" y2="${150-Math.cos(an)*98}" stroke="${W}" stroke-width="${i%3?1.5:3}"/>`; }).join('')}
-  <line x1="200" y1="150" x2="200" y2="90" stroke="${W}" stroke-width="5" stroke-linecap="round">${rot(0,360,6,200,150)}</line>
-  <line x1="200" y1="150" x2="200" y2="68" stroke="${a}" stroke-width="3" stroke-linecap="round">${rot(0,360,.5,200,150)}</line>
-  <circle cx="200" cy="150" r="7" fill="${a}"/>`; },
-stepup3:a=>{ // automations flowing
-  return `${gear(150,140,46,a,6,1)}${gear(228,96,30,W,4,-1)}${gear(236,190,26,DIM,3.4,-1)}
-  ${Array.from({length:6},(_,i)=>`<path d="M-8 -6 L4 0 L-8 6Z" fill="${a}"><animateMotion dur="2.4s" begin="${i*.4}s" repeatCount="indefinite" path="M20 260 C120 260 140 230 200 230 S300 250 390 240" rotate="auto"/></path>`).join('')}
-  ${txt(20,24,10,DIM,'EVERY MONTH')}`; },
-
-sidekick:a=>{ // a whisper in the tutor's ear
-  return `${person(130,190,W,3.6)}${person(290,196,DIM,3)}
-  <g>${loop('0;0;1;1;0','0;.15;.22;.9;1',6)}${bubble(150,56,190,30,'#f5c518','','Try: “Why do you think?”','#111','l')}</g>
-  <circle cx="132" cy="70" r="16" fill="#f5c518">${loop('.35;1;.35','0;.5;1',2)}</circle><rect x="126" y="86" width="12" height="8" rx="2" fill="${W}"/>
-  ${txt(20,24,10,DIM,'A COACH IN EVERY SESSION')}`; },
-engine:a=>{ // work flowing through automation
-  const path="M60 150 L340 150";
-  return `${[[30,'FORM'],[160,'AGENT'],[290,'DONE']].map(([x,t],i)=>`<rect x="${x}" y="120" width="80" height="60" rx="10" fill="#141418" stroke="${i===1?a:DIM}" stroke-width="${i===1?2:1}"/>${txt(x+14,156,11,i===1?a:W,t)}`).join('')}
-  ${gear(200,74,22,a,3,1)}
-  ${Array.from({length:5},(_,i)=>`<circle r="5" fill="${a}"><animateMotion dur="2.5s" begin="${i*.5}s" repeatCount="indefinite" path="${path}"/></circle>`).join('')}
-  ${txt(30,230,10,DIM,'100+ WORKFLOWS ON AUTOPILOT')}`; },
-onboard:a=>{ // applicant journey
-  const xs=[60,150,240,330], lab=['APPLY','CHECK','TRAIN','MATCH'];
-  return `<line x1="60" y1="150" x2="330" y2="150" stroke="${FAINT}" stroke-width="4"/>
-  <line x1="60" y1="150" x2="60" y2="150" stroke="${a}" stroke-width="4">${loop('60;330;330;60','0;.7;.95;1',5,'x2')}</line>
-  ${xs.map((x,i)=>`<circle cx="${x}" cy="150" r="14" fill="#141418" stroke="${W}" stroke-width="2"><animate attributeName="fill" values="#141418;#141418;${a};${a};#141418" keyTimes="0;${(i*.23).toFixed(2)};${(i*.23+.02).toFixed(2)};.95;1" dur="5s" repeatCount="indefinite"/></circle>${txt(x-20,186,10,W,lab[i])}`).join('')}
-  ${txt(60,100,26,W,'100,000+ people','font-weight="700"')}`; },
-portal:a=>{ // schedule + translated messages
-  let s=''; for(let r=0;r<4;r++) for(let c=0;c<7;c++){ const i=r*7+c, on=[2,9,11,16,20,24].includes(i);
-    s+=`<rect x="${40+c*28}" y="${70+r*28}" width="22" height="22" rx="4" fill="${on?a:'#1a1a1f'}" ${on?'opacity="0"':''}>${on?loop('0;0;1;1;0',`0;${(.1+i*.02).toFixed(2)};${(.12+i*.02).toFixed(2)};.92;1`,6):''}</rect>`; }
-  return `${s}${txt(40,56,10,DIM,'THIS WEEK')}
-  <g>${loop('1;1;0;0;1','0;.45;.5;.95;1',6)}${bubble(250,100,110,30,'#2a2a30','','Hola, ¿mañana?','#fff','l')}</g>
-  <g>${loop('0;0;1;1;0','0;.45;.5;.95;1',6)}${bubble(250,100,110,30,a,'','Hi, tomorrow?','#111','l')}</g>
-  ${txt(250,150,9,DIM,'AUTO-TRANSLATED')}`; },
-match:a=>{ // students paired with tutors
-  const L=[70,110,150,190,230], R=[90,130,170,210,250], order=[2,0,4,1,3];
-  return `${txt(46,50,10,DIM,'STUDENTS')}${txt(290,50,10,DIM,'TUTORS')}
-  ${L.map(y=>person(70,y+8,W,1.3)).join('')}${R.map(y=>person(330,y-12,a,1.3)).join('')}
-  ${L.map((y,i)=>{ const ry=R[order[i]]-20, k=(.1+i*.14).toFixed(2); return `<line x1="84" y1="${y}" x2="316" y2="${ry}" stroke="${a}" stroke-width="2" stroke-dasharray="240" stroke-dashoffset="240">${loop('240;240;0;0;240',`0;${k};${(+k+.12).toFixed(2)};.94;1`,6,'stroke-dashoffset')}</line>`; }).join('')}`; }
 };
 function sceneSVG(id,a){ const f=SCENES[id]; return `<svg viewBox="0 0 400 300" role="img" aria-hidden="true">${f?f(a):''}</svg>`; }
 
@@ -714,33 +537,36 @@ const STEP=[
  {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Schedule, resources, announcements and events in one place",tags:["Scheduling","Translation","Resources"],link:CASE,linkLabel:"Case study"},
  {id:"match",name:"MatchMate",result:"**1,000s** of matches automated",what:"Pairs every student with the right tutor",tags:["Matching","AI ranking","Scale"],link:MORE,linkLabel:"See it"}
 ].map((t,i)=>Object.assign(t,{style:'gold',c1:'#f5c518',c2:['#7cffc4','#9ad1f5','#f2a7c3','#f2f2f2','#f08a24'][i],c3:'#111',ink2:'#111',year:'Step Up',role:'Inside Step Up',step:true}));
-/* ===== EDIT: SCREENSHOTS — real images for each project, shown before the animated scene =====
-   One list per project id, best image first (it's also the shelf preview and the Step Up tab).
-   src is relative to index.html; alt says what's in the shot and doubles as its caption.
-   Add video:'assets/x.mp4' to play a silent loop in place of the image (src becomes its still).
-   Blur names and personal details before adding a new image. */
-const SHOTS={
- neat:[{src:'assets/neatfreak-ui.jpg',alt:'Neat Freak tidying open tabs into folders, and its nudge when tabs pile up'},
-       {src:'assets/neatfreak-code.jpg',alt:'Part of the Neat Freak source'}],
- jimmy:[{src:'assets/jimmy.jpg',alt:'Quick Response Plumbing, a website Jimmy AI rebuilt'}],
- swayzee:[{src:'assets/swayzee-phone.jpg',video:'assets/swayzee-phone.mp4',alt:'The Swayzee prototype on a phone: this week’s challenge, the investor’s profile, then the live five-minute call'},
-          {src:'assets/swayzee-prototype.jpg',alt:'The Swayzee prototype: this week’s challenge, pitching an AI investor, and the live five-minute call'}],
- kyron:[{src:'assets/kyron.jpg',alt:'A Kyron Learning practice problem with the AI tutor panel'}],
- hero:[{src:'assets/prev-hero-chat.jpg',alt:'Hero Chat on a laptop'}],
- tfw:[{src:'assets/prev-tfw.jpg',alt:'The online version of That Feeling When'}],
- quikstik:[{src:'assets/prev-quikstik.jpg',alt:'The Quikstik handles'}],
- bills:[{src:'assets/prev-essential-bills.jpg',alt:'Essential Bills on a phone'}],
- troops:[{src:'assets/prev-troops.jpg',alt:'The Troops app on a phone'}],
- sidekick:[{src:'assets/sidekick-clean.jpg',alt:'Sidekick in a live session: scaffolded practice problems beside the shared whiteboard'}],
- engine:[{src:'assets/engine-collage.jpg',alt:'An automated tutor application flow, the work tracker and the weekly AI team summary'},
-         {src:'assets/auditor.jpg',alt:'The workflow auditor: observe the team’s tasks, detect repetitive work, propose automations ranked by hours saved'},
-         {src:'assets/stepup-ops.jpg',alt:'The Airtable ops base and some of the Zapier automations that run on it'}],
- onboard:[{src:'assets/prev-onboarding.jpg',alt:'The onboarding portal: every step a new tutor completes before their first match'},
-          {src:'assets/flow-tutor-app.jpg',alt:'The tutor application flow, from applying to a first match'},
-          {src:'assets/flows.jpg',alt:'The planning board for the onboarding and tutor portal flows'}],
- portal:[{src:'assets/prev-tutorportal.jpg',alt:'The tutor portal home: students, sessions, tutoring hours and tasks'}],
- match:[{src:'assets/prev-matchmate.jpg',alt:'The MatchMate dashboard: match by language, LiveScan and preferences (student names blurred)'}]
+/* ===== EDIT: WALKTHROUGHS — the one moving piece each project shows =====
+   kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
+   or 'demo' (a clickable look-alike in assets/demos/<id>.js). aspect: the frame's shape.
+   chapters: buttons under it, {id,label}, plus t (seconds) for a video. lookalike: adds the "Demo · sample data" label. */
+const WALK={
+ sidekick:{kind:'pan',imgs:[{src:'assets/sidekick-clean.jpg',alt:'Sidekick in a live session: scaffolded practice problems beside the shared whiteboard'}]},
+ engine:{kind:'pan',imgs:[{src:'assets/engine-collage.jpg',alt:'An automated tutor application flow, the work tracker and the weekly AI team summary'},
+   {src:'assets/auditor.jpg',alt:'The workflow auditor: observe the team’s tasks, detect repetitive work, propose automations ranked by hours saved'},
+   {src:'assets/stepup-ops.jpg',alt:'The Airtable ops base and some of the Zapier automations that run on it'}]},
+ onboard:{kind:'pan',imgs:[{src:'assets/prev-onboarding.jpg',alt:'The onboarding portal: every step a new tutor completes before their first match'},
+   {src:'assets/flow-tutor-app.jpg',alt:'The tutor application flow, from applying to a first match'},
+   {src:'assets/flows.jpg',alt:'The planning board for the onboarding and tutor portal flows'}]},
+ portal:{kind:'pan',imgs:[{src:'assets/prev-tutorportal.jpg',alt:'The tutor portal home: students, sessions, tutoring hours and tasks'}]},
+ match:{kind:'pan',imgs:[{src:'assets/prev-matchmate.jpg',alt:'The MatchMate dashboard: match by language, LiveScan and preferences (student names blurred)'}]},
+ neat:{kind:'pan',imgs:[{src:'assets/neatfreak-ui.jpg',alt:'Neat Freak tidying open tabs into folders, and its nudge when tabs pile up'},
+   {src:'assets/neatfreak-code.jpg',alt:'Part of the Neat Freak source'}]},
+ jimmy:{kind:'pan',imgs:[{src:'assets/jimmy.jpg',alt:'Quick Response Plumbing, a website Jimmy AI rebuilt'}]},
+ swayzee:{kind:'video',aspect:'4/3',src:'assets/swayzee-phone.mp4',poster:'assets/swayzee-phone.jpg',alt:'The Swayzee prototype on a phone: this week’s challenge, the investor’s profile, then the live five-minute call'},
+ kyron:{kind:'pan',imgs:[{src:'assets/kyron.jpg',alt:'A Kyron Learning practice problem with the AI tutor panel'}]},
+ hero:{kind:'pan',imgs:[{src:'assets/prev-hero-chat.jpg',alt:'Hero Chat on a laptop'}]},
+ tfw:{kind:'pan',imgs:[{src:'assets/prev-tfw.jpg',alt:'The online version of That Feeling When'}]},
+ quikstik:{kind:'pan',imgs:[{src:'assets/prev-quikstik.jpg',alt:'The Quikstik handles'}]},
+ bills:{kind:'pan',imgs:[{src:'assets/prev-essential-bills.jpg',alt:'Essential Bills on a phone'}]},
+ troops:{kind:'pan',imgs:[{src:'assets/prev-troops.jpg',alt:'The Troops app on a phone'}]},
+ contact:{kind:'scene'}
 };
+// the small preview beside a hovered tape (the box set shows Sidekick's)
+const PREV={sidekick:'assets/sidekick-clean.jpg',engine:'assets/engine-collage.jpg',onboard:'assets/prev-onboarding.jpg',portal:'assets/prev-tutorportal.jpg',
+  match:'assets/prev-matchmate.jpg',neat:'assets/neatfreak-ui.jpg',jimmy:'assets/jimmy.jpg',swayzee:'assets/swayzee-phone.jpg',kyron:'assets/kyron.jpg',
+  hero:'assets/prev-hero-chat.jpg',tfw:'assets/prev-tfw.jpg',quikstik:'assets/prev-quikstik.jpg',bills:'assets/prev-essential-bills.jpg',troops:'assets/prev-troops.jpg'};
 const md=x=>String(x).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');
 const plain=x=>String(x).replace(/\*\*/g,'');
 const byId=Object.fromEntries([...SHELF,...STEP].map(t=>[t.id,t]));
@@ -794,8 +620,8 @@ const botFlip=bot.firstElementChild;
 function showHint(i){
   const pv=$('pv');
   if(i<0){ $('hintT').innerHTML='&nbsp;'; $('hintS').textContent='Each tape is a project'; pv.classList.remove('on'); return; }
-  const it=ITEMS[i], sh=SHOTS[it.box?'sidekick':it.id];
-  if(sh){ const img=pv.firstElementChild; if(img.getAttribute('src')!==sh[0].src) img.src=sh[0].src; pv.classList.add('on'); } else pv.classList.remove('on');
+  const it=ITEMS[i], src=PREV[it.box?'sidekick':it.id];
+  if(src){ const img=pv.firstElementChild; if(img.getAttribute('src')!==src) img.src=src; pv.classList.add('on'); } else pv.classList.remove('on');
   if(it.box){ $('hintT').textContent='Step Up Tutoring'; $('hintS').textContent='The big one · home of Sidekick, our AI coach'; }
   else { $('hintT').textContent=it.contact?'Your track here':it.name; $('hintS').textContent=it.contact?'Get in touch':`${it.year} · ${plain(it.result)}`; }
 }
@@ -924,14 +750,10 @@ function setHash(h){ try{ history.replaceState(null,'',h||location.pathname+loca
 let target=null, targetT=0; // while go() scrolls somewhere, the sections it passes on the way don't count
 function setActive(id){ if(id===active) return; active=id;
   if(view!=='about') setHash(routeOf(id));
-  const secs=[...document.querySelectorAll('#scroller .sec')], i=secs.indexOf(secOf(id));
-  secs.forEach((sec,j)=>{ // only the section on screen plays its video; scenes run there and next door
-    const k=[...sec.querySelectorAll('.slide')].findIndex(s=>s.classList.contains('on'));
-    if(j===i&&k>=0) showSlide(sec,k); else sec.querySelectorAll('video').forEach(v=>v.pause());
-    const svg=sec.querySelector('.slide.art svg'); if(svg&&!reduce&&svg.pauseAnimations) Math.abs(j-i)<=1 ? svg.unpauseAnimations() : svg.pauseAnimations(); });
+  walkSync(id); // only the section on screen moves; it and its neighbours load
   if(id==='stepup') landStep();
   syncInert(); onActive.forEach(f=>f(id)); }
-function go(route,opt){ opt=opt||{}; closeLB(true);
+function go(route,opt){ opt=opt||{};
   let [v,arg]=route.split('/'); if(v==='list') v='about';
   if(v==='about'){ openAbout(); return; }
   if(view==='about') closeAbout();
@@ -961,7 +783,6 @@ document.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{ e.preventDefaul
 $('listBtn').onclick=()=>view==='about'?closeAbout():go('about');
 $('contactBtn').onclick=()=>go('t/contact',{focus:true});
 window.addEventListener('keydown',e=>{
-  if(lbK>=0){ if(e.key==='Escape') closeLB(); if(e.key==='ArrowRight') lbShow(lbK+1); if(e.key==='ArrowLeft') lbShow(lbK-1); return; }
   if(e.key==='Escape'&&view==='about') closeAbout();
   // scroll keys move the page even when focus is outside it (on load, or on a header button)
   const k=SCROLL_KEYS[e.key]; if(view==='about'||k===undefined||e.altKey||e.ctrlKey||e.metaKey) return;
@@ -970,31 +791,27 @@ window.addEventListener('keydown',e=>{
   e.preventDefault(); grab(); const sc=$('scroller'); sc.scrollBy({top:k*sc.clientHeight*(e.shiftKey&&e.key===' '?-1:1),behavior:reduce?'auto':'smooth'});
 });
 const SCROLL_KEYS={PageDown:.9,PageUp:-.9,' ':.9,ArrowDown:.12,ArrowUp:-.12,Home:-1e3,End:1e3};
-// swipe through screenshots in the lightbox
-let sx0=null; stage.addEventListener('pointerdown',e=>{ if(e.pointerType==='touch') sx0=[e.clientX,e.clientY]; });
-stage.addEventListener('pointerup',e=>{ if(!sx0) return; const dx=e.clientX-sx0[0], dy=e.clientY-sx0[1]; sx0=null;
-  if(lbK>=0&&Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5) lbShow(lbK+(dx<0?1:-1)); });
-
 function reveal(els){ if(reduce) return; els.forEach((el,k)=>el&&el.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:520,delay:120+k*90,easing:'cubic-bezier(.2,.9,.2,1)',fill:'backwards'})); }
 function pauseSVG(card){ const s=card.querySelector('svg'); if(s&&reduce&&s.pauseAnimations){ try{ s.setCurrentTime(3.2); s.pauseAnimations(); }catch(e){} } }
 
 /* ================= project sections ================= */
 function sectionHTML(t){
-  const a=ACC[t.id]||t.c1, sh=SHOTS[t.id]||[], isC=!!t.contact;
+  const isC=!!t.contact;
   const kick = isC ? 'The next track' : t.step ? (t===STEP[0] ? 'Inside Step Up · Flagship' : 'Inside Step Up') : `${t.year} · ${t.role}`;
   const link = t.link ? `<a class="cta" href="${t.link}" ${isC?'':'target="_blank" rel="noopener"'}>${t.linkLabel} <span aria-hidden="true">↗</span></a>` : `<span class="cta soon">${t.linkLabel}</span>`;
   const more = isC ? '<a class="small" href="https://linkedin.com/in/daniel-halper" target="_blank" rel="noopener">LinkedIn</a><a class="small" href="https://github.com/danielhalper" target="_blank" rel="noopener">GitHub</a>' : `<span class="small built">${t.tags.join(' · ')}</span>`;
-  return `<div class="dmain"><div class="card${sh.length?' multi':''}"><div class="glow"></div>${galleryHTML(t,a)}</div>
+  return `<div class="dmain">${walkHTML(t)}
     <div class="dtext"><div class="kick">${kick}</div><h2>${t.name}</h2><div class="result">${md(t.result)}</div><div class="what">${md(t.what)}</div>
     <div class="acts">${link}${NOTES[t.id]?listenBtn(t.id):''}${more}</div></div></div>`;
 }
 $('secs').innerHTML=TRACKS.slice(1).map(t=>`<section class="sec" id="s-${t.id}" aria-label="${t.contact?'Contact':t.name}" style="--a:${ACC[t.id]||t.c1}">${sectionHTML(t)}</section>`).join('');
 $('sListenWrap').innerHTML=listenBtn('stepup');
-document.querySelectorAll('#secs .card').forEach(pauseSVG);
-$('scroller').addEventListener('click',e=>{ // galleries, screenshots and listen buttons, in whichever section they sit
+document.querySelectorAll('#secs .wk-frame>svg').forEach(s=>{ if(s.pauseAnimations) s.pauseAnimations(); pauseSVG(s.parentNode); }); // drawings move only on screen
+if(!document.fullscreenEnabled) document.querySelectorAll('.wk-full').forEach(b=>b.hidden=true);
+$('scroller').addEventListener('click',e=>{ // walkthrough buttons and listen buttons, in whichever section they sit
   const sec=e.target.closest('.sec'); if(!sec) return;
-  const d=e.target.closest('.gd'), sh=e.target.closest('.shot'), l=e.target.closest('.listen');
-  if(d) showSlide(sec,+d.dataset.k); else if(sh) openLB(byId[sec.id.slice(2)],+sh.dataset.k); else if(l) toggleListen(l.dataset.note);
+  const c=e.target.closest('.wk-c'), f=e.target.closest('.wk-full'), l=e.target.closest('.listen');
+  if(c) walkChapter(sec.id.slice(2),c.dataset.ch,{user:true}); else if(f) walkFull(sec.id.slice(2)); else if(l) toggleListen(l.dataset.note);
 });
 syncListen();
 
@@ -1011,8 +828,8 @@ function buildRail(){
 }
 function railPv(a){ // the little preview card beside a hovered tape
   const pv=$('rpv'); if(!a){ pv.classList.remove('on'); return; }
-  const t=a.dataset.id==='stepup'?TRACKS[0]:byId[a.dataset.id], sh=SHOTS[t.box?'sidekick':t.id], img=pv.querySelector('img');
-  img.hidden=!sh; if(sh&&img.getAttribute('src')!==sh[0].src) img.src=sh[0].src;
+  const t=a.dataset.id==='stepup'?TRACKS[0]:byId[a.dataset.id], src=PREV[t.box?'sidekick':t.id], img=pv.querySelector('img');
+  img.hidden=!src; if(src&&img.getAttribute('src')!==src) img.src=src;
   pv.querySelector('b').textContent=t.name; pv.querySelector('em').textContent=t.box?'The big one · home of Sidekick, our AI coach':plain(t.result);
   const r=a.getBoundingClientRect(), sr=stage.getBoundingClientRect();
   pv.style.left=(r.left-sr.left+r.width*1.45+18)+'px'; pv.style.top=clamp(r.top-sr.top-8,8,sr.height-pv.offsetHeight-8)+'px'; pv.classList.add('on'); }
@@ -1057,34 +874,43 @@ onActive.push(id=>{
   const a=$('rail').querySelector(`.rt[data-id="${id}"]`); if(a&&phone.matches) $('rail').scrollTo({left:a.offsetLeft-$('rail').clientWidth/2+a.offsetWidth/2,behavior:reduce?'auto':'smooth'}); });
 stage.classList.add('onshelf');
 
-/* ================= gallery + lightbox ================= */
-function galleryHTML(t,a){ // screenshots first, the animated scene last
-  const sh=SHOTS[t.id]||[], n=sh.length+1;
-  const media=s=>s.video ? `<video src="${s.video}" poster="${s.src}" muted loop playsinline preload="none" aria-label="${s.alt}"></video>` // fetched when its section comes on screen
-    : `<img src="${s.src}" alt="${s.alt}" decoding="async" loading="lazy">`;
-  const slides=sh.map((s,k)=>`<figure class="slide${k?'':' on'}"><button class="shot" data-k="${k}" aria-label="View larger: ${s.alt}">${media(s,k)}</button></figure>`).join('');
-  const scene=`<figure class="slide art${sh.length?'':' on'}">${sceneSVG(t.id,a)}</figure>`;
-  if(n<2) return scene;
-  const dots=Array.from({length:n},(_,k)=>`<button class="gd${k===n-1?' ill':''}" data-k="${k}" aria-label="${k<n-1?`Screenshot ${k+1} of ${n-1}`:'Illustration'}" aria-current="${k===0}"></button>`).join('');
-  return `${slides}${scene}<div class="gbar"><div class="small gcap">${sh[0].alt}</div><div class="gdots">${dots}</div></div>`;
+/* ================= walkthroughs ================= */
+const WS={}; // per project: {loaded, root, chapter, running, run, idle}
+function walkHTML(t){
+  const w=WALK[t.id]||{kind:'scene'}, ar=w.aspect||'16/10', [x,y]=ar.split('/').map(Number);
+  const media = w.kind==='video' ? `<video muted loop playsinline preload="none" aria-label="${w.alt}"></video>`
+    : w.kind==='pan' ? `<div class="wk-pan">${w.imgs.map((m,k)=>`<img alt="${m.alt}" decoding="async"${k?'':' class="on"'}>`).join('')}</div>`
+    : w.kind==='scene' ? sceneSVG(t.id,ACC[t.id]||t.c1) : '';
+  const ch=(w.chapters||[]).map((c,k)=>`<button class="wk-c" role="tab" data-ch="${c.id}" aria-selected="${k===0}">${c.label}</button>`).join('');
+  return `<div class="card wk" style="--ar:${ar};--arv:${(x/y).toFixed(3)}"><div class="glow"></div><div class="wk-frame">${media}</div>
+    <div class="wk-bar"><div class="wk-ch" role="tablist" aria-label="${t.contact?'Contact':t.name}">${ch}</div>${w.lookalike?'<span class="small wk-tag">Demo · sample data</span>':''}<button class="wk-full" aria-label="Full screen"><svg viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button></div></div>`;
 }
-function showSlide(sec,k){ const sl=sec.querySelectorAll('.slide'), sh=SHOTS[sec.id.slice(2)]||[]; if(!sl[k]) return;
-  sl.forEach((s,j)=>s.classList.toggle('on',j===k)); sec.querySelectorAll('.gd').forEach((d,j)=>d.setAttribute('aria-current',j===k));
-  const live=sec.id==='s-'+active;
-  sl.forEach((s,j)=>{ const v=s.querySelector('video'); if(v){ if(j===k&&live&&!reduce&&lbK<0) v.play().catch(()=>{}); else v.pause(); } }); // only the slide on show, in the section on screen, plays
-  const c=sec.querySelector('.gcap'); if(c) c.textContent = k<sh.length ? sh[k].alt : 'Illustration'; }
-let lbK=-1, lbT=null; // the screenshot and the project the lightbox is showing
-const lbOff=()=>[$('scroller'),document.querySelector('.top'),$('rail')];
-function lbShow(k){ const sh=SHOTS[lbT.id]||[]; if(!sh[k]) return; lbK=k;
-  const v=$('lbVid'), isV=!!sh[k].video; $('lbImg').hidden=isV; v.hidden=!isV;
-  if(isV){ if(v.getAttribute('src')!==sh[k].video){ v.poster=sh[k].src; v.src=sh[k].video; } if(!reduce) v.play().catch(()=>{}); } else { v.pause(); $('lbImg').src=sh[k].src; }
-  $('lbImg').alt=sh[k].alt; v.setAttribute('aria-label',sh[k].alt); $('lbCap').textContent = sh.length>1 ? `${sh[k].alt} · ${k+1} / ${sh.length}` : sh[k].alt;
-  $('lbPrev').hidden=$('lbNext').hidden=sh.length<2; $('lbPrev').disabled=k<=0; $('lbNext').disabled=k>=sh.length-1; showSlide(secOf(lbT.id),k); }
-function openLB(t,k){ lbT=t; $('lb').hidden=false; lbOff().forEach(el=>el.inert=true); lbShow(k); $('lbClose').focus(); }
-function closeLB(quiet){ if(lbK<0) return; const k=lbK, sec=secOf(lbT.id); lbK=-1; $('lb').hidden=true; lbOff().forEach(el=>el.inert=false); syncInert(); $('lbVid').pause(); showSlide(sec,k);
-  if(!quiet){ const b=sec.querySelector('.slide.on .shot'); if(b) b.focus({preventScroll:true}); } }
-$('lbClose').onclick=()=>closeLB(); $('lbPrev').onclick=()=>lbShow(lbK-1); $('lbNext').onclick=()=>lbShow(lbK+1);
-$('lb').addEventListener('click',e=>{ if(e.target===$('lb')||e.target.tagName==='FIGURE') closeLB(); });
+const wsOf=id=>WS[id]||(WS[id]={loaded:false,root:null,chapter:null,running:false,run:0,idle:0});
+const frameOf=id=>secOf(id).querySelector('.wk-frame');
+function walkLoad(id){ const s=wsOf(id); if(s.loaded) return s.ready; s.loaded=true; // fetched only when its section is on screen or next door
+  const w=WALK[id], f=frameOf(id);
+  if(w.kind==='video'){ const v=f.querySelector('video'); v.poster=w.poster; v.src=w.src; }
+  if(w.kind==='pan') f.querySelectorAll('img').forEach((im,k)=>{ im.src=w.imgs[k].src; });
+  return s.ready=Promise.resolve(); }
+function walkPlay(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=true; f.parentNode.classList.add('run');
+  if(reduce) return;
+  if(w.kind==='video') f.querySelector('video').play().catch(()=>{});
+  if(w.kind==='scene'){ const svg=f.querySelector('svg'); if(svg&&svg.unpauseAnimations) svg.unpauseAnimations(); }
+  if(w.kind==='pan'&&w.imgs.length>1&&!s.xf) s.xf=setInterval(()=>{ const ims=[...f.querySelectorAll('img')], k=ims.findIndex(i=>i.classList.contains('on'));
+    ims[k].classList.remove('on'); ims[(k+1)%ims.length].classList.add('on'); },6000); }
+function walkPause(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=false; f.parentNode.classList.remove('run');
+  clearInterval(s.xf); s.xf=0;
+  if(w.kind==='video') f.querySelector('video').pause();
+  if(w.kind==='scene'){ const svg=f.querySelector('svg'); if(svg&&svg.pauseAnimations) svg.pauseAnimations(); } }
+function walkChapter(id,ch,opt){ const w=WALK[id], c=(w.chapters||[]).find(x=>x.id===ch); if(!c) return; wsOf(id).chapter=ch;
+  secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch));
+  if(w.kind==='video'&&c.t!=null){ const v=frameOf(id).querySelector('video'); v.currentTime=c.t; } }
+function walkSync(id){ const i=TRACKS.findIndex(t=>t.id===id); // the section on screen plays; it and its neighbours load; the rest stay still
+  TRACKS.forEach((t,j)=>{ if(!WALK[t.id]) return;
+    if(i>=0&&Math.abs(j-i)<=1) walkLoad(t.id);
+    if(j===i) walkPlay(t.id); else if(WS[t.id]&&WS[t.id].running) walkPause(t.id); }); }
+function walkFull(id){ if(document.fullscreenElement){ document.exitFullscreen().catch(()=>{}); return; }
+  const f=frameOf(id); if(f.requestFullscreen) f.requestFullscreen().catch(()=>{}); }
 
 /* ================= step up view: three numbers land and stay ================= */
 const MINI={
@@ -1163,8 +989,9 @@ new ResizeObserver(()=>{ scW=sc0.clientWidth; scH=sc0.clientHeight; if(!keep||ta
   sc0.scrollTop+=s.getBoundingClientRect().top-sc0.getBoundingClientRect().top+off; }).observe(sc0);
 go((location.hash||'').slice(1)||'home',{smooth:false}); syncInert();
 requestAnimationFrame(frame);
-// warm the shelf previews on devices that can hover
-if(window.matchMedia&&matchMedia('(hover:hover)').matches) setTimeout(()=>Object.values(SHOTS).forEach(s=>{ new Image().src=s[0].src; }),2500);
+// warm the hover previews the first time someone points at the shelf or the menu
+const warm=()=>Object.values(PREV).forEach(src=>{ new Image().src=src; });
+[row,$('rail')].forEach(el=>el.addEventListener('pointerenter',warm,{once:true}));
 })();
 </script>
 </body>
