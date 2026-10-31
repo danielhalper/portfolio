@@ -1003,14 +1003,14 @@ function landStep(){ // the first time Step Up comes on screen, its three number
   const mets=[...document.querySelectorAll('.met')], hls=document.querySelector('.hls');
   if(reduce){ mets.forEach(m=>m.classList.add('on')); hls.classList.add('on'); return; }
   reveal([document.querySelector('.su .kick'),document.querySelector('.sut')]);
-  mets.forEach((m,i)=>setTimeout(()=>landMetric(m,i), 650+i*850));
-  setTimeout(()=>hls.classList.add('on'), 650+3*850+200);
+  mets.forEach((m,i)=>setTimeout(()=>landMetric(m,i), 200+i*300)); // quick, so the numbers are read, not waited for
+  setTimeout(()=>hls.classList.add('on'), 200+3*300+150);
 }
 function landMetric(m,i){ // swoops down, lands with weight, and stays
   m.classList.add('on'); if(active!=='stepup') return;
   m.animate([{transform:'translateY(-120px) scale(1.25)',opacity:0},{transform:'translateY(10px) scale(.97)',opacity:1,offset:.62},{transform:'translateY(-3px) scale(1.01)',offset:.82},{transform:'none'}],
-    {duration:620,easing:'cubic-bezier(.5,0,.75,0)'} );
-  setTimeout(()=>{ if(!reduce) document.querySelector('#s-stepup .su').animate([{transform:'translateY(0)'},{transform:'translateY(5px)'},{transform:'translateY(-2px)'},{transform:'none'}],{duration:260}); },390);
+    {duration:480,easing:'cubic-bezier(.5,0,.75,0)'} );
+  setTimeout(()=>{ if(!reduce) document.querySelector('#s-stepup .su').animate([{transform:'translateY(0)'},{transform:'translateY(4px)'},{transform:'translateY(-2px)'},{transform:'none'}],{duration:220}); },300);
 }
 
 /* ================= about ================= */
