@@ -204,6 +204,9 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .wk-c:hover{border-color:rgba(255,255,255,.6);color:#fff}
 .wk-c[aria-selected="true"]{border-color:var(--a);color:var(--a)}
 .wk-tag{flex:none;color:rgba(255,255,255,.45)}
+.wk-bar:has(.wk-tag){flex-wrap:wrap;height:auto;min-height:40px;row-gap:0;padding-top:5px;padding-bottom:5px}
+.wk-bar:has(.wk-tag) .wk-ch{flex-basis:calc(100% - 40px)}
+.wk-bar .wk-tag{order:3;flex-basis:100%;padding:0 0 1px 2px} /* the sample-data label gets its own line, so it never hides a chapter */
 .wk-full{flex:none;width:30px;height:30px;border:0;border-radius:50%;background:none;color:rgba(255,255,255,.7);cursor:pointer;display:grid;place-items:center}
 .wk-full:hover{background:rgba(255,255,255,.1);color:#fff}
 .wk-full svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6}
@@ -547,7 +550,7 @@ const STEP=[
 const WALK={
  sidekick:{kind:'demo',lookalike:true,chapters:[{id:'feedback',label:'Feedback'},{id:'problems',label:'Problems'},{id:'explain',label:'Explanations'}]},
  engine:{kind:'demo',chapters:[]}, // a live board rather than a copied app, so no sample-data label
- onboard:{kind:'demo',lookalike:true,chapters:[{id:'apply',label:'Application'},{id:'check',label:'Background check'},{id:'train',label:'Training'},{id:'ready',label:'Ready to match'}]},
+ onboard:{kind:'demo',lookalike:true,chapters:[{id:'todo',label:'Waiver'},{id:'training',label:'Training'},{id:'check',label:'Background check'},{id:'ready',label:'Availability'}]},
  portal:{kind:'demo',lookalike:true,chapters:[{id:'home',label:'Home'},{id:'messages',label:'Messages'},{id:'updates',label:'Updates'},{id:'tasks',label:'Tasks'}]},
  match:{kind:'video',lookalike:true,src:'assets/match-walk.mp4',poster:'assets/match-walk.jpg',alt:'MatchMate, the real app running on sample students and tutors: match settings, Generate Matches and its recommended pairs, then the student and tutor tables',
    chapters:[{id:'settings',label:'Settings',t:0},{id:'generate',label:'Generate',t:7.6},{id:'tables',label:'Students & tutors',t:17.4}]},
@@ -900,12 +903,12 @@ function walkLoad(id){ const s=wsOf(id); if(s.loaded) return s.ready; s.loaded=t
     const sc=document.createElement('script'); sc.src=`assets/demos/${id}.js`; sc.onload=done; sc.onerror=()=>{ walkStill(id); res(); }; document.head.appendChild(sc); });
   if(w.kind==='video'){ const v=f.querySelector('video'); v.poster=w.poster; v.src=w.src;
     if(w.chapters&&w.chapters.length) v.addEventListener('timeupdate',()=>{ const c=[...w.chapters].reverse().find(c=>v.currentTime>=c.t-.05); // the lit chapter follows the video
-      if(c) secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===c.id)); }); }
+      if(c){ secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===c.id)); litIntoView(id); } }); }
   if(w.kind==='pan') f.querySelectorAll('img').forEach((im,k)=>{ im.src=w.imgs[k].src; });
   return s.ready=Promise.resolve(); }
 function walkPlay(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=true; f.parentNode.classList.add('run');
   if(reduce) return;
-  if(w.kind==='demo'&&s.root){ if(s.demo.play) s.demo.play(s.root); walkTour(id); }
+  if(w.kind==='demo'&&s.root){ if(s.demo.play) s.demo.play(s.root); if(held(s)) walkTakeover(id); else walkTour(id); }
   if(w.kind==='video') f.querySelector('video').play().catch(()=>{});
   if(w.kind==='scene'){ const svg=f.querySelector('svg'); if(svg&&svg.unpauseAnimations) svg.unpauseAnimations(); }
   if(w.kind==='pan'&&w.imgs.length>1&&!s.xf) s.xf=setInterval(()=>{ const ims=[...f.querySelectorAll('img')], k=ims.findIndex(i=>i.classList.contains('on'));
@@ -919,7 +922,7 @@ function walkChapter(id,ch,opt){ const w=WALK[id], c=(w.chapters||[]).find(x=>x.
   if(w.kind==='demo'){ const s=wsOf(id); if(!s.root||!s.demo.chapters.includes(ch)) return; walkShow(id,ch); if(opt&&opt.user) walkTakeover(id); return; }
   wsOf(id).chapter=ch;
   secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch));
-  if(w.kind==='video'&&c.t!=null){ const v=frameOf(id).querySelector('video'); v.currentTime=c.t; } }
+  if(w.kind==='video'&&c.t!=null){ const v=frameOf(id).querySelector('video'); v.currentTime=c.t; } litIntoView(id); }
 /* ---- look-alikes: a copy of the real app in a shadow root, drawn at laptop size and scaled to fit, with a cursor giving the tour ---- */
 const RESUME_MS=6000, CURSOR_MS=650; // the tour waits this long after the last click or key inside it; one cursor move
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -944,10 +947,13 @@ function mountDemo(id){ const d=DEMOS[id], s=wsOf(id), f=frameOf(id), [W,H]=d.si
   if(d.init) d.init(root);
   root.addEventListener('click',e=>{ const g=e.target.closest&&e.target.closest('[data-go]'); if(g) walkChapter(id,g.dataset.go,{user:e.isTrusted}); });
   ['pointerdown','keydown','focusin'].forEach(ev=>host.addEventListener(ev,()=>walkTakeover(id))); // a visitor takes over
+  host.addEventListener('focusout',()=>setTimeout(()=>{ if(!held(s)) walkTakeover(id); },0)); // focus left: the resume clock starts
   if(d.chapters.length) walkShow(id,d.chapters[0]);
   if(s.running) walkPlay(id); }
 function walkShow(id,ch){ const s=WS[id]; s.chapter=ch; s.demo.show(s.root,ch); s.host.dataset.chapter=ch;
-  secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch)); }
+  secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch)); litIntoView(id); }
+function litIntoView(id){ const row=secOf(id).querySelector('.wk-ch'), b=row&&row.querySelector('[aria-selected="true"]'); if(!b) return; // scroll the row only, never the page
+  const r=row.getBoundingClientRect(), x=b.getBoundingClientRect(); if(x.left<r.left) row.scrollLeft-=r.left-x.left+8; else if(x.right>r.right) row.scrollLeft+=x.right-r.right+8; }
 async function walkTour(id){ const s=WS[id], d=s.demo; if(reduce||!d.steps||!d.chapters.length) return; /* a board with no chapters animates itself (play/pause) */ const tok=++s.run, live=()=>s.run===tok&&s.running;
   clearTimeout(s.idle); let i=Math.max(0,d.chapters.indexOf(s.chapter));
   while(live()){ walkShow(id,d.chapters[i]);
@@ -965,8 +971,9 @@ function cursorTo(s,el){ const r=el.getBoundingClientRect(), sr=s.stage.getBound
   s.cursor.classList.add('on'); s.cursor.dataset.moving=''; s.cursor.style.transform=`translate(${s.cx-4}px,${s.cy-3}px)`;
   return sleep(CURSOR_MS).then(()=>{ delete s.cursor.dataset.moving; }); }
 function cursorOff(s){ s.cursor.classList.remove('on'); delete s.cursor.dataset.moving; }
+const held=s=>{ const a=s.root&&s.root.activeElement; return !!a&&a.matches(':focus-visible'); }; // keyboard focus or typing inside: the tour waits
 function walkTakeover(id){ const s=wsOf(id); if(!s.root) return; s.run++; clearTimeout(s.idle); cursorOff(s); // stop, let them drive, pick up again once they've been still a while
-  if(s.running&&!reduce) s.idle=setTimeout(()=>{ if(s.running) walkTour(id); },RESUME_MS); }
+  if(s.running&&!reduce&&!held(s)) s.idle=setTimeout(()=>{ if(s.running&&!held(s)) walkTour(id); },RESUME_MS); }
 
 function walkSync(id){ const i=TRACKS.findIndex(t=>t.id===id); // the section on screen plays; it and its neighbours load; the rest stay still
   TRACKS.forEach((t,j)=>{ if(!WALK[t.id]) return;
