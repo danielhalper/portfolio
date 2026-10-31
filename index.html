@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Daniel Halper — I make agents dance and the world shake</title>
+<title>Daniel Halper — I design and build AI products, end to end</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Permanent+Marker&family=Rubik+Mono+One&display=swap" rel="stylesheet">
@@ -65,15 +65,17 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .headline .by{font:italic 400 clamp(17px,1.6vw,22px)/1.2 var(--serif);color:rgba(255,255,255,.6)}
 .headline h1 em{font-style:italic;color:var(--gold)}
 .byrow{margin-top:12px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:12px 20px}
-/* the big play button: the beat and the voice notes are half the point, so it pulses until someone presses it */
-.press{position:relative;display:inline-flex;align-items:center;gap:10px;padding:10px 18px 10px 12px;border:0;border-radius:999px;background:var(--gold);color:#111;cursor:pointer;
-  font:700 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;box-shadow:0 0 24px rgba(245,197,24,.35)}
+/* the one call to action: big, gold on black, right where the eye goes after the headline. The beat and the voice notes are half the point, so it glows until someone presses it */
+.playrow{margin-top:clamp(18px,3.2vh,32px);display:flex;justify-content:center}
+.press{position:relative;display:inline-flex;align-items:center;gap:14px;padding:14px 30px 14px 14px;border:0;border-radius:999px;
+  background:var(--gold);color:#111;cursor:pointer;white-space:nowrap;font:700 17px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;
+  box-shadow:0 14px 36px rgba(0,0,0,.55),0 0 28px rgba(245,197,24,.35)}
 .press:hover{background:#ffd84a}
-.press::before{content:"";position:absolute;inset:0;border-radius:inherit;border:2px solid var(--gold);animation:pressring 1.8s ease-out infinite;pointer-events:none}
-@keyframes pressring{from{transform:scale(1);opacity:.9}to{transform:scale(1.25,1.6);opacity:0}}
-.press .pi{width:22px;height:22px;border-radius:50%;background:#111;color:var(--gold);display:grid;place-items:center;font-size:9px}
+.press::before{content:"";position:absolute;inset:-2px;border-radius:inherit;box-shadow:0 0 0 0 rgba(245,197,24,.5);animation:pressglow 2.8s ease-in-out infinite;pointer-events:none}
+@keyframes pressglow{50%{box-shadow:0 0 30px 8px rgba(245,197,24,.45)}}
+.press .pi{width:40px;height:40px;border-radius:50%;background:#111;color:var(--gold);display:grid;place-items:center;font-size:14px;padding-left:2px}
 .press .ps{font-weight:400;letter-spacing:.06em;opacity:.7}
-.press[aria-pressed="true"]{background:none;color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.press[aria-pressed="true"]{background:rgba(0,0,0,.75);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
 .press.used::before{animation:none;opacity:0}
 .eq{display:inline-flex;align-items:flex-end;gap:2px;height:10px}
 .eq i{width:2px;height:100%;background:currentColor;animation:eq .9s ease-in-out infinite;transform-origin:bottom}
@@ -82,10 +84,9 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .hint{position:absolute;left:0;right:0;bottom:clamp(26px,6vh,56px);z-index:12;text-align:center;transition:opacity .4s;pointer-events:none;display:flex;justify-content:center;align-items:flex-end}
 .hint b{display:block;font:400 clamp(28px,3vw,42px)/1 var(--display);letter-spacing:.03em;min-height:1em}
 .hint span{color:rgba(255,255,255,.55)}
-.tag{position:absolute;z-index:13;left:0;top:0;transform:translate(-50%,-100%);pointer-events:none;display:flex;align-items:center;gap:7px;
-  padding:6px 10px;border-radius:999px;background:rgba(0,0,0,.7);border:1px solid rgba(245,197,24,.7);color:#f2f2f2;white-space:nowrap;transition:opacity .3s}
-.tag i{width:7px;height:7px;border-radius:50%;background:var(--gold)}
-.tag::after{content:"";position:absolute;left:50%;bottom:-6px;width:1px;height:6px;background:rgba(245,197,24,.7)}
+.tplay{position:absolute;left:50%;top:56px;z-index:3;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;background:var(--gold);color:#111;display:grid;place-items:center;
+  font-size:12px;padding-left:2px;box-shadow:0 4px 14px rgba(0,0,0,.5);opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;pointer-events:none}
+.tape.hov .tplay,.tape:focus-visible .tplay{opacity:1;transform:none} /* every tape plays */
 
 /* 3D shelf */
 .scene{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d;transform:translate(var(--cx,50vw),var(--cy,50vh)) scale(var(--s,1));transition:transform 1s cubic-bezier(.7,0,.2,1)}
@@ -342,6 +343,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .backbtn .lg{display:none}
   .headline{top:64px}
   .headline h1{font-size:clamp(34px,10.4vw,46px)}
+  .press{font-size:14px;gap:12px;padding:11px 22px 11px 11px}.press .pi{width:32px;height:32px}
   .sec{height:auto}
   .dmain,.su{position:static;padding:112px 16px 110px}
   .dmain{display:flex;flex-direction:column;gap:12px;align-items:stretch}
@@ -406,9 +408,9 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   <div class="scenew" id="scenew"><div class="scene" id="scene"><div class="row" id="row"></div></div></div>
 
   <!-- ===== EDIT: HOME HEADLINE ===== -->
-  <div class="headline"><h1>I make <em>agents</em> dance and the <em>world</em> shake.</h1>
-    <div class="byrow"><div class="by">— Daniel Halper, Product Engineer</div><button class="press" id="pressBtn" aria-pressed="false"></button></div></div>
-  <div class="tag small" id="tag"><i></i>Start here</div>
+  <div class="headline"><h1>I design and build <em>AI products</em>, end to end.</h1>
+    <div class="byrow"><div class="by">10 years of product design &amp; engineering</div></div>
+    <div class="playrow"><button class="press" id="pressBtn" aria-pressed="false"></button></div></div>
   <div class="hint" aria-live="polite"><div class="pv" id="pv" aria-hidden="true"><img alt=""></div><div class="ht"><b id="hintT">&nbsp;</b><span class="small" id="hintS">Each tape is a project</span></div></div>
   </section>
 
@@ -609,7 +611,7 @@ const items=ITEMS.map((it,i)=>{
     el.innerHTML=`<div class="hop">${cube(it.w,it.h,it.d,BOXFRONT,'','<i></i><i></i><i></i><i></i><i></i>','','bfront bf').replace('class="bfront bfb face"','class="bf bback face"').replace(/class="face bfront bft"/,'class="face bf btop"').replace(/class="face bfront bfs"/g,'class="face bf bside"')}</div>`;
   } else {
     el.className='tape s-'+it.style; el.style.cssText=vars(it); el.setAttribute('aria-label',it.contact?'Contact Daniel':`${it.name}, ${it.year}`);
-    el.innerHTML=`<div class="hop"><div class="face front">${faceHTML(it)}</div><div class="face back"><div class="backlabel"></div><div class="trap"></div></div>
+    el.innerHTML=`<div class="hop"><div class="face front">${faceHTML(it)}<span class="tplay" aria-hidden="true">▶</span></div><div class="face back"><div class="backlabel"></div><div class="trap"></div></div>
       <div class="face topf"><div class="spine">${it.contact?'Your track here':it.name+' · '+it.year}</div></div><div class="face botf"></div><div class="face rgt"></div><div class="face lft"></div></div>`;
   }
   el.tabIndex=0; el.setAttribute('role','button'); el.dataset.id=it.id;
@@ -643,19 +645,24 @@ const stage=$('stage'), scene=$('scene'); let SW=0,SH=0,mob=false;
 function place(){ SW=stage.clientWidth; SH=stage.clientHeight; mob=SW<760;
   const s = mob ? Math.min(SW/840,SH/900) : Math.min(SW/900,SH/640)*.95;
   scene.style.setProperty('--cx',(SW*(mob?.55:.52)).toFixed(1)+'px'); scene.style.setProperty('--cy',(SH*(mob?.52:.55)).toFixed(1)+'px'); scene.style.setProperty('--s',s.toFixed(3));
-  fitFaces(); measureFly(); clearTimeout(mfT); mfT=setTimeout(measureFly,1100); }
-new ResizeObserver(place).observe(stage);
+  fitFaces(); clearShelf(s); measureFly(); clearTimeout(mfT); mfT=setTimeout(measureFly,1100); }
+function clearShelf(s){ // the play button gets clear space: on shorter screens the shelf's back tapes would reach it, so the shelf moves down just enough
+  if(mob) return; const b=$('pressBtn').getBoundingClientRect().bottom-stage.getBoundingClientRect().top;
+  const top=Math.min(...[...row.querySelectorAll('.face')].map(f=>f.getBoundingClientRect().top))-stage.getBoundingClientRect().top;
+  const need=Math.min(SH*.12,b+16-top); if(need>0) scene.style.setProperty('--cy',(SH*.55+need).toFixed(1)+'px'); }
+new ResizeObserver(place).observe(stage); if(document.fonts) document.fonts.ready.then(place); // the headline's height sets where the button ends
 
 /* ================= hop engine ================= */
 function bounce(s){ if(s<0||s>760) return 0; if(s<90) return 9*Math.sin(s/90*Math.PI/2);
   const u=(s-90)/670; return 9*(1-u)-38*Math.sin(Math.PI*Math.min(1,u*1.25))*(u<.8?1:0)+(u>=.8?5*Math.sin((u-.8)/.2*Math.PI):0); }
 function off(i,now){ const s=items[i]; return bounce(now-s.hopStart)-s.hover*10; }
-let cur=1, dir=1, phase='land', t0=performance.now(), hop=null, bz=Z[1], by=0;
+let cur=0, dir=1, phase='land', t0=performance.now(), hop=null, bz=Z[1], by=0;
 function launch(now,to,o){ o=o||{}; const dz=Math.abs(Z[to]-bz);
   hop={z0:bz,y0:by,to,t0:now,dur:o.dur||540,arc:o.arc||(64+Math.min(110,dz*.25))}; phase='air'; }
-function nextIdle(){ // walk the shelf in order, back and forth, box set included
+function nextIdle(){ // walk the shelf in order, back and forth, box set included; before the first play it waits on the box, by the play button
+  if(!heard.size) return 0;
   let n=cur+dir; if(n<0||n>=N){ dir=-dir; n=cur+dir; } return n; }
-function arrive(i,now){ cur=i; phase='land'; t0=now; items[i].hopStart=now; }
+function arrive(i,now){ cur=i; phase='land'; t0=now; if(heard.size||i) items[i].hopStart=now; } // while it waits on the box before play, its small hops don't shake the box
 function pick(i){ if(view!=='home') return; showHint(-1); go(ITEMS[i].box?'stepup':'t/'+ITEMS[i].id,{focus:true}); }
 
 /* ================= liner notes: Daniel's voice over a beat, silent until someone presses play ================= */
@@ -725,8 +732,10 @@ function listen(id){ // the beat plays on its own for a couple of seconds, then 
       voiceOn=true; fade(BEAT.level*BEAT.under,.6); voiceEl.muted=false; voiceEl.src=voiceSrc(id); voiceEl.play().catch(()=>{});
       $('cc').hidden=false; stage.classList.add('cc-on'); ccAt(0); },BEAT.lead*1000); };
   if(!beat.paused&&beat.readyState>2) lead(); else { beat.addEventListener('playing',lead,{once:true}); leadTimer=setTimeout(lead,3000); } }
-function voiceDone(){ if(!listening) return; fade(BEAT.level,1.2); ccTimer=setTimeout(ccHide,1200); }
-function stopListening(){ listening=false; noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); ccHide();
+let introNext=false;
+function voiceDone(){ if(!listening) return; fade(BEAT.level,1.2); ccTimer=setTimeout(ccHide,1200);
+  if(introNext&&noteId==='home'){ introNext=false; setTimeout(()=>{ if(listening&&active==='home'&&view==='home') go('stepup',{focus:true}); },700); } } // unless they've moved on
+function stopListening(){ introNext=false; listening=false; noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); ccHide();
   if(decks){ voiceEl.pause(); decks.forEach(d=>fadeDeck(d,0,.4)); setTimeout(()=>{ if(!listening) decks.forEach(d=>d.el.pause()); },450); }
   syncListen(); }
 function followPage(){ // keep the tape rolling as people move around; the intro only plays once
@@ -746,9 +755,10 @@ function syncListen(){ const b=$('soundBtn');
   b.innerHTML = listening ? '<span aria-hidden="true">❚❚</span> Pause' : '<span aria-hidden="true">▶</span> Play<span class="lg"> the tape</span>';
   b.setAttribute('aria-pressed',listening); b.setAttribute('aria-label',listening?'Pause the voice notes and music':'Play Daniel’s voice notes with music');
   const p=$('pressBtn'); p.classList.toggle('used',listening||heard.size>0); p.setAttribute('aria-pressed',listening);
-  p.innerHTML = listening ? '<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span> Now playing · pause' : '<span class="pi" aria-hidden="true">▶</span> Press play <span class="ps">· sound on</span>';
+  p.innerHTML = listening ? '<span class="eq" aria-hidden="true"><i></i><i></i><i></i></span> Now playing · pause' : '<span class="pi" aria-hidden="true">▶</span> Play <span class="ps">· sound on</span>';
   document.querySelectorAll('.listen').forEach(l=>{ l.setAttribute('aria-pressed',listening); l.firstElementChild.textContent=listening?'❚❚':'▶'; l.querySelector('.lt').textContent=listening?'Pause':'Hear it from me'; }); }
-$('soundBtn').onclick=$('pressBtn').onclick=()=>toggleListen(pageNote());
+$('soundBtn').onclick=()=>toggleListen(pageNote());
+$('pressBtn').onclick=()=>{ if(listening){ stopListening(); return; } introNext=active==='home'; listen(pageNote()); }; // from the shelf: the intro, then Step Up
 syncListen();
 
 /* ================= faces in 2D (floor + minis) ================= */
@@ -1024,7 +1034,6 @@ function buildList(){
 }
 
 /* ================= frame loop ================= */
-const tag=$('tag');
 function frame(now){
   if(active!=='home'&&$('scenew').style.opacity==='0.000'){ requestAnimationFrame(frame); return; } // the shelf has scrolled away
   items.forEach((s,i)=>{ s.hover+=(s.hoverT-s.hover)*.18; s.hop.style.transform=`translateY(${off(i,now).toFixed(2)}px)`; });
@@ -1033,7 +1042,7 @@ function frame(now){
     bz=Z[cur]; by=topOf(cur)+off(cur,now); shY=by;
     const s=now-t0, sq=s<90?Math.sin(s/90*Math.PI):0; sx=1+.16*sq; sy=1-.2*sq;
     face = cur===0 ? 1 : 1; // idle: look toward the front (and the box set)
-    if(s>=120 && !reduce && view==='home') launch(now,nextIdle());
+    if(s>=(heard.size?120:900) && !reduce && view==='home') launch(now,nextIdle(),heard.size?undefined:{arc:30,dur:600});
   } else {
     const u=clamp((now-hop.t0)/hop.dur,0,1);
     bz=lerp(hop.z0,Z[hop.to],u);
@@ -1047,8 +1056,6 @@ function frame(now){
   bot.style.transform=`translate3d(0px,${by.toFixed(2)}px,${bz.toFixed(2)}px) rotateY(52deg)`;
   botFlip.style.transform=`scale(${(sx*face).toFixed(3)},${sy.toFixed(3)}) rotate(${(rot*face).toFixed(2)}deg)`;
   shadow.style.transform=`translate3d(0px,${(shY-.5).toFixed(2)}px,${bz.toFixed(2)}px) rotateX(90deg)`;
-  if(view==='home'){ const r=items[0].front.getBoundingClientRect(), sr=$('hero').getBoundingClientRect();
-    tag.style.left=(r.left+r.width*.5-sr.left)+'px'; tag.style.top=(r.top-sr.top-14+Math.sin(now/420)*3)+'px'; }
   requestAnimationFrame(frame);
 }
 
