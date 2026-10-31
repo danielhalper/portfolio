@@ -235,7 +235,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .pv.on+.ht{text-align:left}
 .pv img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
 @media (hover:none){.pv{display:none}}
-.kick{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.kick{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);text-wrap:balance}
 .dtext h2{margin:8px 0 0;font:400 clamp(56px,6.6vw,112px)/.86 var(--display);letter-spacing:.01em}
 .result{margin-top:16px;font:italic 400 clamp(28px,3vw,46px)/1.05 var(--serif);color:#fff}
 .hl{color:var(--a);font-style:inherit}
@@ -247,7 +247,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .cta:hover{background:#fff}
 .cta.soon,.cta.soon:hover{background:none;color:rgba(255,255,255,.8);padding-left:0;padding-right:4px;cursor:default} /* a status, not a link */
 .cta.soon::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--a);box-shadow:0 0 10px var(--a)}
-.built{color:rgba(255,255,255,.42)}
+.did{margin-top:14px;color:rgba(255,255,255,.72)} /* what Daniel did on it */
 .rbot{position:absolute;left:50%;bottom:calc(100% + 7px);width:clamp(62px,7.5vw,92px);transform:translateX(-50%)}
 .rbot .rbody{animation:rb .28s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
 .rbot .legA{animation:legA .28s linear infinite;transform-box:fill-box;transform-origin:50% 0}
@@ -353,7 +353,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .result::before{margin-bottom:8px;width:34px}
   .what{display:none}
   .acts{margin-top:12px;gap:10px}
-  .built{display:none}
+  .did{margin-top:8px}
   .cta{padding:11px 16px}
   .listen{padding:10px 13px;font-size:10px}
   .su{justify-content:flex-start}
@@ -418,7 +418,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
       <div class="kick">The box set · Co-founder, Head of Product &amp; Technology · 2020 to now</div>
       <div class="suhead"><h2 class="sut">Step Up Tutoring</h2><div class="sulisten" id="sListenWrap"></div></div>
       <div class="mets">
-        <div class="met" data-to="6000"><div class="mi" data-mi="crowd"></div><div class="mn">6,000+</div><div class="ml">students tutored</div></div>
+        <div class="met" data-to="6000"><div class="mi" data-mi="crowd"></div><div class="mn">6,000+</div><div class="ml">active students</div></div>
         <div class="met" data-to="350000"><div class="mi" data-mi="clock"></div><div class="mn">350,000+</div><div class="ml">tutoring hours delivered</div></div>
         <div class="met" data-to="200000"><div class="mi" data-mi="gears"></div><div class="mn">200,000+</div><div class="ml">automations every month</div></div>
       </div>
@@ -469,15 +469,15 @@ const CASE="https://dhalps.webflow.io/works/step-up-tutoring", MORE="https://dha
    One entry per tape, front of the shelf first. Text wrapped in **double stars** is highlighted.
    name, year, role, result (the big line), what (one short line), tags (how it was built), link, linkLabel. */
 const SHELF=[ // index 0 = front of the shelf (newest)
- {id:"neat",name:"Neat Freak",style:"block",c1:"#f5c518",c2:"#111",c3:"#fff",ink2:"#111",year:"2026",role:"Solo build",result:"Live on the **Chrome Web Store**",what:"An AI tab organiser that finds anything in plain English",tags:["Chrome extension","LLM search","Local-first"],link:"https://chromewebstore.google.com/detail/neat-freak/gmojchpnnkacfighmaoiofkddbaohpan",linkLabel:"Add to Chrome"},
- {id:"jimmy",name:"Jimmy AI",style:"sun",c1:"#f08a24",c2:"#fff3e0",c3:"#3a1d0b",ink2:"#2a1205",year:"2026",role:"Solo build",result:"**250+** websites rebuilt by AI",what:"Finds local businesses with bad sites and rebuilds them",tags:["TypeScript","Gemini","Claude Code"],link:"https://www.quickresponse-plumbing.com/",linkLabel:"See one"},
- {id:"swayzee",name:"Swayzee",style:"split",c1:"#e63946",c2:"#ffb3c1",c3:"#fff",ink2:"#fff",year:"2024",role:"Product · UX/UI",result:"Talk an AI into saying **yes**",what:"A weekly challenge game: win over AI characters on a live five-minute voice call, from getting a number to pitching investors",tags:["Game design","Gemini live voice","UX/UI"],link:"https://apps.apple.com/us/app/swayzee/id6748293156",linkLabel:"App Store"},
- {id:"kyron",name:"Kyron Learning",style:"stripes",c1:"#9ad1f5",c2:"#0d2b6b",c3:"#fff",ink2:"#0d2b6b",year:"2022–24",role:"Founding UX engineer",result:"Video lessons that **talk back**",what:"Conversational AI lessons. Founded by **ex-Google** leaders; CEO Rajen Sheth was VP of **Google Cloud AI**. I set a lot of the design direction, prototyped, collected feedback, and helped engineer much of the lesson experience. **$14.6M** Series A.",tags:["Conversational AI","Prototyping","UX engineering"],link:"https://app.kyronlearning.com",linkLabel:"Visit"},
+ {id:"neat",name:"Neat Freak",style:"block",c1:"#f5c518",c2:"#111",c3:"#fff",ink2:"#111",year:"2026",role:"Solo builder",result:"Live on the **Chrome Web Store**",what:"An AI tab organiser that finds anything in plain English",tags:["Product","Design","Engineering"],link:"https://chromewebstore.google.com/detail/neat-freak/gmojchpnnkacfighmaoiofkddbaohpan",linkLabel:"Add to Chrome"},
+ {id:"jimmy",name:"Jimmy AI",style:"sun",c1:"#f08a24",c2:"#fff3e0",c3:"#3a1d0b",ink2:"#2a1205",year:"2026",role:"Solo builder",result:"**250+** websites rebuilt by AI",what:"Finds local businesses with bad sites and rebuilds them",tags:["Product","Engineering","AI agents"],link:"https://www.quickresponse-plumbing.com/",linkLabel:"See one"},
+ {id:"swayzee",name:"Swayzee",style:"split",c1:"#e63946",c2:"#ffb3c1",c3:"#fff",ink2:"#fff",year:"2024",role:"UX/UI design",result:"Talk an AI into saying **yes**",what:"A weekly challenge game: win over AI characters on a live five-minute voice call, from getting a number to pitching investors",tags:["Game design","UX/UI"],link:"https://apps.apple.com/us/app/swayzee/id6748293156",linkLabel:"App Store"},
+ {id:"kyron",name:"Kyron Learning",style:"stripes",c1:"#9ad1f5",c2:"#0d2b6b",c3:"#fff",ink2:"#0d2b6b",year:"2022–24",role:"Founding UX engineer",result:"Video lessons that **talk back**",what:"Conversational AI lessons. Founded by **ex-Google** leaders; CEO Rajen Sheth was VP of **Google Cloud AI**. I set a lot of the design direction, prototyped, collected feedback, and helped engineer much of the lesson experience. **$14.6M** Series A.",tags:["Design direction","Prototyping","UX engineering"],link:"https://app.kyronlearning.com",linkLabel:"Visit"},
  {id:"hero",name:"Hero Chat",style:"marker",c1:"#efe9dc",c2:"#f2a7c3",c3:"#c2185b",ink2:"#1b1b1b",year:"2023",role:"Full stack · UX/UI",result:"**500+** App Store reviews",what:"AI chatbots, with other people's chats to explore",tags:["iOS","Full stack","UX/UI"],link:MORE,linkLabel:"See it"},
  {id:"tfw",name:"That Feeling When",style:"grid",c1:"#a77bff",c2:"#f5c518",c3:"#e63946",ink2:"#111",year:"2020",role:"Creator",result:"A party game, in **print** and **online**",what:"Cards about painfully relatable moments",tags:["Game design","Print","Multiplayer web"],link:"https://dhalps.webflow.io/works/that-feeling-when-card-game",linkLabel:"Case study"},
  {id:"quikstik",name:"Quikstik",style:"block",c1:"#1d6fd1",c2:"#9ad1f5",c3:"#fff",ink2:"#fff",year:"2019",role:"Product design",result:"Pitched to **IKEA**",what:"Social home-workout gear with sensor handles",tags:["Hardware concept","App","Sensors"],link:"https://dhalps.webflow.io/works/quikstik",linkLabel:"Case study"},
  {id:"bills",name:"Essential Bills",style:"marker",c1:"#efe9dc",c2:"#2a6f3e",c3:"#1b4d2b",ink2:"#1b1b1b",year:"2019",role:"Client design",result:"Strangers paying strangers' bills",what:"Donation app designed for a venture studio",tags:["Mobile app","Fintech","Client work"],link:"https://dhalps.webflow.io/works/essential-bills",linkLabel:"Case study"},
- {id:"troops",name:"Troops",style:"stripes",c1:"#14806b",c2:"#f0e6c8",c3:"#e2533b",ink2:"#fff",year:"2017",role:"Co-founder",result:"**100s** of deliveries + a **YC** interview",what:"Campus delivery, by students for students",tags:["Marketplace","Mobile","First startup"],link:"https://dhalps.webflow.io/works/troops",linkLabel:"Case study"},
+ {id:"troops",name:"Troops",style:"stripes",c1:"#14806b",c2:"#f0e6c8",c3:"#e2533b",ink2:"#fff",year:"2017",role:"Co-founder",result:"**100s** of deliveries + a **YC** interview",what:"Campus delivery, by students for students",tags:["User research","UX/UI","Branding"],link:"https://dhalps.webflow.io/works/troops",linkLabel:"Case study"},
  {id:"contact",name:"Your track here",style:"marker",c1:"#efe9dc",c2:"#7cffc4",c3:"#111",ink2:"#1b1b1b",year:"Next",role:"Open to talk",result:"Let's make the next one",what:"Got an idea or a role in mind? Email is fastest.",tags:[],link:"mailto:danihalp@me.com",linkLabel:"Email Daniel",contact:true}
 ];
 function faceHTML(t){
@@ -543,16 +543,16 @@ const ACC={neat:'#f5c518',jimmy:'#f08a24',swayzee:'#ff5c6c',kyron:'#9ad1f5',hero
   sidekick:'#f5c518',engine:'#f5c518',onboard:'#f5c518',portal:'#f5c518',match:'#f5c518'};
 /* ===== EDIT: THE FIVE STEP UP TOOLS — their sections follow Step Up's, and sit under it in the menu ===== */
 const STEP=[
- {id:"sidekick",name:"Sidekick",result:"Novice tutors teach like **experts**",what:"Runs on our own video platform. Session analysis drives a one-minute briefing, in-session curriculum and coaching",tags:["Video platform","Session analysis","LLM pipelines"],link:"https://sidekick.stepuptutoring.org",linkLabel:"Visit"},
- {id:"engine",name:"Efficiency Engine",result:"**200,000+** automations a month",what:"AI in all four parts of Step Up, a handbook that updates itself from CRM tickets, and MatchLink messaging",tags:["Claude agents","CRM","Zapier"],link:CASE,linkLabel:"Case study"},
- {id:"onboard",name:"Onboarding Portal",result:"**100,000+** people have used it",what:"From application to a tutor's first match",tags:["Bubble.io","Automation","Checks"],link:CASE,linkLabel:"Case study"},
- {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Schedule, resources, announcements and events in one place",tags:["Scheduling","Translation","Resources"],link:CASE,linkLabel:"Case study"},
- {id:"match",name:"MatchMate",result:"**3 minutes → 3 seconds** per match",what:"Pairs every student with the right tutor",tags:["Matching","AI ranking","Scale"]}
-].map((t,i)=>Object.assign(t,{style:'gold',c1:'#f5c518',c2:['#7cffc4','#9ad1f5','#f2a7c3','#f2f2f2','#f08a24'][i],c3:'#111',ink2:'#111',year:'Step Up',role:'Inside Step Up',step:true}));
+ {id:"sidekick",name:"Sidekick",result:"Novice tutors teach like **experts**",what:"Runs on our own video platform. Session analysis drives a one-minute briefing, in-session curriculum and coaching",when:"2024–26",role:"Product & engineering lead",tags:["User research","Product","AI analysis","Engineering"],link:"https://sidekick.stepuptutoring.org",linkLabel:"Visit"},
+ {id:"engine",name:"Efficiency Engine",result:"**200,000+** automations a month",what:"AI in all four parts of Step Up, a handbook that updates itself from CRM tickets, and MatchLink messaging",when:"2020–26",role:"Automation engineer",tags:["Automations","AI chatbots","CRM"],link:CASE,linkLabel:"Case study"},
+ {id:"onboard",name:"Onboarding Portal",result:"**100,000+** people have used it",what:"From application to a tutor's first match",when:"2022–23",role:"Product & design lead",tags:["Product","UX/UI design","Engineering"],link:CASE,linkLabel:"Case study"},
+ {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Schedule, resources, announcements and events in one place",when:"2022–23",role:"Product lead",tags:["Product","Design","Engineering"],link:CASE,linkLabel:"Case study"},
+ {id:"match",name:"MatchMate",result:"**3 minutes → 3 seconds** per match",what:"Pairs every student with the right tutor",when:"2024–26",role:"Product & engineering",tags:["Product","Engineering","AI ranking"]}
+].map((t,i)=>Object.assign(t,{style:'gold',c1:'#f5c518',c2:['#7cffc4','#9ad1f5','#f2a7c3','#f2f2f2','#f08a24'][i],c3:'#111',ink2:'#111',year:'Step Up',step:true}));
 /* ===== EDIT: WALKTHROUGHS — the one moving piece each project shows =====
    kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
    or 'demo' (a clickable look-alike in assets/demos/<id>.js). aspect: the frame's shape.
-   chapters: buttons under it, {id,label}, plus t (seconds) for a video. lookalike: adds the "Demo · sample data" label.
+   chapters: buttons under it, {id,label}, plus t (seconds) for a video. lookalike: adds the "Demo · sample data" label; tag: a label of its own instead.
    A look-alike carries the size it was built to be drawn at (size.json); it's scaled to fit the frame. */
 const WALK={
  sidekick:{kind:'demo',lookalike:true,chapters:[{id:'feedback',label:'Feedback'},{id:'problems',label:'Problems'},{id:'explain',label:'Explanations'}]},
@@ -571,7 +571,8 @@ const WALK={
  tfw:{kind:'pan',imgs:[{src:'assets/prev-tfw.jpg',alt:'The online version of That Feeling When'}]},
  quikstik:{kind:'pan',imgs:[{src:'assets/prev-quikstik.jpg',alt:'The Quikstik handles'}]},
  bills:{kind:'pan',imgs:[{src:'assets/prev-essential-bills.jpg',alt:'Essential Bills on a phone'}]},
- troops:{kind:'pan',imgs:[{src:'assets/prev-troops.jpg',alt:'The Troops app on a phone'}]},
+ troops:{kind:'video',tag:'Figma prototype · 2017',src:'assets/troops-walk.mp4',poster:'assets/troops-walk.jpg',aspect:'4/3',alt:'Troops, Daniel\'s 2017 Figma prototype: a dorm group chat with live offers, joining a food pickup order, then posting a laundry task to the dorm',
+   chapters:[{id:'groups',label:'Group chats',t:0},{id:'join',label:'Join an order',t:4.8},{id:'post',label:'Post a task',t:15.6}]},
  contact:{kind:'scene'}
 };
 // the small preview beside a hovered tape (the box set shows Sidekick's)
@@ -808,11 +809,11 @@ function pauseSVG(card){ const s=card.querySelector('svg'); if(s&&reduce&&s.paus
 /* ================= project sections ================= */
 function sectionHTML(t){
   const isC=!!t.contact;
-  const kick = isC ? 'The next track' : t.step ? (t===STEP[0] ? 'Inside Step Up · Flagship' : 'Inside Step Up') : `${t.year} · ${t.role}`;
+  const kick = isC ? 'The next track' : `${t.step?'Step Up · ':''}${t.when||t.year} · ${t.role}`; // when, and Daniel's role
   const link = t.link ? `<a class="cta" href="${t.link}" target="_blank" rel="noopener">${t.linkLabel} <span aria-hidden="true">↗</span></a>` : t.linkLabel ? `<span class="cta soon">${t.linkLabel}</span>` : '';
-  const more = isC ? '<a class="small" href="https://linkedin.com/in/daniel-halper" target="_blank" rel="noopener">LinkedIn</a><a class="small" href="https://github.com/danielhalper" target="_blank" rel="noopener">GitHub</a>' : `<span class="small built">${t.tags.join(' · ')}</span>`;
+  const more = isC ? '<a class="small" href="https://linkedin.com/in/daniel-halper" target="_blank" rel="noopener">LinkedIn</a><a class="small" href="https://github.com/danielhalper" target="_blank" rel="noopener">GitHub</a>' : '';
   return `<div class="dmain">${walkHTML(t)}
-    <div class="dtext"><div class="kick">${kick}</div><h2>${t.name}</h2><div class="result">${md(t.result)}</div><div class="what">${md(t.what)}</div>
+    <div class="dtext"><div class="kick">${kick}</div><h2>${t.name}</h2><div class="result">${md(t.result)}</div><div class="what">${md(t.what)}</div>${isC?'':`<div class="small did">${t.tags.join(' · ')}</div>`}
     <div class="acts">${link}${NOTES[t.id]?listenBtn(t.id):''}${more}</div></div></div>`;
 }
 $('secs').innerHTML=TRACKS.slice(1).map(t=>`<section class="sec" id="s-${t.id}" aria-label="${t.contact?'Contact':t.name}" style="--a:${ACC[t.id]||t.c1}">${sectionHTML(t)}</section>`).join('');
@@ -898,7 +899,7 @@ function walkHTML(t){
     : w.kind==='scene' ? sceneSVG(t.id,ACC[t.id]||t.c1) : '';
   const ch=(w.chapters||[]).map((c,k)=>`<button class="wk-c" role="tab" data-ch="${c.id}"${c.t!=null?` data-t="${c.t}"`:''} aria-selected="${k===0}">${c.label}</button>`).join('');
   return `<div class="card wk" style="--ar:${ar};--arv:${(x/y).toFixed(3)}"><div class="glow"></div><div class="wk-frame">${media}</div>
-    <div class="wk-bar"><div class="wk-ch" role="tablist" aria-label="${t.contact?'Contact':t.name}">${ch}</div>${w.lookalike?'<span class="small wk-tag">Demo · sample data</span>':''}<span class="wk-deck" aria-hidden="true"><i class="wk-reel"></i><i class="wk-reel"></i></span><button class="wk-full" aria-label="Full screen"><svg viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button></div></div>`;
+    <div class="wk-bar"><div class="wk-ch" role="tablist" aria-label="${t.contact?'Contact':t.name}">${ch}</div>${(w.tag||w.lookalike)?`<span class="small wk-tag">${w.tag||'Demo · sample data'}</span>`:''}<span class="wk-deck" aria-hidden="true"><i class="wk-reel"></i><i class="wk-reel"></i></span><button class="wk-full" aria-label="Full screen"><svg viewBox="0 0 16 16"><path d="M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4"/></svg></button></div></div>`;
 }
 const wsOf=id=>WS[id]||(WS[id]={loaded:false,root:null,chapter:null,running:false,run:0,idle:0});
 const frameOf=id=>secOf(id).querySelector('.wk-frame');
