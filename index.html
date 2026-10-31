@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Daniel Halper designs and builds AI products end to end: 10 years of product design and engineering, including Sidekick, an AI copilot for tutors.">
 <title>Daniel Halper — I design and build AI products, end to end</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -182,7 +183,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .view.on{opacity:1;visibility:visible;transition:opacity .5s .1s,visibility 0s}
 .view .ia{pointer-events:auto}
 .dmain{position:absolute;left:var(--railw);right:clamp(28px,3.4vw,64px);top:70px;bottom:96px;
-  display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:clamp(24px,3.4vw,56px);align-items:center}
+  display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);grid-template-rows:100%;gap:clamp(24px,3.4vw,56px);align-items:center}
+.dtext{max-height:100%;overflow-y:auto;scrollbar-width:thin} /* an open story can make it taller than the screen: then it scrolls by itself, the walkthrough stays put */
 .card{position:relative;width:100%;max-height:100%;border-radius:16px;border:1px solid rgba(255,255,255,.16);
   background:radial-gradient(120% 90% at 50% 0%,#17171c,#09090b);overflow:hidden;justify-self:center;align-self:center}
 .wk-frame>svg{position:absolute;inset:0;width:100%;height:100%}
@@ -236,7 +238,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .pv.on+.ht{text-align:left}
 .pv img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 25%}
 @media (hover:none){.pv{display:none}}
-.kick{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);text-wrap:balance}
+.kick{font-family:var(--mono);font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85);text-wrap:balance}
 .dtext h2{margin:8px 0 0;font:400 clamp(56px,6.6vw,112px)/.86 var(--display);letter-spacing:.01em}
 .result{margin-top:16px;font:italic 400 clamp(28px,3vw,46px)/1.05 var(--serif);color:#fff}
 .hl{color:var(--a);font-style:inherit}
@@ -248,7 +250,21 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .cta:hover{background:#fff}
 .cta.soon,.cta.soon:hover{background:none;color:rgba(255,255,255,.8);padding-left:0;padding-right:4px;cursor:default} /* a status, not a link */
 .cta.soon::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--a);box-shadow:0 0 10px var(--a)}
-.did{margin-top:14px;color:rgba(255,255,255,.72)} /* what Daniel did on it */
+.story{margin-top:16px;max-width:34em} /* closed by default: skimmers never see it, the curious get the substance */
+.story summary{display:inline-flex;align-items:center;gap:10px;cursor:pointer;list-style:none;padding:8px 14px;border:1px solid rgba(255,255,255,.3);border-radius:999px;
+  font:700 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#fff}
+.story summary::-webkit-details-marker{display:none}
+.slotghost{position:fixed;z-index:30;pointer-events:none;border-radius:16px;border:1px solid color-mix(in srgb,var(--a) 70%,transparent);transform-origin:0 0;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--a) 45%,#111),#0b0b0d 70%);
+  box-shadow:0 12px 30px rgba(0,0,0,.5)} /* the walkthrough filing itself into its menu slot */
+.story summary::after{content:"+";font-size:14px;color:var(--a)}
+.story[open] summary::after{content:"−"}
+.story summary:hover{border-color:rgba(255,255,255,.6)}
+.story dl{margin:12px 0 0;display:grid;gap:9px}
+.story dt{font:700 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--a)}
+.story dd{margin:4px 0 0;font-size:14px;line-height:1.45;color:rgba(255,255,255,.85)}
+.story[open] dl{animation:storyIn .25s ease-out}
+@keyframes storyIn{from{opacity:0;transform:translateY(-4px)}}
 .rbot{position:absolute;left:50%;bottom:calc(100% + 7px);width:clamp(62px,7.5vw,92px);transform:translateX(-50%)}
 .rbot .rbody{animation:rb .28s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
 .rbot .legA{animation:legA .28s linear infinite;transform-box:fill-box;transform-origin:50% 0}
@@ -355,7 +371,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .result::before{margin-bottom:8px;width:34px}
   .what{display:none}
   .acts{margin-top:12px;gap:10px}
-  .did{margin-top:8px}
+  .kick{font-size:12px}
   .cta{padding:11px 16px}
   .listen{padding:10px 13px;font-size:10px}
   .su{justify-content:flex-start}
@@ -471,16 +487,16 @@ const CASE="https://dhalps.webflow.io/works/step-up-tutoring", MORE="https://dha
    One entry per tape, front of the shelf first. Text wrapped in **double stars** is highlighted.
    name, year, role, result (the big line), what (one short line), tags (how it was built), link, linkLabel. */
 const SHELF=[ // index 0 = front of the shelf (newest)
- {id:"neat",name:"Neat Freak",style:"block",c1:"#f5c518",c2:"#111",c3:"#fff",ink2:"#111",year:"2026",role:"Solo builder",result:"Live on the **Chrome Web Store**",what:"An AI tab organiser that finds anything in plain English",tags:["Product","Design","Engineering"],link:"https://chromewebstore.google.com/detail/neat-freak/gmojchpnnkacfighmaoiofkddbaohpan",linkLabel:"Add to Chrome"},
- {id:"jimmy",name:"Jimmy AI",style:"sun",c1:"#f08a24",c2:"#fff3e0",c3:"#3a1d0b",ink2:"#2a1205",year:"2026",role:"Solo builder",result:"**250+** websites rebuilt by AI",what:"Finds local businesses with bad sites and rebuilds them",tags:["Product","Engineering","AI agents"],link:"https://www.quickresponse-plumbing.com/",linkLabel:"See one"},
- {id:"swayzee",name:"Swayzee",style:"split",c1:"#e63946",c2:"#ffb3c1",c3:"#fff",ink2:"#fff",year:"2024",role:"UX/UI design",result:"Talk an AI into saying **yes**",what:"A weekly challenge game: win over AI characters on a live five-minute voice call, from getting a number to pitching investors",tags:["Game design","UX/UI"],link:"https://apps.apple.com/us/app/swayzee/id6748293156",linkLabel:"App Store"},
- {id:"kyron",name:"Kyron Learning",style:"stripes",c1:"#9ad1f5",c2:"#0d2b6b",c3:"#fff",ink2:"#0d2b6b",year:"2022–24",role:"Founding UX engineer",result:"Video lessons that **talk back**",what:"Conversational AI lessons. Founded by **ex-Google** leaders; CEO Rajen Sheth was VP of **Google Cloud AI**. I set a lot of the design direction, prototyped, collected feedback, and helped engineer much of the lesson experience. **$14.6M** Series A.",tags:["Design direction","Prototyping","UX engineering"],link:"https://app.kyronlearning.com",linkLabel:"Visit"},
- {id:"hero",name:"Hero Chat",style:"marker",c1:"#efe9dc",c2:"#f2a7c3",c3:"#c2185b",ink2:"#1b1b1b",year:"2023",role:"Full stack · UX/UI",result:"**715** ratings worldwide, **4.8★**",what:"AI chatbots, with other people's chats to explore. Built with my brother; live on the App Store as **WWJD**",tags:["iOS","Full stack","UX/UI"],link:"https://apps.apple.com/us/app/wwjd-what-would-jesus-do/id6445903415",linkLabel:"App Store"},
- {id:"tfw",name:"That Feeling When",style:"grid",c1:"#a77bff",c2:"#f5c518",c3:"#e63946",ink2:"#111",year:"2020",role:"Creator",result:"Built with **25+** child psychologists",what:"A card game that helps kids learn about emotions. It doubles as a party game",tags:["Game design","Print","Multiplayer web"],link:"https://dhalps.webflow.io/works/that-feeling-when-card-game",linkLabel:"Case study"},
- {id:"quikstik",name:"Quikstik",style:"block",c1:"#1d6fd1",c2:"#9ad1f5",c3:"#fff",ink2:"#fff",year:"2019",role:"Product design",result:"Pitched to **IKEA**",what:"Social home-workout gear with sensor handles",tags:["Hardware concept","App","Sensors"],link:"https://dhalps.webflow.io/works/quikstik",linkLabel:"Case study"},
- {id:"bills",name:"Essential Bills",style:"marker",c1:"#efe9dc",c2:"#2a6f3e",c3:"#1b4d2b",ink2:"#1b1b1b",year:"2019",role:"Client design",result:"Strangers paying strangers' bills",what:"Donation app designed for a venture studio",tags:["Mobile app","Fintech","Client work"],link:"https://dhalps.webflow.io/works/essential-bills",linkLabel:"Case study"},
- {id:"troops",name:"Troops",style:"stripes",c1:"#14806b",c2:"#f0e6c8",c3:"#e2533b",ink2:"#fff",year:"2017",role:"Co-founder",result:"**100s** of deliveries + a **YC** interview",what:"Campus delivery, by students for students",tags:["User research","UX/UI","Branding"],link:"https://dhalps.webflow.io/works/troops",linkLabel:"Case study"},
- {id:"contact",name:"Your track here",style:"marker",c1:"#efe9dc",c2:"#7cffc4",c3:"#111",ink2:"#1b1b1b",year:"Next",role:"Open to talk",result:"Let's make the next one",what:"Got an idea or a role in mind? Email is fastest.",tags:[],link:"mailto:danihalp@me.com",linkLabel:"Email Daniel",contact:true}
+ {id:"neat",name:"Neat Freak",style:"block",c1:"#f5c518",c2:"#111",c3:"#fff",ink2:"#111",year:"2026",role:"Solo builder",result:"Live on the **Chrome Web Store**",what:"An AI tab organiser that finds anything in plain English",story:{problem:"Tabs pile up until you can't find the one you need.",built:"A Chrome extension, built solo. It sorts tabs into folders by project, nudges you when they start piling up, finds anything in plain English, and learns which tabs you like to keep open."},link:"https://chromewebstore.google.com/detail/neat-freak/gmojchpnnkacfighmaoiofkddbaohpan",linkLabel:"Add to Chrome"},
+ {id:"jimmy",name:"Jimmy AI",style:"sun",c1:"#f08a24",c2:"#fff3e0",c3:"#3a1d0b",ink2:"#2a1205",year:"2026",role:"Solo builder",result:"**250+** websites rebuilt by AI",what:"Finds local businesses with bad sites and rebuilds them",link:"https://www.quickresponse-plumbing.com/",linkLabel:"See one"},
+ {id:"swayzee",name:"Swayzee",style:"split",c1:"#e63946",c2:"#ffb3c1",c3:"#fff",ink2:"#fff",year:"2024",role:"UX/UI design",result:"Talk an AI into saying **yes**",what:"A weekly challenge game: win over AI characters on a live five-minute voice call, from getting a number to pitching investors",link:"https://apps.apple.com/us/app/swayzee/id6748293156",linkLabel:"App Store"},
+ {id:"kyron",name:"Kyron Learning",style:"stripes",c1:"#9ad1f5",c2:"#0d2b6b",c3:"#fff",ink2:"#0d2b6b",year:"2022–24",role:"Founding UX engineer",result:"Video lessons that **talk back**",what:"Conversational AI lessons. Founded by **ex-Google** leaders; CEO Rajen Sheth was VP of **Google Cloud AI**.",story:{problem:"A recorded lesson can't answer back when a student gets confused.",built:"As founding UX engineer on conversational AI lessons, I set a lot of the design direction, prototyped, collected feedback, and helped engineer much of the lesson experience.",impact:"Kyron went on to raise a **$14.6M** Series A."},link:"https://app.kyronlearning.com",linkLabel:"Visit"},
+ {id:"hero",name:"Hero Chat",style:"marker",c1:"#efe9dc",c2:"#f2a7c3",c3:"#c2185b",ink2:"#1b1b1b",year:"2023",role:"Full stack · UX/UI",result:"**715** ratings worldwide, **4.8★**",what:"AI chatbots, with other people's chats to explore. Built with my brother; live on the App Store as **WWJD**",link:"https://apps.apple.com/us/app/wwjd-what-would-jesus-do/id6445903415",linkLabel:"App Store"},
+ {id:"tfw",name:"That Feeling When",style:"grid",c1:"#a77bff",c2:"#f5c518",c3:"#e63946",ink2:"#111",year:"2020",role:"Creator",result:"Built with **25+** child psychologists",what:"A card game that helps kids learn about emotions. It doubles as a party game",link:"https://dhalps.webflow.io/works/that-feeling-when-card-game",linkLabel:"Case study"},
+ {id:"quikstik",name:"Quikstik",style:"block",c1:"#1d6fd1",c2:"#9ad1f5",c3:"#fff",ink2:"#fff",year:"2019",role:"Product design",result:"Pitched to **IKEA**",what:"Social home-workout gear with sensor handles",link:"https://dhalps.webflow.io/works/quikstik",linkLabel:"Case study"},
+ {id:"bills",name:"Essential Bills",style:"marker",c1:"#efe9dc",c2:"#2a6f3e",c3:"#1b4d2b",ink2:"#1b1b1b",year:"2019",role:"Client design",result:"Strangers paying strangers' bills",what:"Donation app designed for a venture studio",link:"https://dhalps.webflow.io/works/essential-bills",linkLabel:"Case study"},
+ {id:"troops",name:"Troops",style:"stripes",c1:"#14806b",c2:"#f0e6c8",c3:"#e2533b",ink2:"#fff",year:"2017",role:"Co-founder",result:"**100s** of deliveries + a **YC** interview",what:"Campus delivery, by students for students",link:"https://dhalps.webflow.io/works/troops",linkLabel:"Case study"},
+ {id:"contact",name:"Your track here",style:"marker",c1:"#efe9dc",c2:"#7cffc4",c3:"#111",ink2:"#1b1b1b",year:"Next",role:"Open to talk",result:"Let's make the next one",what:"Got an idea or a role in mind? Email is fastest.",link:"mailto:danihalp@me.com",linkLabel:"Email Daniel",contact:true}
 ];
 function faceHTML(t){
   return `<span class="screw" style="left:4px;top:4px"></span><span class="screw" style="right:4px;top:4px"></span>
@@ -545,11 +561,11 @@ const ACC={neat:'#f5c518',jimmy:'#f08a24',swayzee:'#ff5c6c',kyron:'#9ad1f5',hero
   sidekick:'#f5c518',engine:'#f5c518',onboard:'#f5c518',portal:'#f5c518',match:'#f5c518'};
 /* ===== EDIT: THE FIVE STEP UP TOOLS — their sections follow Step Up's, and sit under it in the menu ===== */
 const STEP=[
- {id:"sidekick",name:"Sidekick",result:"Novice tutors teach like **experts**",what:"Runs on our own video platform. Session analysis drives a one-minute briefing, in-session curriculum and coaching",when:"2024–26",role:"Product & engineering lead",tags:["User research","Product","AI analysis","Engineering"],link:"https://sidekick.stepuptutoring.org",linkLabel:"Visit"},
- {id:"engine",name:"Efficiency Engine",result:"**200,000+** automations a month",what:"AI in all four parts of Step Up, a handbook that updates itself from CRM tickets, and MatchLink messaging",when:"2020–26",role:"Automation engineer",tags:["Automations","AI chatbots","CRM"],link:CASE,linkLabel:"Case study"},
- {id:"onboard",name:"Onboarding Portal",result:"**100,000+** people have used it",what:"From application to a tutor's first match",when:"2022–23",role:"Product & design lead",tags:["Product","UX/UI design","Engineering"],link:CASE,linkLabel:"Case study"},
- {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Schedule, resources, announcements and events in one place",when:"2022–23",role:"Product lead",tags:["Product","Design","Engineering"],link:CASE,linkLabel:"Case study"},
- {id:"match",name:"MatchMate",result:"**3 minutes → 3 seconds** per match",what:"Pairs every student with the right tutor",when:"2024–26",role:"Product & engineering",tags:["Product","Engineering","AI ranking"]}
+ {id:"sidekick",name:"Sidekick",result:"Novice tutors teach like **experts**",what:"Runs on our own video platform. Session analysis drives a one-minute briefing, in-session curriculum and coaching",story:{problem:"Most of our tutors are volunteers new to teaching. They start sessions not knowing what the student is stuck on, or how to explain it.",built:"AI that coaches the tutor, never replaces them: feedback from every session before the next, then the right moves and problems for that student, live. I led product, research, the AI analysis and engineering.",impact:"**1,000+** sessions a day. In a NewSchools study, students' math confidence and outcomes rose, earning an **ESSA Tier 3** badge."},when:"2024–26",role:"Product & engineering lead",link:"https://sidekick.stepuptutoring.org",linkLabel:"Visit"},
+ {id:"engine",name:"Efficiency Engine",result:"**200,000+** automations a month",what:"AI in all four parts of Step Up, a handbook that updates itself from CRM tickets, and MatchLink messaging",story:{problem:"A team of 20 serves thousands of families, and would otherwise spend its days answering the same emails and texts.",built:"Automations and AI chatbots across Step Up: a handbook that updates itself from people's questions, and MatchLink, which translates every message between tutors and parents.",impact:"**200,000+** automations a month; over **90%** of ops emails and messages go out automatically."},when:"2020–26",role:"Automation engineer",link:CASE,linkLabel:"Case study"},
+ {id:"onboard",name:"Onboarding Portal",result:"**100,000+** people have used it",what:"From application to a tutor's first match",story:{problem:"Applicants got lost between application, background check and training. Only **16%** became tutors.",built:"One portal, built in code, that walks every applicant through each step and always shows what's next. I led product and design and got hands-on in the engineering.",impact:"**100,000+** people have used it; the share who become tutors more than doubled, from **16%** to **37%**."},when:"2022–23",role:"Product & design lead",link:CASE,linkLabel:"Case study"},
+ {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Schedule, resources, announcements and events in one place",when:"2022–23",role:"Product lead",link:CASE,linkLabel:"Case study"},
+ {id:"match",name:"MatchMate",result:"**3 minutes → 3 seconds** per match",what:"Pairs every student with the right tutor",story:{problem:"Matching a student to a tutor by hand took about three minutes, juggling language, availability and preferences one pair at a time.",built:"A matching app I designed and engineered end to end. AI ranks the options and it matches in bulk: the best set of pairs across 50 or 60 people at once.",impact:"**3 minutes → 3 seconds** per match."},when:"2024–26",role:"Product & engineering"}
 ].map((t,i)=>Object.assign(t,{style:'gold',c1:'#f5c518',c2:['#7cffc4','#9ad1f5','#f2a7c3','#f2f2f2','#f08a24'][i],c3:'#111',ink2:'#111',year:'Step Up',step:true}));
 /* ===== EDIT: WALKTHROUGHS — the one moving piece each project shows =====
    kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
@@ -769,6 +785,7 @@ let view='home', active='home'; // view: 'home' or 'about' (the overlay); active
 const onActive=[]; // fn(id), run whenever the section on screen changes
 const routeOf=id=>id==='home'?'':id==='stepup'?'#stepup':'#t/'+id;
 function setHash(h){ try{ history.replaceState(null,'',h||location.pathname+location.search); }catch(e){} }
+let jumpTo=null, jumpT=0;
 let target=null, targetT=0; // while go() scrolls somewhere, the sections it passes on the way don't count
 function setActive(id){ if(id===active) return; active=id;
   if(view!=='about') setHash(routeOf(id));
@@ -780,6 +797,7 @@ function go(route,opt){ opt=opt||{};
   if(v==='about'){ openAbout(); return; }
   if(view==='about') closeAbout();
   const id = v==='stepup' ? 'stepup' : v==='t'&&byId[arg] ? arg : 'home';
+  jumpTo=id; clearTimeout(jumpT); jumpT=setTimeout(()=>{ jumpTo=null; },3000); // a jump lands without the slot swap
   const sc=$('scroller'), top = id==='home' ? 0 : sc.scrollTop+secOf(id).getBoundingClientRect().top-sc.getBoundingClientRect().top;
   const smooth = opt.smooth!==false && !reduce;
   const far=Math.abs(top-sc.scrollTop)>2;
@@ -817,15 +835,19 @@ function reveal(els){ if(reduce) return; els.forEach((el,k)=>el&&el.animate([{op
 function pauseSVG(card){ const s=card.querySelector('svg'); if(s&&reduce&&s.pauseAnimations){ try{ s.setCurrentTime(3.2); s.pauseAnimations(); }catch(e){} } }
 
 /* ================= project sections ================= */
+const storyHTML=st=>!st?'':`<details class="story"><summary>The story</summary><dl>${[['Problem',st.problem],['What I built',st.built],['Impact',st.impact]]
+  .filter(r=>r[1]).map(([k,v])=>`<dt>${k}</dt><dd>${md(v)}</dd>`).join('')}</dl></details>`; // the story stays in the page while closed, so search engines read it too
 function sectionHTML(t){
   const isC=!!t.contact;
   const kick = isC ? 'The next track' : `${t.step?'Step Up · ':''}${t.when||t.year} · ${t.role}`; // when, and Daniel's role
   const link = t.link ? `<a class="cta" href="${t.link}" target="_blank" rel="noopener">${t.linkLabel} <span aria-hidden="true">↗</span></a>` : t.linkLabel ? `<span class="cta soon">${t.linkLabel}</span>` : '';
   const more = isC ? '<a class="small" href="https://linkedin.com/in/daniel-halper" target="_blank" rel="noopener">LinkedIn</a><a class="small" href="https://github.com/danielhalper" target="_blank" rel="noopener">GitHub</a>' : '';
   return `<div class="dmain">${walkHTML(t)}
-    <div class="dtext"><div class="kick">${kick}</div><h2>${t.name}</h2><div class="result">${md(t.result)}</div><div class="what">${md(t.what)}</div>${isC?'':`<div class="small did">${t.tags.join(' · ')}</div>`}
+    <div class="dtext"><div class="kick">${kick}</div><h2>${t.name}</h2><div class="result">${md(t.result)}</div><div class="what">${md(t.what)}</div>${storyHTML(t.story)}
     <div class="acts">${link}${NOTES[t.id]?listenBtn(t.id):''}${more}</div></div></div>`;
 }
+document.addEventListener('toggle',e=>{ const d=e.target; if(!d.classList||!d.classList.contains('story')||!d.open) return; // bring an opened story into view inside its column, never moving the page
+  const t=d.closest('.dtext'); if(t&&t.scrollHeight>t.clientHeight) t.scrollTo({top:t.scrollHeight,behavior:reduce?'auto':'smooth'}); },true);
 $('secs').innerHTML=TRACKS.slice(1).map(t=>`<section class="sec" id="s-${t.id}" aria-label="${t.contact?'Contact':t.name}" style="--a:${ACC[t.id]||t.c1}">${sectionHTML(t)}</section>`).join('');
 $('sListenWrap').innerHTML=listenBtn('stepup');
 document.querySelectorAll('#secs .wk-frame>svg').forEach(s=>{ if(s.pauseAnimations) s.pauseAnimations(); pauseSVG(s.parentNode); }); // drawings move only on screen
@@ -894,6 +916,18 @@ $('scroller').addEventListener('scroll',()=>{ if(flyQ) return; flyQ=true; reques
 let fpT=0; // the tape follows you once you stop on a section, not for every section a fast scroll passes
 onActive.push(()=>{ if(!listening) return; clearTimeout(fpT); fpT=setTimeout(()=>{ if(listening) followPage(); },500); });
 buildRail();
+/* the slot swap: as one project hands off to the next, its walkthrough files itself into its tape slot in the menu: quick, and out of the way */
+let prevAct=null, actAt=0;
+onActive.push(id=>{ const from=prevAct, now=performance.now(), flick=now-actAt<350, jump=id===jumpTo; prevAct=id; actAt=now; if(jump) jumpTo=null;
+  if(reduce||phone.matches||flick||jump||view!=='home'||!from||from==='home'||id==='home') return;
+  const card=$('s-'+from)&&$('s-'+from).querySelector('.wk'), slot=$('rail').querySelector(`.rt[data-id="${from}"]`); if(!card||!slot) return;
+  const a=card.getBoundingClientRect(), b=slot.getBoundingClientRect(); if(!b.width||a.bottom<0||a.top>innerHeight) return;
+  const g=document.createElement('div'); g.className='slotghost'; g.dataset.id=from;
+  g.style.cssText=`left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;--a:${ACC[from]||'#f5c518'}`; // a plain card in the project's colour: no screenshots
+  document.body.appendChild(g);
+  g.animate([{transform:'none',opacity:.85},{transform:`translate(${b.left-a.left}px,${b.top-a.top}px) scale(${b.width/a.width},${b.height/a.height})`,opacity:.45}],
+    {duration:260,easing:'cubic-bezier(.3,.7,.2,1)'}).onfinish=()=>{ g.remove(); slot.animate([{transform:'scale(1.08)'},{transform:'none'}],{duration:160}); };
+  const inc=$('s-'+id)&&$('s-'+id).querySelector('.wk'); if(inc) inc.animate([{transform:'translateX(-14px) scale(.985)',opacity:.75},{transform:'none',opacity:1}],{duration:260,easing:'ease-out'}); });
 onActive.push(id=>{
   $('rail').querySelectorAll('.rt').forEach(a=>{ if(a.dataset.id===id) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); });
   stage.classList.toggle('onshelf',id==='home'); if(id==='home') railPv(null); railBot(id==='home'?null:id);
