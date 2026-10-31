@@ -12,6 +12,7 @@
 :root{
   --bg:#000; --ink:#f2f2f2; --line:rgba(255,255,255,.5);
   --gold:#f5c518; --mint:#7cffc4;
+  --su:#64c9d0; /* Step Up's turquoise, from its logo: the box set and its five tools */
   --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   --display:"Bebas Neue","Arial Narrow","Roboto Condensed",sans-serif-condensed,Impact,sans-serif;
   --serif:"Instrument Serif","Iowan Old Style","Palatino Linotype",Georgia,serif;
@@ -36,13 +37,15 @@ a{color:inherit}
 .dot.tl{top:4px;left:4px}.dot.tr{top:4px;right:4px}.dot.bl{bottom:4px;left:4px}.dot.br{bottom:4px;right:4px}
 .stage{position:relative;height:100%;border:1px solid var(--line);border-radius:6px;overflow:hidden;overflow:clip;background:#000;color:#f2f2f2}
 /* one long scroll: the shelf first, then a full-screen section per project */
-.scroller{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;scroll-snap-type:y proximity;overscroll-behavior:contain}
+.scroller{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior:contain} /* every project is one screen: a scroll always settles on one */
 .hero{position:relative;height:100%;scroll-snap-align:start;overflow:hidden}
 .scenew{position:absolute;inset:0;perspective:1500px} /* fades as you scroll; the 3D scene inside keeps its depth */
 .sec:focus,.hero:focus{outline:none}
 .sec{position:relative;height:100%;min-height:100%;scroll-snap-align:start}
+.sec::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(55% 65% at 38% 50%,color-mix(in srgb,var(--a) 13%,transparent),transparent 72%)} /* each project glows faintly in its own colour */
+#s-stepup .g{color:var(--a)}
+#s-stepup .ml::before{background:var(--a);box-shadow:0 0 14px var(--a)}
 #secs{display:contents} /* so each section sizes against the scroller */
-#vList{z-index:29;background:#000}
 .tick{position:absolute;background:rgba(255,255,255,.45);z-index:40;pointer-events:none}
 .tick.t{top:0;left:50%;width:1px;height:11px}.tick.b{bottom:0;left:50%;width:1px;height:11px}
 .tick.l{left:0;top:50%;height:1px;width:11px}.tick.r{right:0;top:50%;height:1px;width:11px}
@@ -50,11 +53,14 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 
 /* header */
 .top{position:absolute;top:16px;left:18px;right:16px;z-index:30;display:flex;justify-content:space-between;align-items:center;gap:12px}
-.brand{background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.top::before{content:"";position:absolute;left:-18px;right:-16px;top:-16px;height:calc(100% + 60px);z-index:-1;pointer-events:none;
+  background:linear-gradient(rgba(0,0,0,.85),rgba(0,0,0,.55) 55%,transparent);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)} /* a soft scrim: the name stays readable over bright walkthroughs */
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.brand .bt{display:block;color:inherit} /* the name and line, beside the face */
+.avatar{flex:none;width:auto;height:38px;transform:rotate(-4deg);filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))} /* the same sticker as About, small */
 .brand b{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .brand span{color:rgba(255,255,255,.45)}
-.backbtn{display:inline-flex;align-items:center;gap:10px;background:#f2f2f2;color:#000;border:0;border-radius:999px;padding:9px 16px 9px 12px;cursor:pointer;font:700 11px/1 var(--mono);letter-spacing:.1em;text-transform:uppercase}
-.backbtn svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
 .pills{display:flex;gap:6px}
 .pill{background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.45);border-radius:3px;padding:6px 9px;cursor:pointer;color:#f2f2f2}
 .pill:hover{background:rgba(255,255,255,.12)}
@@ -142,9 +148,9 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .s-split .ti{font:italic 400 24px/1 var(--serif)}
 .s-sun .label{background:radial-gradient(circle at 82% 80%,var(--c2) 0 22px,var(--c3) 22px 30px,transparent 30px),var(--c1)}
 .s-sun .ti{font:400 13px/1 "Rubik Mono One",Impact,sans-serif}
-.s-gold .label{background:linear-gradient(var(--gold) 0 70%,#111 70% 76%,var(--gold) 76%)}
+.s-gold .label{background:linear-gradient(var(--su) 0 70%,#111 70% 76%,var(--su) 76%)}
 .s-gold .ti{right:72px;font:400 22px/1 var(--display);color:#111;letter-spacing:.03em}
-.s-gold .label::before{content:"STEP UP";position:absolute;right:30px;top:8px;font:700 7px/1 var(--mono);letter-spacing:.12em;background:#111;color:var(--gold);padding:3px 4px;border-radius:2px}
+.s-gold .label::before{content:"STEP UP";position:absolute;right:30px;top:8px;font:700 7px/1 var(--mono);letter-spacing:.12em;background:#111;color:var(--su);padding:3px 4px;border-radius:2px}
 .s-gold .label::after{content:"";position:absolute;left:0;right:0;bottom:0;height:10px;background:var(--c2)}
 
 
@@ -152,7 +158,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .box{position:absolute;transform-style:preserve-3d;cursor:pointer;outline:none}
 .box .hop{position:absolute;inset:0;transform-style:preserve-3d}
 .bf{position:absolute;backface-visibility:hidden;border-radius:6px}
-.bfront{background:linear-gradient(170deg,#ffd84a,#f5c518 40%,#d9a800);box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
+.bfront{background:linear-gradient(170deg,#8fdbe0,#64c9d0 40%,#3fa7ae);box-shadow:inset 0 0 0 2px rgba(0,0,0,.12)}
 .bfront .in{position:absolute;inset:12px;border:2px solid #111;border-radius:4px;padding:14px 14px 0;color:#111}
 .bfront .k{font:700 9px/1 var(--mono);letter-spacing:.2em}
 .bfront .t1{white-space:nowrap;font:400 58px/.82 var(--display);margin-top:8px;letter-spacing:.01em}
@@ -161,27 +167,17 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .bfront .sp i{flex:1;height:14px;border-radius:2px;background:#111;position:relative}
 .bfront .sp i::after{content:"";position:absolute;left:3px;right:3px;top:5px;height:4px;background:var(--c);border-radius:1px}
 .bfront .yr{position:absolute;right:14px;top:14px;font:700 10px/1 var(--mono);letter-spacing:.1em}
-.bback{background:#d9a800}
-.btop{background:linear-gradient(#e6b700,#c99a00);display:flex;gap:4px;padding:6px 12px}
+.bback{background:#3fa7ae}
+.btop{background:linear-gradient(#56bcc3,#3a9aa1);display:flex;gap:4px;padding:6px 12px}
 .btop i{flex:1;background:#141414;border-radius:2px}
-.bside{background:linear-gradient(#c99a00,#a07a00)}
+.bside{background:linear-gradient(#3a9aa1,#2c7d83)}
 .box.hov .bfront{box-shadow:inset 0 0 0 2px rgba(0,0,0,.12),0 0 34px 4px rgba(245,197,24,.45)}
 .box:focus-visible .bfront{box-shadow:0 0 0 3px var(--mint)}
 
 /* shelf bot */
-.bot,.shadow{position:absolute;left:0;top:0;transform-style:preserve-3d;pointer-events:none;transition:opacity .3s}
-.bot .flip{position:absolute;left:-30px;top:-62px;width:60px;height:62px;transform-origin:50% 100%}
-.bot svg,.rbot svg{display:block;overflow:visible}
-.eyes{transform-box:fill-box;transform-origin:center;animation:blink 3.6s infinite}
-@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
-.bulb{animation:bulb 1.2s ease-in-out infinite}
-@keyframes bulb{50%{opacity:.45}}
 .shadow i{position:absolute;left:-20px;top:-8px;width:40px;height:16px;border-radius:50%;background:rgba(0,0,0,.55);filter:blur(2px)}
 
 /* detail views */
-.view{position:absolute;inset:0;z-index:20;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .35s,visibility 0s .35s}
-.view.on{opacity:1;visibility:visible;transition:opacity .5s .1s,visibility 0s}
-.view .ia{pointer-events:auto}
 .dmain{position:absolute;left:var(--railw);right:clamp(28px,3.4vw,64px);top:70px;bottom:96px;
   display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);grid-template-rows:100%;gap:clamp(24px,3.4vw,56px);align-items:center}
 .dtext{max-height:100%;overflow-y:auto;scrollbar-width:thin} /* an open story can make it taller than the screen: then it scrolls by itself, the walkthrough stays put */
@@ -190,7 +186,10 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .wk-frame>svg{position:absolute;inset:0;width:100%;height:100%}
 .card .glow{position:absolute;inset:auto -20% -40% -20%;height:70%;background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 22%,transparent),transparent);pointer-events:none}
 /* walkthroughs: one big moving piece per project, with buttons for its parts underneath */
-.wk{display:flex;flex-direction:column;max-width:calc((100vh - 230px)*var(--arv,1.6))}
+.wk{display:flex;flex-direction:column;max-width:calc((100vh - 230px)*var(--arv,1.6));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 5px 0 #141418,0 6px 0 rgba(255,255,255,.06),0 22px 44px rgba(0,0,0,.55)} /* a little cassette-shell thickness */
+.wk::after{content:"";position:absolute;inset:9px 9px auto;height:7px;z-index:3;pointer-events:none;
+  background:radial-gradient(circle,#6a6a70 0 1.6px,#202024 2.2px 3px,transparent 3.5px) left/7px 7px no-repeat,radial-gradient(circle,#6a6a70 0 1.6px,#202024 2.2px 3px,transparent 3.5px) right/7px 7px no-repeat} /* the shell's two screws */
 .wk-frame{position:relative;flex:none;width:100%;aspect-ratio:var(--ar,16/10);overflow:hidden;background:#09090b}
 .wk-frame>video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .wk-pan img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 1.2s;animation:kb 16s ease-in-out infinite alternate;animation-play-state:paused}
@@ -208,24 +207,23 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .wk-c[aria-selected="true"]{border-color:var(--a);color:var(--a)}
 .wk-tag{flex:none;color:rgba(255,255,255,.45)}
 .wk-bar:has(.wk-tag){flex-wrap:wrap;height:auto;min-height:40px;row-gap:0;padding-top:5px;padding-bottom:5px}
-.wk-bar:has(.wk-tag) .wk-ch{flex-basis:calc(100% - 96px)} /* room for the reels and the full-screen button on the same line */
+.wk-bar:has(.wk-tag) .wk-ch{flex-basis:calc(100% - 118px)} /* room for the reels and the full-screen button on the same line */
 .wk-bar .wk-tag{order:3;flex-basis:100%;padding:0 0 1px 2px} /* the sample-data label gets its own line, so it never hides a chapter */
 .wk-full{flex:none;width:30px;height:30px;border:0;border-radius:50%;background:none;color:rgba(255,255,255,.7);cursor:pointer;display:grid;place-items:center}
 .wk-full:hover{background:rgba(255,255,255,.1);color:#fff}
 .wk-full svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.6}
-.wk-deck{flex:none;position:relative;width:44px;height:16px} /* the frame's tape: two reels and the tape running between them */
-.wk-deck::before,.wk-deck::after{content:"";position:absolute;left:8px;right:8px;height:1px;background:rgba(255,255,255,.3)}
-.wk-deck::before{top:0}.wk-deck::after{bottom:0}
-.wk-reel{position:absolute;top:0;left:0;width:16px;height:16px;border-radius:50%;color:rgba(255,255,255,.45);box-shadow:inset 0 0 0 1.5px currentColor;transition:color .4s}
-.wk-reel+.wk-reel{left:auto;right:0}
-.wk-reel::before{content:"";position:absolute;inset:4px;border-radius:50%;background:repeating-conic-gradient(currentColor 0 20deg,transparent 20deg 60deg)}
+.wk-deck{flex:none;position:relative;width:66px;height:28px;border-radius:999px;background:#0b0b0d;box-shadow:inset 0 1px 4px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.09)} /* the frame's tape window: two reels and the tape between them */
+.wk-deck::before,.wk-deck::after{content:"";position:absolute;left:14px;right:14px;height:1px;background:rgba(255,255,255,.3)}
+.wk-deck::before{top:3px}.wk-deck::after{bottom:3px}
+.wk-reel{position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;color:rgba(255,255,255,.45);box-shadow:inset 0 0 0 1.5px currentColor;transition:color .4s}
+.wk-reel+.wk-reel{left:auto;right:3px}
+.wk-reel::before{content:"";position:absolute;inset:5px;border-radius:50%;background:repeating-conic-gradient(currentColor 0 20deg,transparent 20deg 60deg)}
 .wk.run .wk-reel{color:var(--a);animation:spin 1.6s linear infinite}
 /* voice notes: listen button and captions */
 .listen{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:12px 16px;cursor:pointer;
   font:700 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#f2f2f2}
 .listen:hover{background:rgba(255,255,255,.1)}
 .listen[aria-pressed="true"]{border-color:var(--a,var(--gold));color:var(--a,var(--gold))}
-.suhead{display:flex;align-items:center;flex-wrap:wrap;gap:10px 24px;margin-top:6px}
 .cc{position:absolute;left:50%;bottom:clamp(14px,3vh,28px);transform:translateX(-50%);z-index:45;width:min(680px,calc(100% - 32px));padding:10px 18px 14px;border-radius:14px;
   background:rgba(8,8,10,.94);box-shadow:0 0 0 1px rgba(255,255,255,.14),0 16px 40px rgba(0,0,0,.6);text-align:center;pointer-events:none}
 .cc span{color:var(--mint)}
@@ -265,17 +263,11 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .story dd{margin:4px 0 0;font-size:14px;line-height:1.45;color:rgba(255,255,255,.85)}
 .story[open] dl{animation:storyIn .25s ease-out}
 @keyframes storyIn{from{opacity:0;transform:translateY(-4px)}}
-.rbot{position:absolute;left:50%;bottom:calc(100% + 7px);width:clamp(62px,7.5vw,92px);transform:translateX(-50%)}
-.rbot .rbody{animation:rb .28s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
-.rbot .legA{animation:legA .28s linear infinite;transform-box:fill-box;transform-origin:50% 0}
-.rbot .legB{animation:legA .28s linear infinite;animation-delay:-.14s;transform-box:fill-box;transform-origin:50% 0}
-@keyframes rb{50%{transform:translateY(-4px) rotate(4deg)}}
-@keyframes legA{0%{transform:rotate(34deg)}50%{transform:rotate(-34deg)}100%{transform:rotate(34deg)}}
 
 /* step up: the numbers are the hero */
 .su{position:absolute;left:var(--railw);right:clamp(24px,7vw,110px);top:74px;bottom:96px;display:flex;flex-direction:column;justify-content:center}
-.sut{margin:0;font:400 clamp(40px,4.4vw,70px)/.95 var(--serif);letter-spacing:-.01em}
-.mets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,3vw,48px);margin-top:clamp(18px,3.4vh,40px)}
+.sut{margin:8px 0 0;font:400 clamp(56px,6.6vw,112px)/.86 var(--display);letter-spacing:.01em} /* the same title type as every project */
+.mets{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(16px,3vw,48px);margin-top:clamp(24px,4.6vh,52px)}
 .met{position:relative;opacity:0}
 .met.on{opacity:1}
 .mi{width:clamp(40px,4vw,58px);height:clamp(40px,4vw,58px);margin-bottom:6px}
@@ -283,24 +275,24 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .mn{font:400 clamp(56px,6.2vw,112px)/.84 var(--display);letter-spacing:-.005em;white-space:nowrap}
 .ml{margin-top:10px;font:400 clamp(20px,1.9vw,28px)/1.15 var(--serif);color:rgba(255,255,255,.82)}
 .ml::before{content:"";display:block;width:40px;height:3px;background:var(--gold);margin-bottom:10px;box-shadow:0 0 14px rgba(245,197,24,.6)}
-.hls{margin-top:clamp(18px,3.4vh,40px);display:flex;flex-direction:column;gap:6px;font:400 clamp(16px,1.4vw,20px)/1.35 var(--serif);color:rgba(255,255,255,.75);opacity:0;transition:opacity .8s}
+.hls{margin-top:clamp(18px,3.4vh,40px);display:flex;flex-direction:column;gap:6px;font:400 clamp(18px,1.6vw,23px)/1.35 var(--serif);color:rgba(255,255,255,.75);opacity:0;transition:opacity .8s}
 .hls.on{opacity:1}
 .hls a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .g{color:var(--gold)}
 
 @media (min-width:761px) and (max-height:940px){ /* laptop screens: tighten Step Up so it clears the header and the five tools */
   .su .mi{display:none}
-  .sut{font-size:clamp(34px,3.4vw,48px)}
+  .sut{font-size:clamp(46px,4.6vw,72px)}
   .mets{margin-top:12px}
   .mn{font-size:clamp(46px,4.6vw,72px)}
   .ml{margin-top:6px;font-size:18px}
   .ml::before{margin-bottom:6px}
-  .hls{margin-top:12px;font-size:16px;gap:2px}
+  .hls{margin-top:12px;font-size:18px;gap:2px}
 }
 
 /* about */
-.about{position:absolute;left:clamp(24px,8vw,140px);right:calc(clamp(24px,7vw,120px) + clamp(140px,15vw,230px) + clamp(28px,4vw,64px));top:78px;bottom:clamp(170px,28vh,240px);display:flex;flex-direction:column;justify-content:center;max-width:900px}
-.me{position:absolute;left:calc(100% + clamp(28px,4vw,64px));top:50%;width:clamp(140px,15vw,230px);height:auto;transform:translateY(-50%) rotate(4deg);filter:drop-shadow(0 18px 30px rgba(0,0,0,.65))}
+.about{position:absolute;left:var(--railw);right:clamp(28px,3.4vw,64px);top:70px;bottom:96px;display:grid;grid-template-columns:minmax(0,.7fr) minmax(0,1.6fr);gap:clamp(28px,4.4vw,72px);align-items:center}
+.me{display:block;width:100%;max-width:340px;height:auto;justify-self:center;transform:rotate(-2deg);filter:drop-shadow(0 18px 30px rgba(0,0,0,.65))}
 .about h2{margin:8px 0 0;font:400 clamp(34px,4vw,62px)/1.02 var(--serif);letter-spacing:-.01em}
 .about h2 em{color:var(--gold)}
 .about p{margin:18px 0 0;max-width:42em;font-size:14px;line-height:1.7;color:rgba(255,255,255,.75)}
@@ -308,14 +300,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .facts span{color:rgba(255,255,255,.45)}
 .facts b{display:block;margin-top:4px;font:400 clamp(17px,1.5vw,21px)/1.2 var(--serif)}
 .lnk{color:rgba(255,255,255,.7);text-decoration:underline;text-underline-offset:4px}
-.strip{position:absolute;left:0;right:0;bottom:0;height:clamp(150px,25vh,210px);border-top:1px solid rgba(255,255,255,.14)}
-.strip .sh{position:absolute;left:clamp(24px,8vw,140px);top:12px;color:rgba(255,255,255,.5)}
-.tapes{position:absolute;left:0;right:0;bottom:16px;top:36px;display:flex;gap:16px;overflow-x:auto;padding:12px clamp(24px,8vw,140px) 6px;scroll-snap-type:x mandatory;scrollbar-width:thin}
-.tp{flex:0 0 auto;height:100%;aspect-ratio:240/152;position:relative;border:0;padding:0;background:none;cursor:pointer;scroll-snap-align:start;transition:transform .25s cubic-bezier(.2,1.4,.4,1)}
-.tp:hover,.tp:focus-visible{transform:translateY(-8px) rotate(-1.5deg)}
-.tp .fface{position:absolute;left:0;top:0;transform-origin:0 0}
-.tp.boxtp{aspect-ratio:300/190}
-.tp.boxtp .bfront{position:absolute;left:0;top:0;width:300px;height:190px;transform-origin:0 0}
 /* the tape menu: every project as a small tape down the left; the one on screen is lit */
 .rail{position:absolute;left:14px;top:64px;bottom:24px;z-index:28;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:5px;pointer-events:none;
   --rh:min(34px,calc((100% - 75px)/16))}
@@ -331,8 +315,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .rt[aria-current="true"] .rf{transform:translateX(8px);filter:none;box-shadow:0 0 0 1.5px #fff,0 0 14px var(--c1,var(--gold))}
 .rt[aria-current="true"]:hover .rf,.rt[aria-current="true"]:focus-visible .rf{transform:translateX(8px) scale(1.45)}
 .onshelf .rail,.onshelf .rt{pointer-events:none}
-.rail:not(.landed) .rbot{opacity:0!important}
-.rail .rbot{left:0;top:0;bottom:auto;width:28px;transform:none;opacity:0;transition:opacity .3s}
 .rpv{position:absolute;z-index:29;left:0;top:0;width:220px;padding:6px 6px 9px;border-radius:9px;background:#141416;box-shadow:0 0 0 1px rgba(255,255,255,.2),0 14px 34px rgba(0,0,0,.7);
   pointer-events:none;opacity:0;transform:translateX(-6px);transition:opacity .15s,transform .15s}
 .rpv.on{opacity:1;transform:none}
@@ -346,7 +328,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .rail::-webkit-scrollbar{display:none}
   .rail:not(.show){background:none} /* keep the first screen clear */
   .rt.sub{margin-left:0}
-  .rail .rbot{display:none}
   .rt[aria-current="true"] .rf{transform:translateY(-3px)}
 }
 @media (max-width:760px){
@@ -354,13 +335,13 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .frame{padding:6px}
   .top{top:12px;left:12px;right:10px}
   .brand span,.pill .lg{display:none}
+  .avatar{height:34px}
   .pill{padding:6px 7px;font-size:9px;letter-spacing:.08em}
-  .backbtn{padding:8px 12px 8px 10px;font-size:10px}
-  .backbtn .lg{display:none}
   .headline{top:64px}
   .headline h1{font-size:clamp(34px,10.4vw,46px)}
   .press{font-size:14px;gap:12px;padding:11px 22px 11px 11px}.press .pi{width:32px;height:32px}
   .sec{height:auto}
+  .scroller{scroll-snap-type:y proximity} /* phones: projects run taller than the screen, so no forced snapping */
   .dmain,.su{position:static;padding:112px 16px 110px}
   .dmain{display:flex;flex-direction:column;gap:12px;align-items:stretch}
   .dtext{order:-1}
@@ -375,28 +356,25 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .cta{padding:11px 16px}
   .listen{padding:10px 13px;font-size:10px}
   .su{justify-content:flex-start}
-  .sut{font-size:32px}
+  .sut{font-size:clamp(46px,13vw,64px)}
   .mets{grid-template-columns:1fr;gap:12px;margin-top:14px}
   .met{display:grid;grid-template-columns:40px auto;column-gap:12px;align-items:center}
   .mi{grid-row:1/3;margin:0}
   .mn{font-size:clamp(50px,15vw,64px)}
   .ml{margin-top:2px;font-size:16px}
   .ml::before{display:none}
-  .hls{font-size:14px;margin-top:14px}
-  .suhead{gap:8px 16px}
+  .hls{font-size:16px;margin-top:14px}
   .wide{display:none}
-  .about{left:18px;right:18px;top:60px;bottom:150px;justify-content:flex-start;overflow:auto;overflow-x:hidden}
-  .me{left:auto;right:4px;top:2px;width:74px;transform:rotate(5deg)}
-  .about h2{font-size:30px;padding-right:82px}
+  .about{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding:112px 16px 110px}
+  .me{width:150px;transform:rotate(-2deg);justify-self:auto}
+  .about h2{font-size:30px}
   .about p{font-size:13px;margin-top:12px}
   .facts{grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-  .strip{height:140px}
   .tapes{padding:10px 18px 6px;gap:10px}
-  .rbot{width:58px}
   .li em{display:block;margin:6px 0 0}
 }
 @media (prefers-reduced-motion:reduce){
-  .rbot *,.eyes,.bulb,.spinning .reel,.press::before,.eq i,.wk-pan img,.wk-reel{animation:none!important}
+  .spinning .reel,.press::before,.eq i,.wk-pan img,.wk-reel{animation:none!important}
   .scene,.wk-pan img,.pv,.rail.fade .rt{transition:none}
 }
 </style>
@@ -408,8 +386,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   <span class="tick t"></span><span class="tick b"></span><span class="tick l"></span><span class="tick r"></span>
   <header class="top">
     <div id="lead">
-      <button class="brand" id="brand"><b>Daniel Halper</b><span class="small">Product engineer · Los Angeles</span></button>
-      <button class="backbtn" id="backBtn" hidden><svg viewBox="0 0 14 14"><path d="M9 2 4 7l5 5"/></svg><span>Back</span></button>
+      <button class="brand" id="brand"><img class="avatar" src="assets/daniel-avatar.webp" alt="" width="30" height="39"><span class="bt"><b>Daniel Halper</b><span class="small">Product engineer · Los Angeles</span></span></button>
     </div>
     <nav class="pills" aria-label="Site">
       <button class="pill small" id="listBtn">About</button>
@@ -431,30 +408,29 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   </section>
 
   <!-- ===== EDIT: STEP UP NUMBERS AND HIGHLIGHTS ===== -->
-  <section class="sec" id="s-stepup" aria-label="Step Up Tutoring">
+  <section class="sec" id="s-stepup" aria-label="Step Up Tutoring" style="--a:#64c9d0">
     <div class="su">
-      <div class="kick">The box set · Co-founder, Head of Product &amp; Technology · 2020 to now</div>
-      <div class="suhead"><h2 class="sut">Step Up Tutoring</h2><div class="sulisten" id="sListenWrap"></div></div>
+      <div class="kick">2020–26 · Co-founder, Head of Product &amp; Technology</div>
+      <h2 class="sut">Step Up Tutoring</h2>
       <div class="mets">
         <div class="met" data-to="6000"><div class="mi" data-mi="crowd"></div><div class="mn">6,000+</div><div class="ml">active students</div></div>
         <div class="met" data-to="350000"><div class="mi" data-mi="clock"></div><div class="mn">350,000+</div><div class="ml">tutoring hours delivered</div></div>
         <div class="met" data-to="200000"><div class="mi" data-mi="gears"></div><div class="mn">200,000+</div><div class="ml">automations every month</div></div>
       </div>
       <div class="hls">
-        <div>Its AI coach, <a class="ia" href="#t/sidekick" data-go="t/sidekick">Sidekick</a>, is built with the <span class="g">Gates Foundation</span>, the <span class="g">Chan Zuckerberg Initiative</span> (through NewSchools) and <span class="g">Stanford</span> researchers</div>
+        <div>Started in <span class="g">2020</span>, when the pandemic sent students home</div>
         <div>Now running <span class="g">almost 7,000 hours</span> of tutoring every week</div>
-        <div>A <span class="g">5-year partnership</span> with <span class="g">LA Unified</span>, the nation's second-largest school district</div>
+        <div>Partners with the country's biggest school districts, including <span class="g">LA Unified</span> and <span class="g">New York City Public Schools</span></div>
       </div>
+      <div class="acts" id="sListenWrap"></div>
     </div>
   </section>
   <div id="secs"></div><!-- one section per project, built from SHELF and STEP below -->
-  </div>
-
-
-  <!-- ===== EDIT: ABOUT PAGE ===== -->
-  <section class="view" id="vList" aria-label="About Daniel">
-    <div class="about ia">
+  <!-- ===== EDIT: ABOUT: the last thing on the page, after the tapes. No cassette, just Daniel ===== -->
+  <section class="sec" id="s-about" aria-label="About Daniel" style="--a:#f5c518">
+    <div class="about">
       <img class="me" src="assets/daniel.webp" alt="Daniel Halper" width="660" height="865" decoding="async">
+      <div class="abt">
       <div class="kick">About</div>
       <h2>I see what's needed, design the answer, and <em>build it myself.</em></h2>
       <p>I studied <span class="g">Product Design at Stanford</span>, then added full-stack engineering at <span class="g">Hack Reactor</span>, finishing top of my cohort. For six years at <span class="g">Step Up</span> I've turned manual work into AI systems, with tutors, students and families at the center.</p>
@@ -467,9 +443,13 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
       <div class="acts"><a class="cta" href="mailto:danihalp@me.com" target="_blank" rel="noopener">Email Daniel <span aria-hidden="true">↗</span></a>
         <a class="small lnk" href="https://linkedin.com/in/daniel-halper" target="_blank" rel="noopener">LinkedIn</a>
         <a class="small lnk" href="https://github.com/danielhalper" target="_blank" rel="noopener">GitHub</a></div>
+      </div>
     </div>
-    <div class="strip ia"><div class="small sh">The tapes · tap one</div><div class="tapes" id="aboutTapes"></div></div>
   </section>
+  </div>
+
+
+  <!-- ===== EDIT: ABOUT PAGE ===== -->
 
   <div class="cc" id="cc" hidden aria-hidden="true"><span class="small">Daniel</span><p id="ccLine"></p></div>
 
@@ -491,8 +471,8 @@ const SHELF=[ // index 0 = front of the shelf (newest)
  {id:"jimmy",name:"Jimmy AI",style:"sun",c1:"#f08a24",c2:"#fff3e0",c3:"#3a1d0b",ink2:"#2a1205",year:"2026",role:"Solo builder",result:"**250+** websites rebuilt by AI",what:"Finds local businesses with bad sites and rebuilds them",link:"https://www.quickresponse-plumbing.com/",linkLabel:"See one"},
  {id:"swayzee",name:"Swayzee",style:"split",c1:"#e63946",c2:"#ffb3c1",c3:"#fff",ink2:"#fff",year:"2024",role:"UX/UI design",result:"Talk an AI into saying **yes**",what:"A weekly challenge game: win over AI characters on a live five-minute voice call, from getting a number to pitching investors",link:"https://apps.apple.com/us/app/swayzee/id6748293156",linkLabel:"App Store"},
  {id:"kyron",name:"Kyron Learning",style:"stripes",c1:"#9ad1f5",c2:"#0d2b6b",c3:"#fff",ink2:"#0d2b6b",year:"2022–24",role:"Founding UX engineer",result:"Video lessons that **talk back**",what:"Conversational AI lessons. Founded by **ex-Google** leaders; CEO Rajen Sheth was VP of **Google Cloud AI**.",story:{problem:"A recorded lesson can't answer back when a student gets confused.",built:"As founding UX engineer on conversational AI lessons, I set a lot of the design direction, prototyped, collected feedback, and helped engineer much of the lesson experience.",impact:"Kyron went on to raise a **$14.6M** Series A."},link:"https://app.kyronlearning.com",linkLabel:"Visit"},
- {id:"hero",name:"Hero Chat",style:"marker",c1:"#efe9dc",c2:"#f2a7c3",c3:"#c2185b",ink2:"#1b1b1b",year:"2023",role:"Full stack · UX/UI",result:"**715** ratings worldwide, **4.8★**",what:"AI chatbots, with other people's chats to explore. Built with my brother; live on the App Store as **WWJD**",link:"https://apps.apple.com/us/app/wwjd-what-would-jesus-do/id6445903415",linkLabel:"App Store"},
- {id:"tfw",name:"That Feeling When",style:"grid",c1:"#a77bff",c2:"#f5c518",c3:"#e63946",ink2:"#111",year:"2020",role:"Creator",result:"Built with **25+** child psychologists",what:"A card game that helps kids learn about emotions. It doubles as a party game",link:"https://dhalps.webflow.io/works/that-feeling-when-card-game",linkLabel:"Case study"},
+ {id:"hero",name:"Hero Chat",style:"marker",c1:"#efe9dc",c2:"#f2a7c3",c3:"#c2185b",ink2:"#1b1b1b",year:"2023",role:"Full stack · UX/UI",result:"**715** ratings worldwide, **4.8★**",what:"AI chatbots, with other people's chats to explore. Built with my brother; live on the App Store as **WWJD**",link:"https://apps.apple.com/us/app/wwjd-what-would-jesus-do/id6445903415?platform=iphone",linkLabel:"iPhone app"},
+ {id:"tfw",name:"That Feeling When",style:"grid",c1:"#a77bff",c2:"#f5c518",c3:"#e63946",ink2:"#111",year:"2020–21",role:"Product lead · team of 4",result:"Built with **25+** child psychologists",what:"My senior capstone: a card game that helps kids learn about emotions, used in classrooms, then rebuilt as a full digital game in 2021",link:"https://dhalps.webflow.io/works/that-feeling-when-card-game",linkLabel:"Case study"},
  {id:"quikstik",name:"Quikstik",style:"block",c1:"#1d6fd1",c2:"#9ad1f5",c3:"#fff",ink2:"#fff",year:"2019",role:"Product design",result:"Pitched to **IKEA**",what:"Social home-workout gear with sensor handles",link:"https://dhalps.webflow.io/works/quikstik",linkLabel:"Case study"},
  {id:"bills",name:"Essential Bills",style:"marker",c1:"#efe9dc",c2:"#2a6f3e",c3:"#1b4d2b",ink2:"#1b1b1b",year:"2019",role:"Client design",result:"Strangers paying strangers' bills",what:"Donation app designed for a venture studio",link:"https://dhalps.webflow.io/works/essential-bills",linkLabel:"Case study"},
  {id:"troops",name:"Troops",style:"stripes",c1:"#14806b",c2:"#f0e6c8",c3:"#e2533b",ink2:"#fff",year:"2017",role:"Co-founder",result:"**100s** of deliveries + a **YC** interview",what:"Campus delivery, by students for students",link:"https://dhalps.webflow.io/works/troops",linkLabel:"Case study"},
@@ -507,30 +487,6 @@ function faceHTML(t){
 }
 const vars=t=>`--c1:${t.c1};--c2:${t.c2};--c3:${t.c3};--ink2:${t.ink2}`;
 
-/* ================= bot svgs ================= */
-const BODY=`<rect x="7" y="12" width="46" height="42" rx="15" fill="#f4f1ff"/>
-  <path d="M7 38 Q7 54 22 54 H38 Q53 54 53 38 V40 Q53 50 38 50 H22 Q7 50 7 40Z" fill="#dcd5f7"/>
-  <rect x="13" y="19" width="34" height="23" rx="9" fill="#1d1733"/>`;
-const ANT=`<line x1="30" y1="13" x2="30" y2="5" stroke="#cfc6f2" stroke-width="2.5" stroke-linecap="round"/><circle class="bulb" cx="30" cy="4.5" r="3.6" fill="#7cffc4"/>`;
-const CHEEK=`<circle cx="16" cy="45" r="2.6" fill="#ffb3c7"/><circle cx="44" cy="45" r="2.6" fill="#ffb3c7"/>`;
-const HOP_BOT=`<svg viewBox="0 0 60 62" width="60" height="62" aria-hidden="true">${ANT}
-  <rect x="2" y="27" width="7" height="12" rx="3.5" fill="#d9d2f5"/><rect x="51" y="27" width="7" height="12" rx="3.5" fill="#d9d2f5"/>
-  <rect x="17" y="49" width="10" height="11" rx="4" fill="#a99de0"/><rect x="33" y="49" width="10" height="11" rx="4" fill="#a99de0"/>
-  ${BODY}<g class="eyes"><rect x="20" y="25" width="6" height="10" rx="3" fill="#7cffc4"/><rect x="34" y="25" width="6" height="10" rx="3" fill="#7cffc4"/></g>${CHEEK}</svg>`;
-const RUN_BOT=`<svg viewBox="0 0 60 72" aria-hidden="true">
-  <rect class="legA" x="18" y="52" width="9" height="16" rx="4" fill="#a99de0"/><rect class="legB" x="33" y="52" width="9" height="16" rx="4" fill="#a99de0"/>
-  <g class="rbody">${ANT}<rect class="legB" x="1" y="27" width="7" height="13" rx="3.5" fill="#d9d2f5"/><rect class="legA" x="52" y="27" width="7" height="13" rx="3.5" fill="#d9d2f5"/>
-  ${BODY}<g class="eyes"><rect x="22" y="25" width="6" height="10" rx="3" fill="#7cffc4"/><rect x="36" y="25" width="6" height="10" rx="3" fill="#7cffc4"/></g>${CHEEK}
-  <path d="M-6 30h7M-9 36h9" stroke="rgba(255,255,255,.5)" stroke-width="1.6" stroke-linecap="round"/></g></svg>`;
-const READ_BOT=`<svg viewBox="0 0 70 70" aria-hidden="true"><g class="bob">
-  <rect x="11" y="56" width="20" height="9" rx="4.5" fill="#a99de0"/><rect x="39" y="56" width="20" height="9" rx="4.5" fill="#a99de0"/>
-  <g transform="translate(5,4)">${ANT}${BODY}
-  <g class="eyes"><rect x="20" y="32" width="6" height="5" rx="2.5" fill="#7cffc4"/><rect x="34" y="32" width="6" height="5" rx="2.5" fill="#7cffc4"/></g>${CHEEK}</g>
-  <path d="M17 44 L35 41 L35 60 L17 62Z" fill="#f5c518"/><path d="M53 44 L35 41 L35 60 L53 62Z" fill="#ffe27a"/>
-  <path d="M20 47h12M20 51h12M20 55h10M38 47h12M38 51h12M38 55h9" stroke="#8a6a00" stroke-width=".9" opacity=".7"/>
-  <path class="page" d="M35 41 L49 43 L49 61 L35 60Z" fill="#fff4c2"/>
-  <rect x="9" y="44" width="8" height="10" rx="4" fill="#d9d2f5"/><rect x="53" y="44" width="8" height="10" rx="4" fill="#d9d2f5"/>
-</g></svg>`;
 
 
 
@@ -558,7 +514,7 @@ function sceneSVG(id,a){ const f=SCENES[id]; return `<svg viewBox="0 0 400 300" 
 /* ===== EDIT: ACCENT COLOURS for each project's scene ===== */
 /* accents for scenes (bright, readable on black) */
 const ACC={neat:'#f5c518',jimmy:'#f08a24',swayzee:'#ff5c6c',kyron:'#9ad1f5',hero:'#f2a7c3',tfw:'#b794ff',quikstik:'#5aa8ff',bills:'#6ee7b7',troops:'#2fd3a7',contact:'#7cffc4',
-  sidekick:'#f5c518',engine:'#f5c518',onboard:'#f5c518',portal:'#f5c518',match:'#f5c518'};
+  sidekick:'#64c9d0',engine:'#64c9d0',onboard:'#64c9d0',portal:'#64c9d0',match:'#64c9d0'}; // Step Up's turquoise
 /* ===== EDIT: THE FIVE STEP UP TOOLS — their sections follow Step Up's, and sit under it in the menu ===== */
 const STEP=[
  {id:"sidekick",name:"Sidekick",result:"Novice tutors teach like **experts**",what:"Runs on our own video platform. Session analysis drives a one-minute briefing, in-session curriculum and coaching",story:{problem:"Our tutors are mostly new to teaching, and the third-party math curriculum we used wasn't moving the needle: student outcome data stayed flat, and tutors couldn't see what each student was getting wrong.",built:"AI that supports the tutor at both ends: specific feedback after every session, then a curriculum driven by each student's mistakes and misconceptions, live in the session. I led product, user research, the AI analysis and engineering.",impact:"Tutors widely appreciate it, and results improved across the board. A NewSchools study found students' math confidence and outcomes rose, earning an **ESSA Tier 3** badge."},when:"2024–26",role:"Product & engineering lead",link:"https://sidekick.stepuptutoring.org",linkLabel:"Visit"},
@@ -566,7 +522,7 @@ const STEP=[
  {id:"onboard",name:"Onboarding Portal",result:"**100,000+** people have used it",what:"From application to a tutor's first match",story:{problem:"Applicants got lost between application, background check and training. Only **16%** became tutors.",built:"One portal, built in code, that walks every applicant through each step and always shows what's next. I led product and design and got hands-on in the engineering.",impact:"**100,000+** people have used it; the share who become tutors more than doubled, from **16%** to **37%**."},when:"2022–23",role:"Product & design lead",link:CASE,linkLabel:"Case study"},
  {id:"portal",name:"Tutor Portal",result:"Home base for **1,000s** of tutors",what:"Schedule, resources, announcements and events in one place",when:"2022–23",role:"Product lead",link:CASE,linkLabel:"Case study"},
  {id:"match",name:"MatchMate",result:"**3 minutes → 3 seconds** per match",what:"Pairs every student with the right tutor",story:{problem:"We match hundreds of students a week, sometimes 500 to 700 people. Doing it well was someone's full-time job, so pairs were made one at a time and never optimized.",built:"Every student–tutor pair gets a weighted score: schedule overlap in days and hours, wait time, tutor quality, language, and scarcity, so people with the fewest viable options go first. Hard constraints rule pairs out, then the Hungarian (Munkres) algorithm solves the whole batch at once for the highest total score. I designed and engineered it end to end.",impact:"A full-time job now runs in seconds, and every batch is optimized as a whole instead of pair by pair."},when:"2024–26",role:"Product & engineering"}
-].map((t,i)=>Object.assign(t,{style:'gold',c1:'#f5c518',c2:['#7cffc4','#9ad1f5','#f2a7c3','#f2f2f2','#f08a24'][i],c3:'#111',ink2:'#111',year:'Step Up',step:true}));
+].map((t,i)=>Object.assign(t,{style:'gold',c1:'#64c9d0',c2:['#7cffc4','#9ad1f5','#f2a7c3','#f2f2f2','#f08a24'][i],c3:'#111',ink2:'#111',year:'Step Up',step:true}));
 /* ===== EDIT: WALKTHROUGHS — the one moving piece each project shows =====
    kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
    or 'demo' (a clickable look-alike in assets/demos/<id>.js). aspect: the frame's shape.
@@ -588,7 +544,8 @@ const WALK={
  hero:{kind:'pan',imgs:[{src:'assets/prev-hero-chat.jpg',alt:'Hero Chat on a laptop'}]},
  tfw:{kind:'pan',imgs:[{src:'assets/prev-tfw.jpg',alt:'The online version of That Feeling When'}]},
  quikstik:{kind:'pan',imgs:[{src:'assets/prev-quikstik.jpg',alt:'The Quikstik handles'}]},
- bills:{kind:'pan',imgs:[{src:'assets/prev-essential-bills.jpg',alt:'Essential Bills on a phone'}]},
+ bills:{kind:'video',tag:'Figma prototype · 2019',src:'assets/bills-walk.mp4',poster:'assets/bills-walk.jpg',aspect:'4/3',alt:'Essential Bills, Daniel\'s 2019 Figma prototype: Jack\'s video story and his overdue electric bill, paying it ($123 plus a $6 fee) and confirming, then a thank-you screen with a Keep The Lights On badge',
+   chapters:[{id:'story',label:'Meet Jack',t:0},{id:'pay',label:'Pay the bill',t:8.9},{id:'thanks',label:'Thank you',t:20.1}]},
  troops:{kind:'video',tag:'Figma prototype · 2017',src:'assets/troops-walk.mp4',poster:'assets/troops-walk.jpg',aspect:'4/3',alt:'Troops, Daniel\'s 2017 Figma prototype: a dorm group chat with live offers, joining a food pickup order, then posting a laundry task to the dorm',
    chapters:[{id:'groups',label:'Group chats',t:0},{id:'join',label:'Join an order',t:4.8},{id:'post',label:'Post a task',t:15.6}]},
  contact:{kind:'scene'}
@@ -643,9 +600,6 @@ const items=ITEMS.map((it,i)=>{
   return st;
 });
 const topOf=i=>BASE-ITEMS[i].h;
-const shadow=document.createElement('div'); shadow.className='shadow'; shadow.innerHTML='<i></i>'; row.appendChild(shadow);
-const bot=document.createElement('div'); bot.className='bot'; bot.innerHTML=`<div class="flip">${HOP_BOT}</div>`; row.appendChild(bot);
-const botFlip=bot.firstElementChild;
 
 function showHint(i){
   const pv=$('pv');
@@ -675,10 +629,9 @@ function off(i,now){ const s=items[i]; return bounce(now-s.hopStart)-s.hover*10;
 let cur=0, dir=1, phase='land', t0=performance.now(), hop=null, bz=Z[1], by=0;
 function launch(now,to,o){ o=o||{}; const dz=Math.abs(Z[to]-bz);
   hop={z0:bz,y0:by,to,t0:now,dur:o.dur||540,arc:o.arc||(64+Math.min(110,dz*.25))}; phase='air'; }
-function nextIdle(){ // walk the shelf in order, back and forth, box set included; before the first play it waits on the box, by the play button
-  if(!heard.size) return 0;
+function nextIdle(){ // walk the shelf in order, back and forth, box set included
   let n=cur+dir; if(n<0||n>=N){ dir=-dir; n=cur+dir; } return n; }
-function arrive(i,now){ cur=i; phase='land'; t0=now; if(heard.size||i) items[i].hopStart=now; } // while it waits on the box before play, its small hops don't shake the box
+function arrive(i,now){ cur=i; phase='land'; t0=now; if($('scroller').scrollTop<2) items[i].hopStart=now; } // a hop that lands mid-flight doesn't bounce
 function pick(i){ if(view!=='home') return; showHint(-1); go(ITEMS[i].box?'stepup':'t/'+ITEMS[i].id,{focus:true}); }
 
 /* ================= liner notes: Daniel's voice over a beat, silent until someone presses play ================= */
@@ -688,18 +641,18 @@ function pick(i){ if(view!=='home') return; showHint(-1); go(ITEMS[i].box?'stepu
 const BEAT={level:1,under:.45,lead:2}; // beat volume on its own, how far it dips under your voice, and seconds of beat before you start
 const NOTES={
  home:["Hey, I'm Daniel. I design and build AI products, end to end.","Every tape on the shelf is something I've made,","so pick one and press play."],
- stepup:["So Step Up is a big one.", "I co-founded Step Up in 2020 and built most of the systems it runs on, on both product and engineering.", "We've expanded to well over 6,000 students and 350,000 hours of tutoring.", "We're scaling now, hitting almost 7,000 hours of tutoring a week."],
+ stepup:["Step Up is the big one.", "I co-founded it in 2020, during the pandemic, when students were stuck at home with nothing to do.", "I've always had a passion for education and for building, so it just made sense.", "I built most of the systems it runs on, on both product and engineering.", "We've grown to well over 6,000 students and 350,000 hours of tutoring,", "and we're still scaling, with almost 7,000 hours of tutoring every week."],
  sidekick:["So Sidekick has been my focus for the last couple of years.", "The goal is to take inexperienced tutors and level them up.", "We analyze every session and give tutors feedback before their next one.", "Then during the session, we guide them to the right moves and the right problems,", "based on what that student's getting wrong and any misconceptions they're stuck on.", "We use AI to empower the tutor, not replace them.", "It's been through hundreds of iterations with a ton of user feedback,", "and it's running in over a thousand sessions a day.", "In a formal study with NewSchools, students' math confidence went up significantly,", "they felt more supported by their tutor, and they also improved on their outcome data.", "That earned us an ESSA Tier 3 badge this year."],
  engine:["We're a team of 20 serving thousands of families, so we've had to automate pretty much everything.", "Our handbook updates itself from the questions people send us,", "and our messaging system, MatchLink, translates every message so tutors and parents can each talk in their own language.", "Over 90% of our operations team's emails and messages now go out automatically.", "All in, more than 200,000 automations run every month to save our team time."],
  onboard:["So I led the team that built our onboarding portal.", "It takes every tutor applicant from application to background check to training, so they always know what's next.", "I led the product and got hands-on in the engineering.", "Over 100,000 people have used it,", "and the share of applicants who actually become tutors more than doubled, from 16 to 37 percent."],
  portal:["So before the Tutor Portal, our tutors were juggling a Facebook group, Remind and email just to keep up.", "We built them one place for all of it: their schedule, resources, announcements and events.", "Thousands of tutors use it today."],
  match:["MatchMate is how we pair every student with the right tutor.", "It matches them on language, availability and preferences.", "A match used to take about three minutes by hand.", "Now it takes about three seconds, and it matches in bulk,", "finding the best set of pairs across 50 or 60 students and tutors at once."],
  neat:["I always have way too many tabs open, so I built Neat Freak.", "It sorts your tabs into folders by project, nudges you when they start piling up,", "and lets you search for anything in plain English.", "It also learns which tabs you tend to keep open, so it gets better at knowing what to stash away.", "It's live on the Chrome Web Store now."],
- jimmy:["A lot of local businesses still have websites that look like they're from 2005.", "Jimmy finds them, rebuilds the site with AI, and sends it to the owner to claim.", "It's built over 250 sites so far, and two of them are live for real businesses."],
+ jimmy:["Tons of local businesses have websites that look like 2005.", "Jimmy finds them, rebuilds the site with AI, and automatically sends it to the owner to claim and make updates.", "More than 250 sites so far, and they're going live for new businesses."],
  swayzee:["I love games like Wordle, and I wanted to build one that was powered by AI and way more interactive.", "Back then, nobody was really using AI for games or challenges, and AI makes them so much more open-ended.", "In Swayzee, you try to talk an AI into saying yes.", "There's a new challenge every week, from getting someone's number to pitching AI investors,", "all on a live five-minute voice call.", "I led product and UX, built it on Gemini's live voice, and launched it on the App Store in 2024."],
  kyron:["At Kyron I was the founding UX engineer, on conversational AI lessons that students can talk back to.", "Kyron was founded by ex-Google leaders; our CEO, Rajen Sheth, was VP of Google Cloud AI.", "I set a lot of the design direction, prototyped, collected feedback, and helped engineer much of the lesson experience.", "Kyron is backed by a $14.6 million Series A."],
  hero:["Hero Chat lets you ask AI chatbots anything, and then browse other people's anonymous chats to see what they asked.", "I built it full stack and shipped it to the App Store, and it got over 500 reviews."],
- tfw:["That Feeling When is a party game about those painfully relatable moments.", "I made it as a card game first, then built an online multiplayer version.", "School psychologists who tried it wanted to use it with their students."],
+ tfw:["That Feeling When was my senior capstone, with three other Stanford designers.", "Coming out of the pandemic, a lot of kids could only name a few emotions, so we built a card game to grow their emotional vocabulary.", "One player secretly gets a different situation, and everyone has to explain how they'd feel to find them.", "We tested it with over 40 kids, and 19 out of 20 wanted to play again.", "In 2021 I took it digital and built out the whole game."],
  quikstik:["Quikstik is compact home workout gear, with handles that count your reps.", "I designed it for people who don't have the time or the space for a gym, plus an app that keeps it social.", "We got to present it to IKEA."],
  bills:["So many people are behind on their bills, and so many people want to help.", "That was the idea behind Essential Bills:", "strangers can pay each other's overdue bills, the essentials like electric and water.", "I designed it for a venture studio, and every bill comes with the person's story, so giving feels personal."],
  troops:["So Troops was my first startup. I started it with two friends freshman year at Stanford.", "The closest store was over a mile away and hardly anyone had a car,", "so we built an app where students run errands for each other: food runs, store trips, laundry.", "We did over 200 orders and got a Y Combinator interview, and it's the reason I chose to major in Product Design."],
@@ -781,9 +734,9 @@ syncListen();
 function fitFaces(){ document.querySelectorAll('[data-fit]').forEach(f=>{ const p=f.parentElement; if(p.clientWidth) f.style.transform=`scale(${p.clientWidth/(+f.dataset.fit||240)})`; }); }
 
 /* ================= router ================= */
-let view='home', active='home'; // view: 'home' or 'about' (the overlay); active: the section on screen, or 'home' for the shelf
+let view='home', active='home'; // view is always 'home' now that About is a section; active: the section on screen, or 'home' for the shelf
 const onActive=[]; // fn(id), run whenever the section on screen changes
-const routeOf=id=>id==='home'?'':id==='stepup'?'#stepup':'#t/'+id;
+const routeOf=id=>id==='home'?'':id==='stepup'?'#stepup':id==='about'?'#about':'#t/'+id;
 function setHash(h){ try{ history.replaceState(null,'',h||location.pathname+location.search); }catch(e){} }
 let jumpTo=null, jumpT=0;
 let target=null, targetT=0; // while go() scrolls somewhere, the sections it passes on the way don't count
@@ -794,9 +747,7 @@ function setActive(id){ if(id===active) return; active=id;
   syncInert(); onActive.forEach(f=>f(id)); }
 function go(route,opt){ opt=opt||{};
   let [v,arg]=route.split('/'); if(v==='list') v='about';
-  if(v==='about'){ openAbout(); return; }
-  if(view==='about') closeAbout();
-  const id = v==='stepup' ? 'stepup' : v==='t'&&byId[arg] ? arg : 'home';
+  const id = v==='stepup' ? 'stepup' : v==='about' ? 'about' : v==='t'&&byId[arg] ? arg : 'home';
   jumpTo=id; clearTimeout(jumpT); jumpT=setTimeout(()=>{ jumpTo=null; },3000); // a jump lands without the slot swap
   const sc=$('scroller'), top = id==='home' ? 0 : sc.scrollTop+secOf(id).getBoundingClientRect().top-sc.getBoundingClientRect().top;
   const smooth = opt.smooth!==false && !reduce;
@@ -816,14 +767,11 @@ function grab(){ if(!target) return; const sc=$('scroller'); sc.scrollTo({top:sc
 $('scroller').addEventListener('scrollend',endTarget);
 ['wheel','touchstart','pointerdown'].forEach(t=>$('scroller').addEventListener(t,grab,{passive:true}));
 function syncInert(){ $('scroller').inert=view==='about'; $('rail').inert=view==='about'||active==='home'; } // the menu can't be tabbed to while it's invisible
-function openAbout(){ view='about'; $('vList').classList.add('on'); syncInert(); $('backBtn').hidden=false; $('brand').hidden=true; buildList(); setHash('#about'); if(listening) followPage(); }
-function closeAbout(){ view='home'; $('vList').classList.remove('on'); syncInert(); $('backBtn').hidden=true; $('brand').hidden=false; $('listBtn').focus(); setHash(routeOf(active)); if(listening) followPage(); }
-$('backBtn').onclick=closeAbout; $('brand').onclick=()=>go('home',{focus:true});
+$('brand').onclick=()=>go('home',{focus:true});
 document.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{ e.preventDefault(); go(a.dataset.go,{focus:true}); });
-$('listBtn').onclick=()=>view==='about'?closeAbout():go('about');
+$('listBtn').onclick=()=>go('about',{focus:true});
 $('contactBtn').onclick=()=>go('t/contact',{focus:true});
 window.addEventListener('keydown',e=>{
-  if(e.key==='Escape'&&view==='about') closeAbout();
   // scroll keys move the page even when focus is outside it (on load, or on a header button)
   const k=SCROLL_KEYS[e.key]; if(view==='about'||k===undefined||e.altKey||e.ctrlKey||e.metaKey) return;
   if(e.target.closest&&e.target.closest('#scroller')){ grab(); return; }
@@ -863,12 +811,11 @@ syncListen();
 function buildRail(){
   const face=t=>t.box ? `<div class="bfront" data-fit="300">${BOXFRONT}</div>` : `<div class="fface s-${t.style}" data-fit style="${vars(t)}">${faceHTML(t)}</div>`;
   $('rail').innerHTML=TRACKS.map(t=>`<a class="rt${t.step?' sub':''}${t.box?' box':''}" href="${routeOf(t.id)}" data-id="${t.id}" aria-label="${t.contact?'Contact':t.name}"${t.box?'':` style="${vars(t)}"`}><span class="rf">${face(t)}</span></a>`).join('')
-    +`<div class="rbot" aria-hidden="true">${RUN_BOT}</div>`;
+    ;
   $('rail').querySelectorAll('.rt').forEach(a=>{ const show=()=>railPv(a), hide=()=>railPv(null);
     a.addEventListener('pointerenter',show); a.addEventListener('focus',show); a.addEventListener('pointerleave',hide); a.addEventListener('blur',hide);
     a.onclick=e=>{ e.preventDefault(); railPv(null); go(a.dataset.id==='stepup'?'stepup':'t/'+a.dataset.id,{focus:true}); }; });
   fitFaces(); requestAnimationFrame(fitFaces);
-  new ResizeObserver(()=>railBot(active,true)).observe($('rail'));
 }
 function railPv(a){ // the little preview card beside a hovered tape
   const pv=$('rpv'); if(!a){ pv.classList.remove('on'); return; }
@@ -880,24 +827,20 @@ function railPv(a){ // the little preview card beside a hovered tape
 function railSlot(id){ // where a menu tape rests, relative to the stage, ignoring any transform on it
   const a=$('rail').querySelector(`.rt[data-id="${id}"]`), r=$('rail').getBoundingClientRect(), sr=stage.getBoundingClientRect();
   return {x:r.left-sr.left+a.offsetLeft, y:r.top-sr.top+a.offsetTop, w:a.offsetWidth, h:a.offsetHeight}; }
-let botAt=null;
-function railBot(id,instant){ // the robot hops down the menu to the lit tape
-  const bot=$('rail').querySelector('.rbot'), a=$('rail').querySelector(`.rt[data-id="${id}"]`);
-  if(!bot) return; if(!a){ bot.style.opacity=0; botAt=null; return; }
-  const to={x:a.offsetLeft+a.offsetWidth+14, y:a.offsetTop+a.offsetHeight/2-bot.offsetHeight/2}, tf=q=>`translate(${q.x}px,${q.y}px)`;
-  if(botAt&&!instant&&!reduce) bot.animate([{transform:tf(botAt)},{transform:tf({x:(botAt.x+to.x)/2,y:Math.min(botAt.y,to.y)-28})},{transform:tf(to)}],{duration:450,easing:'ease-in-out'});
-  bot.style.transform=tf(to); bot.style.opacity=1; botAt=to; }
 /* the flight: over the first screen of scrolling, each tape leaves the shelf for its place in the menu */
 const phone=window.matchMedia?matchMedia('(max-width:760px)'):{matches:false};
 let SRC={}, SLOT={}, mfT=0;
 const easeOut=x=>1-Math.pow(1-x,3);
 function measureFly(){ // where each menu tape starts (its tape on the shelf, at the top of the page) and where it ends
   const sr=stage.getBoundingClientRect(), y0=$('scroller').scrollTop;
+  const held=items.map(x=>x.hop.style.transform); items.forEach(x=>{ x.hop.style.transform=''; }); // measure the tapes at rest, never mid-bounce
   TRACKS.forEach(t=>{ const st = t.box||t.step ? items[0] : items.find(x=>x.it.id===t.id), r=st.front.getBoundingClientRect(), o=t.step ? 6*(STEP.indexOf(t)+1) : 0;
     SRC[t.id]={cx:r.left-sr.left+r.width/2+o, cy:r.top-sr.top+r.height/2+y0+o, w:r.width*(t.step?240/270:1), h:r.height*(t.step?152/178:1)}; SLOT[t.id]=railSlot(t.id); }); // the five tools leave the box tape-sized
+  items.forEach((x,i)=>{ x.hop.style.transform=held[i]; });
   fly(); }
 function fly(){
   const sc=$('scroller'), p=clamp(sc.scrollTop/$('hero').offsetHeight,0,1), still=reduce||phone.matches;
+  if(p>0) items.forEach(x=>{ x.hopStart=-1e9; }); // the flight lifts off from tapes at rest
   $('scenew').style.opacity=(1-clamp(p*1.6,0,1)).toFixed(3);
   $('rail').classList.toggle('fade',still); $('rail').classList.toggle('landed',p>=.98); $('rail').classList.toggle('show',p>.5);
   if(still) items.forEach(x=>{ x.el.style.visibility=''; });
@@ -930,7 +873,7 @@ onActive.push(id=>{ const from=prevAct, now=performance.now(), flick=now-actAt<3
   const inc=$('s-'+id)&&$('s-'+id).querySelector('.wk'); if(inc) inc.animate([{transform:'translateX(-14px) scale(.985)',opacity:.75},{transform:'none',opacity:1}],{duration:260,easing:'ease-out'}); });
 onActive.push(id=>{
   $('rail').querySelectorAll('.rt').forEach(a=>{ if(a.dataset.id===id) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); });
-  stage.classList.toggle('onshelf',id==='home'); if(id==='home') railPv(null); railBot(id==='home'?null:id);
+  stage.classList.toggle('onshelf',id==='home'); if(id==='home') railPv(null);
   const a=$('rail').querySelector(`.rt[data-id="${id}"]`); if(a&&phone.matches) $('rail').scrollTo({left:a.offsetLeft-$('rail').clientWidth/2+a.offsetWidth/2,behavior:reduce?'auto':'smooth'}); });
 stage.classList.add('onshelf');
 
@@ -1057,39 +1000,20 @@ function landMetric(m,i){ // swoops down, lands with weight, and stays
   setTimeout(()=>{ if(!reduce) document.querySelector('#s-stepup .su').animate([{transform:'translateY(0)'},{transform:'translateY(4px)'},{transform:'translateY(-2px)'},{transform:'none'}],{duration:220}); },300);
 }
 
-/* ================= about ================= */
-function buildList(){
-  const box=`<button class="tp boxtp" data-step="1" aria-label="Step Up Tutoring"><div class="bfront" data-fit="300">${BOXFRONT}</div></button>`;
-  const tps=[...STEP,...SHELF].map(t=>`<button class="tp" data-id="${t.id}" aria-label="${t.contact?'Contact':t.name}"><div class="fface s-${t.style}" data-fit style="${vars(t)}">${faceHTML(t)}</div></button>`).join('');
-  $('aboutTapes').innerHTML=box+tps;
-  $('aboutTapes').querySelectorAll('.tp').forEach(b=>b.onclick=()=>{ if(b.dataset.step) go('stepup',{focus:true}); else go('t/'+b.dataset.id,{focus:true}); });
-  fitFaces(); requestAnimationFrame(fitFaces);
-  if(!reduce){ reveal([document.querySelector('.about')]); [...$('aboutTapes').children].forEach((el,k)=>el.animate([{opacity:0,transform:'translateY(30px)'},{opacity:1,transform:'none'}],{duration:500,delay:200+k*45,easing:'cubic-bezier(.2,1.3,.4,1)',fill:'backwards'})); }
-}
 
 /* ================= frame loop ================= */
 function frame(now){
   if(active!=='home'&&$('scenew').style.opacity==='0.000'){ requestAnimationFrame(frame); return; } // the shelf has scrolled away
   items.forEach((s,i)=>{ s.hover+=(s.hoverT-s.hover)*.18; s.hop.style.transform=`translateY(${off(i,now).toFixed(2)}px)`; });
-  let sx=1,sy=1,rot=0,face=1,shY;
-  if(phase==='land'){
-    bz=Z[cur]; by=topOf(cur)+off(cur,now); shY=by;
-    const s=now-t0, sq=s<90?Math.sin(s/90*Math.PI):0; sx=1+.16*sq; sy=1-.2*sq;
-    face = cur===0 ? 1 : 1; // idle: look toward the front (and the box set)
-    if(s>=(heard.size?120:900) && !reduce && view==='home') launch(now,nextIdle(),heard.size?undefined:{arc:30,dur:600});
+  if(phase==='land'){ // an unseen hopper walks the shelf and sets the beat: each tape bounces as it lands
+    bz=Z[cur]; by=topOf(cur)+off(cur,now);
+    if(now-t0>=120 && !reduce && view==='home' && $('scroller').scrollTop<2) launch(now,nextIdle()); // only while the shelf sits at rest at the top
   } else {
     const u=clamp((now-hop.t0)/hop.dur,0,1);
-    bz=lerp(hop.z0,Z[hop.to],u);
-    const base=lerp(hop.y0,topOf(hop.to)+off(hop.to,now),u);
-    by=base-4*hop.arc*u*(1-u); sy=1+.12*Math.sin(Math.PI*u); sx=1-.08*Math.sin(Math.PI*u); rot=10*Math.sin(Math.PI*u);
-    face = Z[hop.to]<hop.z0 ? -1 : 1;
+    bz=lerp(hop.z0,Z[hop.to],u); by=lerp(hop.y0,topOf(hop.to)+off(hop.to,now),u)-4*hop.arc*u*(1-u);
     if(Z[hop.to]!==hop.z0) dir = hop.to>cur?1:-1;
-    shY=topOf(hop.to)+off(hop.to,now);
     if(u>=1) arrive(hop.to,now);
   }
-  bot.style.transform=`translate3d(0px,${by.toFixed(2)}px,${bz.toFixed(2)}px) rotateY(52deg)`;
-  botFlip.style.transform=`scale(${(sx*face).toFixed(3)},${sy.toFixed(3)}) rotate(${(rot*face).toFixed(2)}deg)`;
-  shadow.style.transform=`translate3d(0px,${(shY-.5).toFixed(2)}px,${bz.toFixed(2)}px) rotateX(90deg)`;
   requestAnimationFrame(frame);
 }
 
