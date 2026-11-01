@@ -182,7 +182,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);grid-template-rows:100%;gap:clamp(24px,3.4vw,56px);align-items:center}
 .dtext{max-height:100%;overflow-y:auto;scrollbar-width:thin} /* an open story can make it taller than the screen: then it scrolls by itself, the walkthrough stays put */
 .card{position:relative;width:100%;max-height:100%;border-radius:16px;border:1px solid rgba(255,255,255,.16);
-  background:radial-gradient(120% 90% at 50% 0%,#17171c,#09090b);overflow:hidden;justify-self:center;align-self:center}
+  background:radial-gradient(120% 90% at 50% 0%,#17171c,#09090b);overflow:hidden;overflow:clip;justify-self:center;align-self:center} /* clip, not hidden: the glow hangs past the edge, and a hidden box can still be scrolled to it */
 .wk-frame>svg{position:absolute;inset:0;width:100%;height:100%}
 .card .glow{position:absolute;inset:auto -20% -40% -20%;height:70%;background:radial-gradient(closest-side,color-mix(in srgb,var(--a) 22%,transparent),transparent);pointer-events:none}
 /* walkthroughs: one big moving piece per project, with buttons for its parts underneath */
@@ -258,9 +258,6 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .story summary{display:inline-flex;align-items:center;gap:10px;cursor:pointer;list-style:none;padding:8px 14px;border:1px solid rgba(255,255,255,.3);border-radius:999px;
   font:700 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#fff}
 .story summary::-webkit-details-marker{display:none}
-.slotghost{position:fixed;z-index:30;pointer-events:none;border-radius:16px;border:1px solid color-mix(in srgb,var(--a) 70%,transparent);transform-origin:0 0;
-  background:linear-gradient(135deg,color-mix(in srgb,var(--a) 45%,#111),#0b0b0d 70%);
-  box-shadow:0 12px 30px rgba(0,0,0,.5)} /* the walkthrough filing itself into its menu slot */
 .story summary::after{content:"+";font-size:14px;color:var(--a)}
 .story[open] summary::after{content:"−"}
 .story summary:hover{border-color:rgba(255,255,255,.6)}
@@ -752,7 +749,7 @@ let view='home', active='home'; // view is always 'home' now that About is a sec
 const onActive=[]; // fn(id), run whenever the section on screen changes
 const routeOf=id=>id==='home'?'':id==='stepup'?'#stepup':id==='about'?'#about':'#t/'+id;
 function setHash(h){ try{ history.replaceState(null,'',h||location.pathname+location.search); }catch(e){} }
-let jumpTo=null, jumpT=0;
+
 let target=null, targetT=0; // while go() scrolls somewhere, the sections it passes on the way don't count
 function setActive(id){ if(id===active) return; active=id;
   if(view!=='about') setHash(routeOf(id));
@@ -762,7 +759,6 @@ function setActive(id){ if(id===active) return; active=id;
 function go(route,opt){ opt=opt||{};
   let [v,arg]=route.split('/'); if(v==='list') v='about';
   const id = v==='stepup' ? 'stepup' : v==='about' ? 'about' : v==='t'&&byId[arg] ? arg : 'home';
-  jumpTo=id; clearTimeout(jumpT); jumpT=setTimeout(()=>{ jumpTo=null; },3000); // a jump lands without the slot swap
   const sc=$('scroller'), top = id==='home' ? 0 : sc.scrollTop+secOf(id).getBoundingClientRect().top-sc.getBoundingClientRect().top;
   const smooth = opt.smooth!==false && !reduce;
   const far=Math.abs(top-sc.scrollTop)>2;
@@ -873,18 +869,6 @@ $('scroller').addEventListener('scroll',()=>{ if(flyQ) return; flyQ=true; reques
 let fpT=0; // the tape follows you once you stop on a section, not for every section a fast scroll passes
 onActive.push(()=>{ if(!listening) return; clearTimeout(fpT); fpT=setTimeout(()=>{ if(listening) followPage(); },500); });
 buildRail();
-/* the slot swap: as one project hands off to the next, its walkthrough files itself into its tape slot in the menu: quick, and out of the way */
-let prevAct=null, actAt=0;
-onActive.push(id=>{ const from=prevAct, now=performance.now(), flick=now-actAt<350, jump=id===jumpTo; prevAct=id; actAt=now; if(jump) jumpTo=null;
-  if(reduce||phone.matches||flick||jump||view!=='home'||!from||from==='home'||id==='home') return;
-  const card=$('s-'+from)&&$('s-'+from).querySelector('.wk'), slot=$('rail').querySelector(`.rt[data-id="${from}"]`); if(!card||!slot) return;
-  const a=card.getBoundingClientRect(), b=slot.getBoundingClientRect(); if(!b.width||a.bottom<0||a.top>innerHeight) return;
-  const g=document.createElement('div'); g.className='slotghost'; g.dataset.id=from;
-  g.style.cssText=`left:${a.left}px;top:${a.top}px;width:${a.width}px;height:${a.height}px;--a:${ACC[from]||'#f5c518'}`; // a plain card in the project's colour: no screenshots
-  document.body.appendChild(g);
-  g.animate([{transform:'none',opacity:.85},{transform:`translate(${b.left-a.left}px,${b.top-a.top}px) scale(${b.width/a.width},${b.height/a.height})`,opacity:.45}],
-    {duration:260,easing:'cubic-bezier(.3,.7,.2,1)'}).onfinish=()=>{ g.remove(); slot.animate([{transform:'scale(1.08)'},{transform:'none'}],{duration:160}); };
-  const inc=$('s-'+id)&&$('s-'+id).querySelector('.wk'); if(inc) inc.animate([{transform:'translateX(-14px) scale(.985)',opacity:.75},{transform:'none',opacity:1}],{duration:260,easing:'ease-out'}); });
 onActive.push(id=>{
   $('rail').querySelectorAll('.rt').forEach(a=>{ if(a.dataset.id===id) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); });
   stage.classList.toggle('onshelf',id==='home'); if(id==='home') railPv(null);
