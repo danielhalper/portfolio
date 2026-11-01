@@ -473,6 +473,7 @@ const SHELF=[ // index 0 = front of the shelf (newest)
  {id:"swayzee",name:"Swayzee",style:"split",c1:"#e63946",c2:"#ffb3c1",c3:"#fff",ink2:"#fff",year:"2024",role:"UX/UI, engineering & conversation design",result:"Talk an AI into saying **yes**",what:"A weekly challenge game: win over AI characters on a live five-minute voice call, from getting a number to pitching investors",link:"https://apps.apple.com/us/app/swayzee/id6748293156",linkLabel:"App Store"},
  {id:"kyron",name:"Kyron Learning",style:"stripes",c1:"#9ad1f5",c2:"#0d2b6b",c3:"#fff",ink2:"#0d2b6b",year:"2022–24",role:"Founding UX engineer",result:"Video lessons that **talk back**",what:"Conversational AI lessons. Founded by **ex-Google** leaders; CEO Rajen Sheth was VP of **Google Cloud AI**.",story:{problem:"A recorded lesson can't answer back when a student gets confused.",built:"As founding UX engineer on conversational AI lessons, I set a lot of the design direction, prototyped, collected feedback, and helped engineer much of the lesson experience.",impact:"Kyron went on to raise a **$14.6M** Series A."},link:"https://app.kyronlearning.com",linkLabel:"Visit"},
  {id:"hero",name:"Hero Chat",style:"marker",c1:"#efe9dc",c2:"#f2a7c3",c3:"#c2185b",ink2:"#1b1b1b",year:"2023",role:"Full stack · UX/UI",result:"**715** ratings worldwide, **4.8★**",what:"AI chatbots, with other people's chats to explore. Built with my brother; live on the App Store as **WWJD**",link:"https://apps.apple.com/us/app/wwjd-what-would-jesus-do/id6445903415?platform=iphone",linkLabel:"iPhone app"},
+ {id:"ease",name:"Ease.",style:"block",c1:"#1F4D3A",c2:"#8fc9a9",c3:"#FAF8F3",ink2:"#FAF8F3",year:"2023",role:"Solo builder",result:"Drafts the notes that take therapists **10 hours** a month",what:"Records a therapy session, with the client's consent, and drafts notes and themes for the therapist to approve"},
  {id:"tfw",name:"That Feeling When",style:"grid",c1:"#a77bff",c2:"#f5c518",c3:"#e63946",ink2:"#111",year:"2020–21",role:"Product lead · team of 4",result:"**19 of 20** kids wanted to play again",what:"My senior capstone: a card game that helps kids learn about emotions. Tested with 40+ kids, and 24 teachers and school psychologists wanted it for class. Rebuilt as a digital game in 2021",link:"https://dhalps.webflow.io/works/that-feeling-when-card-game",linkLabel:"Case study"},
  {id:"quikstik",name:"Quikstik",style:"block",c1:"#1d6fd1",c2:"#9ad1f5",c3:"#fff",ink2:"#fff",year:"2019",role:"Product design",result:"Pitched to **IKEA**",what:"Social home-workout gear with sensor handles",link:"https://dhalps.webflow.io/works/quikstik",linkLabel:"Case study"},
  {id:"bills",name:"Essential Bills",style:"marker",c1:"#efe9dc",c2:"#2a6f3e",c3:"#1b4d2b",ink2:"#1b1b1b",year:"2019",role:"Client design",result:"Strangers paying strangers' bills",what:"Donation app designed for a venture studio",link:"https://dhalps.webflow.io/works/essential-bills",linkLabel:"Case study"},
@@ -514,7 +515,7 @@ function sceneSVG(id,a){ const f=SCENES[id]; return `<svg viewBox="0 0 400 300" 
 
 /* ===== EDIT: ACCENT COLOURS for each project's scene ===== */
 /* accents for scenes (bright, readable on black) */
-const ACC={neat:'#f5c518',jimmy:'#f08a24',swayzee:'#ff5c6c',kyron:'#9ad1f5',hero:'#f2a7c3',tfw:'#b794ff',quikstik:'#5aa8ff',bills:'#6ee7b7',troops:'#2fd3a7',contact:'#7cffc4',
+const ACC={neat:'#f5c518',jimmy:'#f08a24',swayzee:'#ff5c6c',kyron:'#9ad1f5',hero:'#f2a7c3',ease:'#7fcfa4',tfw:'#b794ff',quikstik:'#5aa8ff',bills:'#6ee7b7',troops:'#2fd3a7',contact:'#7cffc4',
   sidekick:'#64c9d0',engine:'#64c9d0',onboard:'#64c9d0',portal:'#64c9d0',match:'#64c9d0'}; // Step Up's turquoise
 /* ===== EDIT: THE FIVE STEP UP TOOLS — their sections follow Step Up's, and sit under it in the menu ===== */
 const STEP=[
@@ -544,6 +545,8 @@ const WALK={
  kyron:{kind:'video',src:'assets/kyron-lesson.mp4',poster:'assets/kyron-lesson.jpg',alt:'Kyron’s public sample lesson: the overview, the lecture video, then the question a student answers in conversation',
    chapters:[{id:'lesson',label:'Lesson',t:0},{id:'talk',label:'Conversation',t:13.6}]},
  hero:{kind:'pan',imgs:[{src:'assets/prev-hero-chat.jpg',alt:'Hero Chat on a laptop'}]},
+ ease:{kind:'video',aspect:'4/3',src:'assets/ease.mp4',poster:'assets/ease.jpg',alt:'Ease. on a phone: recording a session, the drafted notes, then the themes over time',
+  chapters:[{id:'record',label:'Record',t:0},{id:'notes',label:'Notes',t:5.3},{id:'timeline',label:'Timeline',t:12.2}]},
  tfw:{kind:'pan',imgs:[{src:'assets/prev-tfw.jpg',alt:'The online version of That Feeling When'}]},
  quikstik:{kind:'pan',imgs:[{src:'assets/prev-quikstik.jpg',alt:'The Quikstik handles'}]},
  bills:{kind:'video',tag:'Figma prototype · 2019',src:'assets/bills-walk.mp4',poster:'assets/bills-walk.jpg',aspect:'4/3',alt:'Essential Bills, Daniel\'s 2019 Figma prototype: Jack\'s video story and his overdue electric bill, paying it ($123 plus a $6 fee) and confirming, then a thank-you screen with a Keep The Lights On badge',
@@ -555,7 +558,7 @@ const WALK={
 // the small preview beside a hovered tape (the box set shows Sidekick's)
 const PREV={sidekick:'assets/sidekick-clean.jpg',engine:'assets/engine-collage.jpg',onboard:'assets/prev-onboarding.jpg',portal:'assets/prev-tutorportal.jpg',
   match:'assets/prev-matchmate.jpg',neat:'assets/neatfreak-ui.jpg',jimmy:'assets/jimmy.jpg',swayzee:'assets/swayzee-phone.jpg',kyron:'assets/kyron.jpg',
-  hero:'assets/prev-hero-chat.jpg',tfw:'assets/prev-tfw.jpg',quikstik:'assets/prev-quikstik.jpg',bills:'assets/prev-essential-bills.jpg',troops:'assets/prev-troops.jpg'};
+  hero:'assets/prev-hero-chat.jpg',ease:'assets/prev-ease.jpg',tfw:'assets/prev-tfw.jpg',quikstik:'assets/prev-quikstik.jpg',bills:'assets/prev-essential-bills.jpg',troops:'assets/prev-troops.jpg'};
 const md=x=>String(x).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');
 const plain=x=>String(x).replace(/\*\*/g,'');
 const byId=Object.fromEntries([...SHELF,...STEP].map(t=>[t.id,t]));
@@ -654,6 +657,7 @@ const NOTES={
  swayzee:["I love games like Wordle, and I wanted to build one that was powered by AI and way more interactive.", "Back then, nobody was really using AI for games or challenges, and AI makes them so much more open-ended.", "In Swayzee, you try to talk an AI into saying yes.", "There's a new challenge every week, from getting someone's number to pitching AI investors,", "all on a live five-minute voice call.", "I led product and UX, built it with OpenAI, and launched it on the App Store in 2024."],
  kyron:["At Kyron I was the founding UX engineer, on conversational AI lessons that students can talk back to.", "Kyron was founded by ex-Google leaders; our CEO, Rajen Sheth, was VP of Google Cloud AI.", "I set a lot of the design direction, prototyped, collected feedback, and helped engineer much of the lesson experience.", "Kyron is backed by a $14.6 million Series A."],
  hero:["Hero Chat lets you ask AI chatbots anything, and then browse other people's anonymous chats to see what they asked.", "I built it full stack and shipped it to the App Store, and it got over 500 reviews."],
+ ease:["So I built Ease for therapist friends and my own therapist, because too much got lost between sessions.", "With the client's consent, it records the session, drafts the notes, and tracks what keeps coming up.", "I designed it and built it with Claude.", "Because of HIPAA, I only ever used it in my own sessions."],
  tfw:["That Feeling When was my senior capstone, with three other Stanford designers.", "Coming out of the pandemic, a lot of kids could only name a few emotions, so we built a card game to grow their emotional vocabulary.", "One player secretly gets a different situation, and everyone has to explain how they'd feel to find them.", "We tested it with over 40 kids, and 19 out of 20 wanted to play again.", "In 2021 I took it digital and built out the whole game."],
  quikstik:["Quikstik is compact home workout gear, with handles that count your reps.", "I designed it for people who don't have the time or the space for a gym, plus an app that keeps it social.", "We got to present it to IKEA."],
  bills:["So many people are behind on their bills, and so many people want to help.", "That was the idea behind Essential Bills:", "strangers can pay each other's overdue bills, the essentials like electric and water.", "I designed it for a venture studio, and every bill comes with the person's story, so giving feels personal."],
