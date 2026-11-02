@@ -175,14 +175,9 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .bside{background:linear-gradient(#3a9aa1,#2c7d83)}
 .box.hov .bfront{box-shadow:inset 0 0 0 2px rgba(0,0,0,.12),0 0 34px 4px rgba(245,197,24,.45)}
 .box:focus-visible .bfront{box-shadow:0 0 0 3px var(--mint)}
-/* Side A: a record-crate divider for Step Up stands in front of its five tapes */
-.box.dv .bfront{border-radius:4px;clip-path:polygon(0 0,46% 0,52% 15%,100% 15%,100% 100%,0 100%)}
-.dv .in{position:absolute;inset:0;border:0;padding:0;color:#111}
-.dv .tab{position:absolute;left:12px;top:9px;font:700 11px/1 var(--mono);letter-spacing:.2em}
-.dv .t1{position:absolute;left:14px;top:46px;white-space:nowrap;font:400 50px/.84 var(--display);letter-spacing:.01em}
-.dv .t2{position:absolute;left:15px;top:90px;white-space:nowrap;font:400 26px/.9 var(--display);letter-spacing:.06em}
-.dv .yr{position:absolute;left:15px;bottom:14px;right:auto;top:auto;font:700 9px/1 var(--mono);letter-spacing:.14em}
-.dv .bt0,.dv .bs0{background:none}
+/* a record-store sticker on the box set: the one place to start */
+.stk{position:absolute;right:16px;bottom:36px;width:58px;height:58px;border-radius:50%;background:var(--gold);color:#111;display:flex;align-items:center;justify-content:center;text-align:center;
+  font:700 9px/1.15 var(--mono);letter-spacing:.12em;transform:rotate(12deg);box-shadow:0 2px 0 rgba(0,0,0,.25),inset 0 0 0 2px rgba(0,0,0,.08)}
 
 /* shelf bot */
 .shadow i{position:absolute;left:-20px;top:-8px;width:40px;height:16px;border-radius:50%;background:rgba(0,0,0,.55);filter:blur(2px)}
@@ -586,11 +581,10 @@ const secOf=id=>$('s-'+id);
 
 /* ================= build the shelf: box set at the front, then tapes ================= */
 const row=$('row');
-const tapeOf=t=>Object.assign({},t,{w:240,h:152,d:26});
-const ITEMS=[{box:true,id:'stepup',name:'Step Up Tutoring',w:240,h:178,d:4},...STEP.map(tapeOf),...SHELF.map(tapeOf)]; // Side A: Step Up's divider and its five tapes; Side B: the rest
+const ITEMS=[{box:true,id:'stepup',name:'Step Up Tutoring',w:270,h:178,d:58},...SHELF.map(t=>Object.assign({},t,{w:240,h:152,d:26}))];
 const N=ITEMS.length;
-// z positions: the divider just in front of its tapes, then a clear gap between Side A and Side B
-const Z=[]; { let z=0; ITEMS.forEach((it,i)=>{ if(i===1) z-=34; else if(i===STEP.length+1) z-=110; else if(i>STEP.length+1) z-=48; else if(i>1) z-=40; Z.push(z); }); const mid=(Z[0]+Z[N-1])/2; for(let i=0;i<N;i++) Z[i]-=mid; }
+// z positions: a clear gap after the box set, so the tape behind it doesn't read as part of the box
+const Z=[]; { let z=0; ITEMS.forEach((it,i)=>{ if(i===1) z-=170; else if(i>1) z-=64; Z.push(z); }); const mid=(Z[0]+Z[N-1])/2; for(let i=0;i<N;i++) Z[i]-=mid; }
 const BASE=76; // bottoms of all items line up here
 function cube(w,h,d,front,back,top,side,cls){ // generic box made of six faces
   return `<div class="${cls} face" style="width:${w}px;height:${h}px;left:0;top:0;transform:translateZ(${d/2}px)">${front}</div>
@@ -602,12 +596,11 @@ function cube(w,h,d,front,back,top,side,cls){ // generic box made of six faces
 }
 const BOXFRONT=`<div class="in"><div class="k">THE BOX SET</div><div class="t1">STEP UP</div><div class="t2">TUTORING</div><div class="yr">2020 – NOW</div></div>
   <div class="sp">${STEP.map(t=>`<i style="--c:${t.c2}"></i>`).join('')}</div>`;
-const DIVFRONT=`<div class="in"><div class="tab">SIDE A</div><div class="t1">STEP UP</div><div class="t2">TUTORING</div><div class="yr">2020 – NOW · 5 TRACKS</div></div>`;
 const items=ITEMS.map((it,i)=>{
   const el=document.createElement('div');
   if(it.box){
-    el.className='box dv'; el.setAttribute('aria-label','Step Up Tutoring, Side A. Start here');
-    el.innerHTML=`<div class="hop">${cube(it.w,it.h,it.d,DIVFRONT,'','','','bfront bf').replace('class="bfront bfb face"','class="bf bback face"').replace(/class="face bfront bft"/,'class="face bf bt0"').replace(/class="face bfront bfs"/g,'class="face bf bs0"')}</div>`;
+    el.className='box'; el.setAttribute('aria-label','Step Up Tutoring, the box set. Start here');
+    el.innerHTML=`<div class="hop">${cube(it.w,it.h,it.d,BOXFRONT+'<span class="stk" aria-hidden="true">START<br>HERE</span>','','<i></i><i></i><i></i><i></i><i></i>','','bfront bf').replace('class="bfront bfb face"','class="bf bback face"').replace(/class="face bfront bft"/,'class="face bf btop"').replace(/class="face bfront bfs"/g,'class="face bf bside"')}</div>`;
   } else {
     el.className='tape s-'+it.style; el.style.cssText=vars(it); el.setAttribute('aria-label',it.contact?'Contact Daniel':`${it.name}, ${it.year}`);
     el.innerHTML=`<div class="hop"><div class="face front">${faceHTML(it)}<span class="tplay" aria-hidden="true">▶</span></div><div class="face back"><div class="backlabel"></div><div class="trap"></div></div>
@@ -633,7 +626,7 @@ function showHint(i){
   if(i<0){ $('hintT').innerHTML='&nbsp;'; $('hintS').textContent='Each tape is a project'; pv.classList.remove('on'); return; }
   const it=ITEMS[i], src=PREV[it.box?'sidekick':it.id];
   if(src){ const img=pv.firstElementChild; if(img.getAttribute('src')!==src) img.src=src; pv.classList.add('on'); } else pv.classList.remove('on');
-  if(it.box){ $('hintT').textContent='Step Up Tutoring'; $('hintS').textContent='Side A · the company I co-founded, and the five tapes behind it'; }
+  if(it.box){ $('hintT').textContent='Step Up Tutoring'; $('hintS').textContent='The company I co-founded · five tapes inside'; }
   else { $('hintT').textContent=it.contact?'Your track here':it.name; $('hintS').textContent=it.contact?'Get in touch':`${it.year} · ${plain(it.result)}`; }
 }
 
@@ -862,8 +855,8 @@ const easeOut=x=>1-Math.pow(1-x,3);
 function measureFly(){ // where each menu tape starts (its tape on the shelf, at the top of the page) and where it ends
   const sr=stage.getBoundingClientRect(), y0=$('scroller').scrollTop;
   const held=items.map(x=>x.hop.style.transform); items.forEach(x=>{ x.hop.style.transform=''; }); // measure the tapes at rest, never mid-bounce
-  TRACKS.forEach(t=>{ const st = t.box ? items[0] : items.find(x=>x.it.id===t.id), r=st.front.getBoundingClientRect(), o=0;
-    SRC[t.id]={cx:r.left-sr.left+r.width/2+o, cy:r.top-sr.top+r.height/2+y0+o, w:r.width, h:r.height}; SLOT[t.id]=railSlot(t.id); }); // every tape leaves from its own place on the shelf
+  TRACKS.forEach(t=>{ const st = t.box||t.step ? items[0] : items.find(x=>x.it.id===t.id), r=st.front.getBoundingClientRect(), o=t.step ? 6*(STEP.indexOf(t)+1) : 0;
+    SRC[t.id]={cx:r.left-sr.left+r.width/2+o, cy:r.top-sr.top+r.height/2+y0+o, w:r.width*(t.step?240/270:1), h:r.height*(t.step?152/178:1)}; SLOT[t.id]=railSlot(t.id); }); // the five tools leave the box tape-sized
   items.forEach((x,i)=>{ x.hop.style.transform=held[i]; });
   fly(); }
 function fly(){
