@@ -647,7 +647,7 @@ new ResizeObserver(place).observe(stage); if(document.fonts) document.fonts.read
 function bounce(s){ if(s<0||s>760) return 0; if(s<90) return 9*Math.sin(s/90*Math.PI/2);
   const u=(s-90)/670; return 9*(1-u)-38*Math.sin(Math.PI*Math.min(1,u*1.25))*(u<.8?1:0)+(u>=.8?5*Math.sin((u-.8)/.2*Math.PI):0); }
 function off(i,now){ const s=items[i]; return bounce(now-s.hopStart)-s.hover*22; }
-let cur=0, dir=1, phase='land', t0=performance.now(), hop=null, bz=Z[1], by=0;
+let cur=0, dir=1, phase='start', t0=performance.now(), hop=null, bz=Z[0], by=0; // the walk starts on the box set, with a bounce
 function launch(now,to,o){ o=o||{}; const dz=Math.abs(Z[to]-bz);
   hop={z0:bz,y0:by,to,t0:now,dur:o.dur||540,arc:o.arc||(64+Math.min(110,dz*.25))}; phase='air'; }
 function nextIdle(){ // walk the shelf in order, back and forth, box set included
@@ -1014,7 +1014,8 @@ function landMetric(m,i){ // swoops down, lands with weight, and stays
 function frame(now){
   if(active!=='home'&&$('scenew').style.opacity==='0.000'){ requestAnimationFrame(frame); return; } // the shelf has scrolled away
   items.forEach((s,i)=>{ s.hover+=(s.hoverT-s.hover)*.18; s.hop.style.transform=`translateY(${off(i,now).toFixed(2)}px)`; });
-  if(phase==='land'){ // an unseen hopper walks the shelf and sets the beat: each tape bounces as it lands
+  if(phase==='start'){ if(now-t0>500) arrive(0,now); } // once the page has settled in view
+  else if(phase==='land'){ // an unseen hopper walks the shelf and sets the beat: each tape bounces as it lands
     bz=Z[cur]; by=topOf(cur)+off(cur,now);
     if(now-t0>=120 && !reduce && view==='home' && $('scroller').scrollTop<2) launch(now,nextIdle()); // only while the shelf sits at rest at the top
   } else {
