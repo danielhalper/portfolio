@@ -347,12 +347,10 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .headline{top:64px}
   .headline h1{font-size:clamp(34px,10.4vw,46px)}
   .press{font-size:14px;gap:12px;padding:11px 22px 11px 11px}.press .pi{width:32px;height:32px}
-  .sec{height:auto}
-  .scroller{scroll-snap-type:none} /* phones: projects aren't one screen tall, and proximity snapping stops a flick short on iPhone, so scroll freely */
-  .dmain,.su{position:static;padding:112px 16px 110px}
+  .dmain,.su{position:static;height:100%;box-sizing:border-box;padding:112px 16px 110px} /* each project is one screen, so a swipe snaps to the next */
   .dmain{display:flex;flex-direction:column;gap:12px;align-items:stretch}
   .dtext{order:-1}
-  .card{flex:none;height:min(44vh,360px);width:auto;max-height:none;max-width:none;align-self:stretch}
+  .card{flex:1 1 auto;min-height:0;max-height:360px;width:auto;max-height:none;max-width:none;align-self:stretch}
   .wk-frame{flex:1;min-height:0;aspect-ratio:auto}
   .dtext h2{font-size:clamp(46px,13vw,64px)}
   .result{font-size:clamp(22px,6.4vw,28px);margin-top:8px}
@@ -372,7 +370,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .ml::before{display:none}
   .hls{font-size:16px;margin-top:14px}
   .wide{display:none}
-  .about{position:static;display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding:112px 16px 110px}
+  .about{position:static;height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding:112px 16px 110px}
   .me{width:150px;transform:rotate(-2deg);justify-self:auto}
   .about h2{font-size:30px}
   .about p{font-size:13px;margin-top:12px}
@@ -381,6 +379,10 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .li em{display:block;margin:6px 0 0}
 }
 @media (max-width:760px) and (min-height:740px){ .what{display:block;margin-top:8px;line-height:1.45} } /* taller phones have room for what each project is */
+@media (max-width:760px) and (max-height:739px){ /* short phones: About still fits one screen */
+  .about{gap:10px}.me{width:84px}.about h2{font-size:26px}.about p{font-size:12px;line-height:1.6;margin-top:8px}
+  .facts{gap:8px;margin-top:10px;padding-top:10px}.facts b{font-size:15px}.about .acts{margin-top:10px}
+}
 @media (prefers-reduced-motion:reduce){
   .spinning .reel,.press::before,.listen::before,.eq i,.wk-pan img,.wk-reel{animation:none!important}
   .scene,.wk-pan img,.pv,.rail.fade .rt{transition:none}
