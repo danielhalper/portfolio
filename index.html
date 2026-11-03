@@ -11,8 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Permanent+Marker&family=Rubik+Mono+One&display=swap" rel="stylesheet">
 <style>
-/* Flapjack (Taylor Penton): licensed files go in assets/fonts; until then titles fall back to Bebas */
-@font-face{font-family:"Flapjack";src:url(assets/fonts/flapjack.woff2) format("woff2"),url(assets/fonts/flapjack.woff) format("woff");font-display:swap}
+/* Kari (Taylor Penton): licensed files go in assets/fonts; until then titles fall back to Bebas */
+@font-face{font-family:"Kari";src:url(assets/fonts/kari.woff2) format("woff2"),url(assets/fonts/kari.woff) format("woff");font-display:swap}
 :root{
   --bg:#0d0b08; --ink:#ebe3d3; --line:rgba(235,227,211,.4);
   --stage:#0d0b08; /* warm near-black, like the inside of a tape case */
@@ -22,7 +22,7 @@
   --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   --display:"Bebas Neue","Arial Narrow","Roboto Condensed",sans-serif-condensed,Impact,sans-serif;
   --serif:"Instrument Serif","Iowan Old Style","Palatino Linotype",Georgia,serif; /* tape labels only */
-  --title:"Flapjack","Bebas Neue","Arial Narrow",Impact,sans-serif; /* hand-drawn sign lettering */
+  --title:"Kari","Bebas Neue","Arial Narrow",Impact,sans-serif; /* chunky 70s poster lettering */
   --fw:min(600px,62vw);
   --railw:clamp(104px,10vw,150px); /* room on the left for the tape menu */
   box-sizing:border-box;
@@ -74,7 +74,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 
 /* home */
 .headline{position:absolute;left:0;right:0;top:clamp(70px,13vh,120px);z-index:12;text-align:center;padding:0 20px;transition:opacity .5s,transform .6s}
-.headline h1{margin:0;font:400 clamp(32px,4.2vw,64px)/1.08 var(--title);letter-spacing:.01em}
+.headline h1{margin:0;font:400 clamp(30px,3.6vw,54px)/1.1 var(--title);letter-spacing:.025em} /* Kari is heavy: smaller and a little open so the shelf stays the star */
 .headline .by{font:400 15px/1.4 var(--mono);letter-spacing:.04em;color:rgba(235,227,211,.6)}
 .headline h1 em{font-style:normal;color:var(--gold)}
 .byrow{margin-top:12px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:12px 20px}
@@ -279,7 +279,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .met.on{opacity:1}
 .mi{width:clamp(40px,4vw,58px);height:clamp(40px,4vw,58px);margin-bottom:6px}
 .mi svg{width:100%;height:100%;display:block}
-.mn{font:400 clamp(48px,5.4vw,96px)/.9 var(--title);letter-spacing:0;white-space:nowrap}
+.mn{font:400 clamp(44px,4.8vw,84px)/.9 var(--title);letter-spacing:.01em;white-space:nowrap}
 .ml{margin-top:10px;font:400 clamp(15px,1.3vw,18px)/1.35 var(--mono);color:rgba(235,227,211,.82)}
 .ml::before{content:"";display:block;width:40px;height:3px;background:var(--gold);margin-bottom:10px}
 .hls{margin-top:clamp(18px,3.4vh,40px);display:flex;flex-direction:column;gap:6px;font:400 clamp(15px,1.3vw,18px)/1.45 var(--mono);color:rgba(235,227,211,.75);opacity:0;transition:opacity .8s}
@@ -369,7 +369,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .met{display:grid;grid-template-columns:40px auto;column-gap:12px;align-items:center}
   .mi{grid-row:1/3;margin:0}
   .mn{font-size:clamp(50px,15vw,64px)}
-  .ml{margin-top:2px;font-size:14px}
+  .ml{margin-top:7px;font-size:14px}
   .ml::before{display:none}
   .hls{font-size:14px;margin-top:14px}
   .wide{display:none}
