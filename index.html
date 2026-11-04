@@ -328,6 +328,9 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .rail.fade .rt{transition:opacity .3s}
 .rt.box{aspect-ratio:300/190}
 .rt.sub{height:calc(var(--rh)*.84);margin-left:12px}
+.rt.sub::before{content:"";position:absolute;left:-7px;top:-5px;bottom:0;width:1px;background:rgba(235,227,211,.2);pointer-events:none;opacity:0;transition:opacity .4s} /* Step Up's five tools hang off the box set on one faint line */
+.rt.sub.end::before{bottom:50%;width:4px;background:none;border:solid rgba(235,227,211,.2);border-width:0 0 1px 1px;border-bottom-left-radius:4px}
+.rail.landed .rt.sub::before{opacity:1}
 .rf{position:absolute;inset:0;border-radius:3px;overflow:hidden;transform-origin:0 50%;filter:saturate(.7) brightness(.75)} /* switching cassettes is instant; only hover eases */
 .rt .fface,.rt .bfront{position:absolute;left:0;top:0;transform-origin:0 0}
 .rt .bfront{width:300px;height:190px}
@@ -349,6 +352,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .rail::-webkit-scrollbar{display:none}
   .rail:not(.show){background:none} /* keep the first screen clear */
   .rt.sub{margin-left:0}
+  .rt.sub::before,.rt.sub.end::before{left:-6px;right:0;top:auto;bottom:-6px;width:auto;height:1px;border:0;border-radius:0;background:rgba(235,227,211,.2)} /* along the strip, the line runs under them */
+  .rail.show .rt.sub::before{opacity:1}
   .rt[aria-current="true"] .rf{transform:translateY(-6px)}
 }
 @media (max-width:760px){
@@ -843,7 +848,7 @@ syncListen();
 /* ================= the tape menu ================= */
 function buildRail(){
   const face=t=>t.box ? `<div class="bfront" data-fit="300">${BOXFRONT}</div>` : `<div class="fface s-${t.style}" data-fit style="${vars(t)}">${faceHTML(t)}</div>`;
-  $('rail').innerHTML=TRACKS.map(t=>`<a class="rt${t.step?' sub':''}${t.box?' box':''}" href="${routeOf(t.id)}" data-id="${t.id}" aria-label="${t.contact?'Contact':t.name}"${t.box?'':` style="${vars(t)}"`}><span class="rf">${face(t)}</span></a>`).join('')
+  $('rail').innerHTML=TRACKS.map((t,i)=>`<a class="rt${t.step?' sub':''}${t.step&&!(TRACKS[i+1]||{}).step?' end':''}${t.box?' box':''}" href="${routeOf(t.id)}" data-id="${t.id}" aria-label="${t.contact?'Contact':t.name}"${t.box?'':` style="${vars(t)}"`}><span class="rf">${face(t)}</span></a>`).join('')
     ;
   $('rail').querySelectorAll('.rt').forEach(a=>{ const show=()=>railPv(a), hide=()=>railPv(null);
     a.addEventListener('pointerenter',show); a.addEventListener('focus',show); a.addEventListener('pointerleave',hide); a.addEventListener('blur',hide);
