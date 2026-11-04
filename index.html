@@ -239,8 +239,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .wk-reel{position:absolute;top:4px;left:5px;width:22px;height:22px;border-radius:50%;background:#d8d4cb;box-shadow:inset 0 0 0 5px #d8d4cb,inset 0 0 0 6px #8a8a8a}
 .wk-reel+.wk-reel{left:auto;right:5px}
 .wk-reel::before{content:"";position:absolute;inset:6px;border-radius:50%;background:repeating-conic-gradient(#2a2a2a 0 20deg,transparent 20deg 60deg)}
-.wk.run .wk-reel{animation:spin 1.6s linear infinite}
-.wk.run .wk-deck{box-shadow:inset 0 2px 6px rgba(0,0,0,.8),0 0 0 1px #8a6040}
+.rolling .wk.run .wk-reel{animation:spin 1.6s linear infinite} /* the reels turn only while the tape is playing */
+.rolling .wk.run .wk-deck{box-shadow:inset 0 2px 6px rgba(0,0,0,.8),0 0 0 1px #8a6040}
 /* voice notes: listen button and captions */
 .listen{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid rgba(235,227,211,.45);border-radius:3px;padding:12px 16px;cursor:pointer;
   font:700 11px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#ebe3d3}
@@ -763,7 +763,7 @@ function readAlong(){ const ls=NOTES[noteId]; let k=0; clearTimeout(ccTimer);
   next(); }
 function ccHide(){ $('cc').hidden=true; stage.classList.remove('cc-on'); }
 const listenBtn=note=>`<button class="listen" data-note="${note}" aria-pressed="false"><span aria-hidden="true">▶</span> <span class="lt">Hear it from me</span></button>`;
-function syncListen(){ const b=$('soundBtn');
+function syncListen(){ const b=$('soundBtn'); document.body.classList.toggle('rolling',listening);
   b.innerHTML = listening ? '<span aria-hidden="true">❚❚</span> Pause' : '<span aria-hidden="true">▶</span> Play<span class="lg"> the tape</span>';
   b.setAttribute('aria-pressed',listening); b.setAttribute('aria-label',listening?'Pause the voice notes and music':'Play Daniel’s voice notes with music');
   const p=$('pressBtn'); p.classList.toggle('used',listening||heard.size>0); p.setAttribute('aria-pressed',listening);
