@@ -101,12 +101,12 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .press .ps{font-weight:400;letter-spacing:.06em;opacity:.7}
 .pw{position:relative;display:inline-block}
 /* a note in pen beside the button, written on once, the way you'd scribble on a tape's label. Each letter sits a little off so it reads as handwriting */
-.scrawl{position:absolute;right:100%;top:-12px;margin-right:58px;white-space:nowrap;font:400 24px/1 var(--hand);color:rgba(235,227,211,.92);
+.scrawl{position:absolute;right:100%;top:5px;margin-right:58px;white-space:nowrap;font:400 24px/1 var(--hand);color:rgba(235,227,211,.92);
   transform:rotate(-4deg);transform-origin:100% 100%;pointer-events:none;transition:opacity .4s}
 .scrawl i{display:inline-block;font-style:normal;transform:translateY(var(--y)) rotate(var(--r));clip-path:inset(-30% 100% -30% -10%)}
 .scrawl.go i{animation:ink var(--d) linear var(--t) forwards}
 @keyframes ink{to{clip-path:inset(-30% -10% -30% -10%)}}
-.scrawl svg{position:absolute;right:-54px;top:18px;width:50px;height:36px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transform:rotate(4deg)}
+.scrawl svg{position:absolute;right:-54px;top:11px;width:50px;height:36px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transform:rotate(4deg)}
 .scrawl path{stroke-dasharray:1;stroke-dashoffset:1}
 .scrawl.go path{animation:pen .45s cubic-bezier(.3,.1,.4,1) var(--t) forwards}.scrawl.go .hd{animation-duration:.22s;animation-delay:calc(var(--t) + .42s)}
 @keyframes pen{to{stroke-dashoffset:0}}
@@ -843,7 +843,7 @@ syncListen();
     const d=60+(i*37%5)*9, y=(((i*53)%5)-2)*.7-i*.12, r=(((i*29)%7)-3)*1.1; t+=d;
     return `<i style="--t:${t-d}ms;--d:${d}ms;--y:${y.toFixed(1)}px;--r:${r.toFixed(1)}deg">${c}</i>`; }).join('');
   el.querySelectorAll('path').forEach(p=>p.setAttribute('pathLength',1)); el.style.setProperty('--t',t+120+'ms');
-  const go=()=>setTimeout(()=>{ if(!$('pressBtn').classList.contains('used')) el.classList.add('go'); },Math.max(0,4550-performance.now())); // 4.55s after the page opens: a nudge for anyone who hasn't pressed it yet
+  const go=()=>setTimeout(()=>{ if(!$('pressBtn').classList.contains('used')) el.classList.add('go'); },Math.max(0,4400-performance.now())); // 4.4s after the page opens: a nudge for anyone who hasn't pressed it yet
   if(document.fonts&&document.fonts.load) document.fonts.load('24px "Covered By Your Grace"').then(go,go); else go();
 })();
 
