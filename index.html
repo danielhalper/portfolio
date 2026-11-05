@@ -783,7 +783,7 @@ function listen(id){ // the beat plays on its own for a couple of seconds, then 
   if(!beat.paused&&beat.readyState>2) lead(); else { beat.addEventListener('playing',lead,{once:true}); leadTimer=setTimeout(lead,3000); } }
 let introNext=false;
 function voiceDone(){ if(!listening) return; fade(BEAT.level,1.2); ccTimer=setTimeout(ccHide,1200);
-  if(introNext&&noteId==='home'){ introNext=false; setTimeout(()=>{ if(listening&&active==='home'&&view==='home') go('stepup',{focus:true}); },2700); } } // a beat after the intro, unless they've moved on
+  if(introNext&&noteId==='home'){ introNext=false; setTimeout(()=>{ if(listening&&active==='home'&&view==='home') go('stepup',{focus:true}); },6700); } } // a few bars after the intro, unless they've moved on
 function stopListening(){ introNext=false; listening=false; noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); ccHide();
   if(decks){ voiceEl.pause(); decks.forEach(d=>fadeDeck(d,0,.4)); setTimeout(()=>{ if(!listening) decks.forEach(d=>d.el.pause()); },450); }
   syncListen(); }
