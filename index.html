@@ -211,12 +211,31 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .wk-frame{position:relative;flex:none;width:100%;aspect-ratio:var(--ar,16/10);overflow:hidden;background:#09090b;border-radius:4px;
   box-shadow:0 0 0 2px #050403,0 0 0 3px rgba(235,227,211,.06)} /* the screen sits in a lip; the video itself is untouched */
 .wk-frame>video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-.wk-pan img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity 1.2s;animation:kb 16s ease-in-out infinite alternate;animation-play-state:paused}
-.wk-pan img.on{opacity:1}
-.wk.run .wk-pan img{animation-play-state:running}
+.wk-pan .pg{position:absolute;inset:0;opacity:0;transition:opacity 1.2s;animation:kb 16s ease-in-out infinite alternate}
+.wk-pan .pg.on{opacity:1}
+.wk-pan img,.wk-pan .fx{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 @keyframes kb{from{transform:scale(1.02) translate(-1%,1%)}to{transform:scale(1.1) translate(1.5%,-1.5%)}}
-.wk-pan img.ui{animation-name:kbui} /* app screens zoom less, so their edges stay in frame */
+.wk-pan .pg.ui{animation-name:kbui} /* app screens zoom less, so their edges stay in frame */
 @keyframes kbui{from{transform:none}to{transform:scale(1.035)}}
+.wk-pan .pg.mv{animation:none} /* a photo with a move of its own starts it each time it comes up */
+.wk-pan .pg.mv:is(.on,.out){animation:var(--mv) var(--ms) linear both}
+@keyframes push{from{transform:scale(1.08)}to{transform:scale(1.18) translate(0,1.5%)}}
+@keyframes pull{from{transform:scale(1.3)}to{transform:scale(1.14)}}
+@keyframes panr{from{transform:scale(1.2) translate(-3%,0)}to{transform:scale(1.2) translate(3%,0)}}
+@keyframes panl{from{transform:scale(1.2) translate(3%,1%)}to{transform:scale(1.2) translate(-3%,-1%)}}
+@keyframes pand{from{transform:scale(1.22) translate(0,7%)}to{transform:scale(1.22) translate(0,-7%)}}
+@keyframes nudge{from{transform:none}to{transform:scale(1.08)}}
+/* That Feeling When's monsters, drawn over their slides: they breathe, look round, blink and grin */
+.fx-bob{animation:bob 3.4s ease-in-out var(--t) infinite alternate}
+@keyframes bob{to{transform:scale(1.012,1.03)}}
+.fx-look{animation:look 7.6s ease-in-out var(--t) infinite}
+@keyframes look{0%,12%,100%{transform:none}18%,34%{transform:translate(calc(var(--d)*-1px),calc(var(--d)*.2px))}
+  40%,56%{transform:translate(calc(var(--d)*1px),calc(var(--d)*-.3px))}62%,86%{transform:translate(calc(var(--d)*.3px),calc(var(--d)*.5px))}}
+.fx-lid{transform:scaleY(0);transform-box:fill-box;transform-origin:top;animation:blink 4.3s var(--t) infinite}
+@keyframes blink{0%,92%,100%{transform:scaleY(0)}95.5%{transform:scaleY(1)}}
+.fx-mouth{animation:grin 6.6s ease-in-out var(--t) infinite}
+@keyframes grin{0%,50%,90%,100%{transform:none}57%,61%{transform:scale(1.06,1.2)}67%{transform:scale(1.02,1.05)}73%,79%{transform:scale(1.06,1.2)}}
+.wk:not(.run) .wk-pan .pg,.wk:not(.run) .fx *{animation-play-state:paused}
 .wk-frame:fullscreen{background:#000}
 .wk-demo{position:absolute;inset:0}
 .wk-still{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
@@ -408,8 +427,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .facts{gap:8px;margin-top:10px;padding-top:10px}.facts b{font-size:15px}.about .acts{margin-top:10px}
 }
 @media (prefers-reduced-motion:reduce){
-  .spinning .reel,.eq i,.wk-pan img,.wk-reel{animation:none!important}
-  .scene,.wk-pan img,.pv,.rail.fade .rt{transition:none}
+  .spinning .reel,.eq i,.wk-pan .pg,.fx *,.wk-reel{animation:none!important}
+  .scene,.wk-pan .pg,.pv,.rail.fade .rt{transition:none}
 }
 </style>
 </head>
@@ -561,7 +580,8 @@ const STEP=[
 /* ===== EDIT: WALKTHROUGHS — the one moving piece each project shows =====
    kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
    or 'demo' (a clickable look-alike in assets/demos/<id>.js). aspect: the frame's shape.
-   chapters: buttons under it, {id,label}, plus t (seconds) for a video. lookalike: adds the "Demo · sample data" label; tag: a label of its own instead.
+   chapters: buttons under it, {id,label}, plus t (seconds) for a video, or i (the photo) for a pan.
+   A pan's photo can carry ms (how long it stays, 6000 by default), mv (a move of its own: a @keyframes name) and faces (see facesSVG). lookalike: adds the "Demo · sample data" label; tag: a label of its own instead.
    A look-alike carries the size it was built to be drawn at (size.json); it's scaled to fit the frame. */
 const WALK={
  sidekick:{kind:'demo',lookalike:true,chapters:[{id:'feedback',label:'Feedback'},{id:'problems',label:'Problems'},{id:'explain',label:'Explanations'}]},
@@ -581,15 +601,22 @@ const WALK={
    chapters:[{id:'app',label:'The app',i:0},{id:'site',label:'The website',i:1}]},
  ease:{kind:'video',aspect:'4/3',src:'assets/ease.mp4',poster:'assets/ease.jpg',alt:'Ease. on a phone: recording a session, the drafted notes, then the themes over time',
   chapters:[{id:'record',label:'Record',t:0},{id:'notes',label:'Notes',t:4.8},{id:'timeline',label:'Timeline',t:11.6}]},
- tfw:{kind:'pan',imgs:[{src:'assets/tfw-join.jpg',ui:1,alt:'The online game’s home screen: a Game PIN box and Enter button above two yellow monsters'},{src:'assets/tfw-situation.jpg',ui:1,alt:'Each round opens on a situation: Your sibling steals your favorite shirt. The imposter is out there, it may be you'},
-   {src:'assets/tfw-emotion.jpg',ui:1,alt:'Players pick the emotion they would feel from seven faces; angry is selected'},{src:'assets/tfw-wheel.jpg',ui:1,alt:'An emotion wheel narrows angry down to humiliated, with a definition and an example'},
-   {src:'assets/tfw-vote.jpg',ui:1,alt:'Everyone sees each player’s emotion and advice, and votes out the imposter'},{src:'assets/tfw-reveal.jpg',ui:1,alt:'The reveal: the imposter was Alex, whose secret situation was farting in class'},
+ tfw:{kind:'pan',imgs:[{src:'assets/tfw-join.jpg',ui:1,faces:[{b:[104,580,397,420,536,0],m:[171,832,269,167,756,516],e:[305.7,740.2,66.5],p:[299,747.5,36,42.5],h:[313.1,729.5,9.4]},
+     {b:[990,486,534,514,0,0],m:[1104,817,301,183,453,516],e:['M1173 748.5L1184.5 726L1193.5 715L1205.5 703L1223.5 691L1229.5 688L1250.5 681L1262.5 679L1271.5 679L1274.5 680L1280.5 679L1283.5 680L1289.5 680L1307.5 686L1313.5 689L1331.5 702L1337.5 709L1346.5 723L1352 737.5L1343.5 765L1340.5 766L1334.5 764L1331.5 764L1325.5 761L1322.5 761L1271.5 744L1268.5 744L1265.5 742L1262.5 742L1238.5 750L1235.5 752L1232.5 752L1229.5 754L1208.5 761L1205.5 763L1181.5 771L1178.5 765Z',1173,679,179,92],p:[1264,701.2,36,42.8],h:[1276.6,688.2,9.1]}],
+    alt:'The online game’s home screen: a Game PIN box and Enter button above two yellow monsters'},{src:'assets/tfw-situation.jpg',ui:1,faces:[{b:[493,544,182,202,269,516],m:[523,654,120,74,314,814],e:[583,613.9,29],p:[580,617.5,16,18.5],h:[586.3,609.2,4.1]}],
+    alt:'Each round opens on a situation: Your sibling steals your favorite shirt. The imposter is out there, it may be you'},
+   {src:'assets/tfw-emotion.jpg',ui:1,faces:[{b:[193,177,146,163,1027,516],m:[216,266,96,61,436,814],e:[264.9,234.3,23.1],p:[262.5,237,12.5,15],h:[267.5,230.6,3.1]}],
+    alt:'Players pick the emotion they would feel from seven faces; angry is selected'},{src:'assets/tfw-wheel.jpg',ui:1,faces:[{b:[192,161,134,150,0,814],m:[214,241,88,57,534,814],e:[258.4,213.2,21.1],p:[256.5,215.5,11.5,13.5],h:[260.6,209.5,2.9]}],
+    alt:'An emotion wheel narrows angry down to humiliated, with a definition and an example'},
+   {src:'assets/tfw-vote.jpg',ui:1,alt:'Everyone sees each player’s emotion and advice, and votes out the imposter'},{src:'assets/tfw-reveal.jpg',ui:1,faces:[{b:[672,416,267,296,0,516],m:[716,577,176,110,136,814],e:[803.9,518.9,43],p:[800,523.5,23,27.5],h:[808.6,512.2,6],k:'#f7a3b2'}],
+    alt:'The reveal: the imposter was Alex, whose secret situation was farting in class'},
    {src:'assets/tfw-card.jpg',alt:'A That Feeling When situation card listing five situations, beside a Recognize card asking what emotion you would feel'},
    {src:'assets/tfw-decks.jpg',alt:'The full card set: scenario cards, and prompt cards for emotional vocabulary, coping skills, social comprehension and social support'},{src:'assets/tfw-prototype.jpg',alt:'The first prototype decks: prompts, scenarios and roles'}],
    chapters:[{id:'online',label:'Online game',i:0},{id:'wheel',label:'Emotion wheel',i:3},{id:'cards',label:'The cards',i:6},{id:'proto',label:'First prototype',i:8}]},
- quikstik:{kind:'pan',imgs:[{src:'assets/quikstik-kit.jpg',alt:'The Quikstik kit: a hand grip, jump rope handles and a resistance band with handles'},{src:'assets/quikstik-rope.jpg',alt:'The Quikstik jump rope handles'},{src:'assets/quikstik-grip.jpg',alt:'The Quikstik hand grip'},
-   {src:'assets/quikstik-app.jpg',ui:1,alt:'The Quikstik app on three phones: a thigh crunch set, a jump rope set and an arm curl set, with friends on video, live rankings and coaching'},{src:'assets/quikstik-sketch.jpg',alt:'Concept sketch: one pair of Quikstik handles becoming a thigh and arm crunch, a jump rope and an arm curl band'}],
-   chapters:[{id:'kit',label:'The kit',i:0},{id:'app',label:'The app',i:3},{id:'sketch',label:'Sketch',i:4}]},
+ quikstik:{kind:'pan',imgs:[{src:'assets/quikstik-kit.jpg',mv:'push',ms:5000,alt:'The Quikstik kit: a hand grip, jump rope handles and a resistance band with handles'},{src:'assets/quikstik-rope.jpg',mv:'panr',ms:5000,alt:'The Quikstik jump rope handles'},
+   {src:'assets/quikstik-grip.jpg',mv:'pull',ms:5000,alt:'The Quikstik hand grip'},{src:'assets/quikstik-band.jpg',mv:'panl',ms:5000,alt:'The Quikstik arm curl band you stand on, with its cords, the two handles and their end caps'},
+   {src:'assets/quikstik-app.jpg',mv:'nudge',ms:6000,ui:1,alt:'The Quikstik app on three phones: a thigh crunch set, a jump rope set and an arm curl set, with friends on video, live rankings and coaching'},{src:'assets/quikstik-sketch.jpg',mv:'pand',ms:6000,alt:'Concept sketch: one pair of Quikstik handles becoming a thigh and arm crunch, a jump rope and an arm curl band'}],
+   chapters:[{id:'kit',label:'The kit',i:0},{id:'app',label:'The app',i:4},{id:'sketch',label:'Sketch',i:5}]},
  bills:{kind:'video',tag:'Figma prototype · 2019',src:'assets/bills-walk.mp4',poster:'assets/bills-walk.jpg',aspect:'4/3',alt:'Essential Bills, Daniel\'s 2019 Figma prototype: Jack\'s video story and his overdue electric bill, paying it ($123 plus a $6 fee) and confirming, then a thank-you screen with a Keep The Lights On badge',
    chapters:[{id:'story',label:'Meet Jack',t:0},{id:'pay',label:'Pay the bill',t:8.9},{id:'thanks',label:'Thank you',t:20.1}]},
  troops:{kind:'video',tag:'Figma prototype · 2017',src:'assets/troops-walk.mp4',poster:'assets/troops-walk.jpg',aspect:'4/3',alt:'Troops, Daniel\'s 2017 Figma prototype: a dorm group chat with live offers, joining a food pickup order, then posting a laundry task to the dorm',
@@ -915,10 +942,23 @@ stage.classList.add('onshelf');
 
 /* ================= walkthroughs ================= */
 const WS={}; // per project: {loaded, root, chapter, running, run, idle}
+/* a slide's monsters, redrawn over it in its own 1600×1000 space. b, m: the body (mouth wiped off) and mouth, cut from FACES as
+   [x,y,w,h, x,y in FACES]; e: the white of the eye, [cx,cy,r] or [path, its box]; p: the pupil [cx,cy,rx,ry]; h: its shine [cx,cy,r]; k: skin */
+function facesSVG(fs,id,k){ const FACES='assets/tfw-faces.png', FACES_WH=[1180,964];
+  const cut=([x,y,w,h,sx,sy])=>`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="${sx} ${sy} ${w} ${h}"><image data-href="${FACES}" width="${FACES_WH[0]}" height="${FACES_WH[1]}"/></svg>`;
+  return `<svg class="fx" viewBox="0 0 1600 1000" aria-hidden="true">${fs.map((f,j)=>{ const [x,y,w,h]=f.b, [mx,my,mw]=f.m, [px,py,rx,ry]=f.p, e=f.e, uid=`fx-${id}${k}-${j}`;
+    const round=typeof e[0]=='number', white=round?`<circle cx="${e[0]}" cy="${e[1]}" r="${e[2]}"/>`:`<path d="${e[0]}"/>`,
+      box=round?[e[0]-e[2],e[1]-e[2],2*e[2],2*e[2]]:e.slice(1), d=round?(e[2]-Math.max(rx,ry))*.8:rx*.4; // how far the pupil roams
+    return `<g class="fx-bob" style="transform-origin:${x+w/2}px ${y+h}px;--t:${-(1.7*j+.9*k)}s;--d:${d.toFixed(1)}">${cut(f.b)}
+      <g class="fx-mouth" style="transform-origin:${mx+mw/2}px ${my}px">${cut(f.m)}</g>
+      <clipPath id="${uid}">${white}</clipPath><g clip-path="url(#${uid})" fill="#f6fffc">${white}
+        <g class="fx-look"><ellipse cx="${px}" cy="${py}" rx="${rx}" ry="${ry}" fill="#121212"/>${f.h?`<circle cx="${f.h[0]}" cy="${f.h[1]}" r="${f.h[2]}" fill="#e7e7e7"/>`:''}</g>
+        <rect class="fx-lid" x="${box[0]-2}" y="${box[1]-2}" width="${box[2]+4}" height="${box[3]+4}" fill="${f.k||'#ffe074'}"/></g></g>`; }).join('')}</svg>`;
+}
 function walkHTML(t){
   const w=WALK[t.id]||{kind:'scene'}, ar=w.aspect||'16/10', [x,y]=ar.split('/').map(Number);
   const media = w.kind==='video' ? `<video muted loop playsinline preload="none" aria-label="${w.alt}"></video>`
-    : w.kind==='pan' ? `<div class="wk-pan">${w.imgs.map((m,k)=>`<img alt="${m.alt}" decoding="async" class="${k?'':'on'}${m.ui?' ui':''}">`).join('')}</div>`
+    : w.kind==='pan' ? `<div class="wk-pan">${w.imgs.map((m,k)=>`<div class="pg${k?'':' on'}${m.ui?' ui':''}${m.mv?' mv':''}"${m.mv?` style="--mv:${m.mv};--ms:${(m.ms||6000)+1200}ms"`:''}><img alt="${m.alt}" decoding="async">${m.faces?facesSVG(m.faces,t.id,k):''}</div>`).join('')}</div>`
     : w.kind==='scene' ? sceneSVG(t.id,ACC[t.id]||t.c1) : '';
   const ch=(w.chapters||[]).map((c,k)=>`<button class="wk-c" role="tab" data-ch="${c.id}"${c.t!=null?` data-t="${c.t}"`:''} aria-selected="${k===0}">${c.label}</button>`).join('');
   return `<div class="card wk" style="--ar:${ar};--arv:${(x/y).toFixed(3)}"><div class="wk-frame">${media}</div>
@@ -935,19 +975,21 @@ function walkLoad(id){ const s=wsOf(id); if(s.loaded) return s.ready; s.loaded=t
   if(w.kind==='video'){ const v=f.querySelector('video'); v.poster=w.poster; v.src=w.src;
     if(w.chapters&&w.chapters.length) v.addEventListener('timeupdate',()=>{ const c=[...w.chapters].reverse().find(c=>v.currentTime>=c.t-.05); // the lit chapter follows the video
       if(c){ secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===c.id)); litIntoView(id); } }); }
-  if(w.kind==='pan') f.querySelectorAll('img').forEach((im,k)=>{ im.src=w.imgs[k].src; });
+  if(w.kind==='pan'){ f.querySelectorAll('.pg>img').forEach((im,k)=>{ im.src=w.imgs[k].src; }); f.querySelectorAll('image[data-href]').forEach(im=>im.setAttribute('href',im.getAttribute('data-href'))); }
   return s.ready=Promise.resolve(); }
 function walkPlay(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=true; f.parentNode.classList.add('run');
   if(reduce) return;
   if(w.kind==='demo'&&s.root){ if(s.demo.play) s.demo.play(s.root); if(held(s)) walkTakeover(id); else walkTour(id); }
   if(w.kind==='video') f.querySelector('video').play().catch(()=>{});
   if(w.kind==='scene'){ const svg=f.querySelector('svg'); if(svg&&svg.unpauseAnimations) svg.unpauseAnimations(); }
-  if(w.kind==='pan'&&w.imgs.length>1&&!s.xf) s.xf=setInterval(()=>{ const k=[...f.querySelectorAll('img')].findIndex(i=>i.classList.contains('on')); panShow(id,(k+1)%w.imgs.length); },6000); }
-function panShow(id,k){ const w=WALK[id]; frameOf(id).querySelectorAll('.wk-pan img').forEach((im,j)=>im.classList.toggle('on',j===k));
+  if(w.kind==='pan'&&w.imgs.length>1&&!s.xf) panNext(id); }
+function panNext(id){ const s=wsOf(id), w=WALK[id], k=[...frameOf(id).querySelectorAll('.pg')].findIndex(p=>p.classList.contains('on')); clearTimeout(s.xf); // each photo stays its own ms, six seconds unless it says
+  s.xf=setTimeout(()=>{ panShow(id,(k+1)%w.imgs.length); panNext(id); },w.imgs[k].ms||6000); }
+function panShow(id,k){ const w=WALK[id]; frameOf(id).querySelectorAll('.wk-pan .pg').forEach((p,j)=>{ p.classList.toggle('out',j!==k&&p.classList.contains('on')); p.classList.toggle('on',j===k); }); // out: still fading, so its move carries on
   const c=(w.chapters||[]).filter(c=>c.i<=k).pop(); if(!c) return; // the lit chapter follows the photo
   secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===c.id)); litIntoView(id); }
 function walkPause(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=false; f.parentNode.classList.remove('run');
-  clearInterval(s.xf); s.xf=0;
+  clearTimeout(s.xf); s.xf=0;
   if(w.kind==='demo'){ s.run++; clearTimeout(s.idle); if(s.root){ cursorOff(s); if(s.demo.pause) s.demo.pause(s.root); } }
   if(w.kind==='video') f.querySelector('video').pause();
   if(w.kind==='scene'){ const svg=f.querySelector('svg'); if(svg&&svg.pauseAnimations) svg.pauseAnimations(); } }
@@ -956,7 +998,7 @@ function walkChapter(id,ch,opt){ const w=WALK[id], c=(w.chapters||[]).find(x=>x.
   wsOf(id).chapter=ch;
   secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===ch));
   if(w.kind==='video'&&c.t!=null){ const v=frameOf(id).querySelector('video'); v.currentTime=c.t; }
-  if(w.kind==='pan'&&c.i!=null){ const s=wsOf(id); panShow(id,c.i); if(s.xf){ clearInterval(s.xf); s.xf=0; walkPlay(id); } } // a click restarts the six seconds
+  if(w.kind==='pan'&&c.i!=null){ panShow(id,c.i); if(wsOf(id).xf) panNext(id); } // a click restarts the photo's time
   litIntoView(id); }
 /* ---- look-alikes: a copy of the real app in a shadow root, drawn at laptop size and scaled to fit, with a cursor giving the tour ---- */
 const RESUME_MS=6000, CURSOR_MS=650; // the tour waits this long after the last click or key inside it; one cursor move
