@@ -843,7 +843,7 @@ syncListen();
     const d=60+(i*37%5)*9, y=(((i*53)%5)-2)*.7-i*.12, r=(((i*29)%7)-3)*1.1; t+=d;
     return `<i style="--t:${t-d}ms;--d:${d}ms;--y:${y.toFixed(1)}px;--r:${r.toFixed(1)}deg">${c}</i>`; }).join('');
   el.querySelectorAll('path').forEach(p=>p.setAttribute('pathLength',1)); el.style.setProperty('--t',t+120+'ms');
-  const go=()=>setTimeout(()=>{ if(!$('pressBtn').classList.contains('used')) el.classList.add('go'); },Math.max(0,4750-performance.now())); // 4.75s after the page opens: a nudge for anyone who hasn't pressed it yet
+  const go=()=>setTimeout(()=>{ if(!$('pressBtn').classList.contains('used')) el.classList.add('go'); },Math.max(0,4000-performance.now())); // 4s after the page opens: a nudge for anyone who hasn't pressed it yet
   if(document.fonts&&document.fonts.load) document.fonts.load('24px "Covered By Your Grace"').then(go,go); else go();
 })();
 
