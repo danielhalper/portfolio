@@ -22,7 +22,7 @@
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Permanent+Marker&family=Rubik+Mono+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Instrument+Serif:ital@0;1&family=Permanent+Marker&family=Covered+By+Your+Grace&family=Rubik+Mono+One&display=swap" rel="stylesheet">
 <style>
 /* Kari (Taylor Penton), licensed for webfont use; only the .woff2 lives here, never the desktop .otf */
 @font-face{font-family:"Kari";src:url(assets/fonts/kari.woff2) format("woff2");font-display:swap}
@@ -35,6 +35,7 @@
   --mono:"Space Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   --display:"Bebas Neue","Arial Narrow","Roboto Condensed",sans-serif-condensed,Impact,sans-serif;
   --serif:"Instrument Serif","Iowan Old Style","Palatino Linotype",Georgia,serif; /* tape labels only */
+  --hand:"Covered By Your Grace","Bradley Hand",cursive;
   --title:"Kari","Bebas Neue","Arial Narrow",Impact,sans-serif; /* chunky 70s poster lettering */
   --fw:min(600px,62vw);
   --railw:clamp(104px,10vw,150px); /* room on the left for the tape menu */
@@ -98,6 +99,18 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .press:hover{background:#e8bf5c}
 .press .pi{width:40px;height:40px;border-radius:50%;background:#111;color:var(--gold);display:grid;place-items:center;font-size:14px;padding-left:2px}
 .press .ps{font-weight:400;letter-spacing:.06em;opacity:.7}
+.pw{position:relative;display:inline-block}
+/* a note in pen beside the button, written on once, the way you'd scribble on a tape's label. Each letter sits a little off so it reads as handwriting */
+.scrawl{position:absolute;right:100%;top:-12px;margin-right:26px;white-space:nowrap;font:400 24px/1 var(--hand);color:rgba(235,227,211,.92);
+  transform:rotate(-4deg);transform-origin:100% 100%;pointer-events:none;transition:opacity .4s}
+.scrawl i{display:inline-block;font-style:normal;transform:translateY(var(--y)) rotate(var(--r));clip-path:inset(-30% 100% -30% -10%)}
+.scrawl.go i{animation:ink var(--d) linear var(--t) forwards}
+@keyframes ink{to{clip-path:inset(-30% -10% -30% -10%)}}
+.scrawl svg{position:absolute;right:-26px;top:22px;width:58px;height:40px;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transform:rotate(4deg)}
+.scrawl path{stroke-dasharray:1;stroke-dashoffset:1}
+.scrawl.go path{animation:pen .45s cubic-bezier(.3,.1,.4,1) var(--t) forwards}.scrawl.go .hd{animation-duration:.22s;animation-delay:calc(var(--t) + .42s)}
+@keyframes pen{to{stroke-dashoffset:0}}
+.press.used~.scrawl{opacity:0}
 .press[aria-pressed="true"]{background:rgba(0,0,0,.75);color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
 .eq{display:inline-flex;align-items:flex-end;gap:2px;height:10px}
 .eq i{width:2px;height:100%;background:currentColor;animation:eq .9s ease-in-out infinite;transform-origin:bottom}
@@ -346,7 +359,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .lnk{color:rgba(235,227,211,.7);text-decoration:underline;text-underline-offset:4px}
 /* the tape menu: every project as a small tape down the left; the one on screen is lit */
 .rail{position:absolute;left:14px;top:64px;bottom:24px;z-index:28;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:5px;pointer-events:none;
-  --rh:min(34px,calc((100% - 75px)/16))}
+  --rh:min(34px,calc((100% - 97px)/16))}
 .rt{position:relative;display:block;flex:none;height:var(--rh);aspect-ratio:240/152;pointer-events:auto;transform-origin:50% 50%;opacity:0} /* fly() moves them in from the shelf */
 .rail.fade .rt{transition:opacity .3s}
 .rt.box{aspect-ratio:300/190}
@@ -361,7 +374,14 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .rt:hover,.rt:focus-visible{z-index:2;outline:none}
 .rt[aria-current="true"] .rf{transform:translateX(16px);filter:none} /* pulled out of the rack, in full colour; no outline */
 .rt[aria-current="true"]:hover .rf,.rt[aria-current="true"]:focus-visible .rf{transform:translateX(16px) scale(1.45)}
-.onshelf .rail,.onshelf .rt{pointer-events:none}
+.rtop{display:flex;align-items:center;gap:6px;flex:none;margin:0 0 6px;padding:4px 4px 4px 2px;background:none;border:0;color:rgba(235,227,211,.45);
+  font:400 9px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;cursor:pointer;opacity:0;transition:opacity .4s,color .15s} /* eject: back to the shelf */
+.rtop svg{width:9px;height:8px;fill:currentColor}
+.rail.landed .rtop{opacity:1;pointer-events:auto}
+.rtop:hover,.rtop:focus-visible{color:#ebe3d3;outline:none}
+.onshelf .rail,.onshelf .rt,.onshelf .rtop{pointer-events:none}
+@media (min-width:761px) and (max-height:839px){ /* too short: the tapes need the room, and the name above already goes home */
+  .rtop{display:none}.rail{--rh:min(34px,calc((100% - 75px)/16))} }
 .rpv{position:absolute;z-index:29;left:0;top:0;width:220px;padding:6px 6px 9px;border-radius:9px;background:#141416;box-shadow:0 0 0 1px rgba(235,227,211,.2),0 14px 34px rgba(0,0,0,.7);
   pointer-events:none;opacity:0;transform:translateX(-6px);transition:opacity .15s,transform .15s}
 .rpv.on{opacity:1;transform:none}
@@ -378,6 +398,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .rt.sub::before,.rt.sub.end::before{left:-6px;right:0;top:auto;bottom:-6px;width:auto;height:1px;border:0;border-radius:0;background:rgba(235,227,211,.2)} /* along the strip, the line runs under them */
   .rail.show .rt.sub::before{opacity:1}
   .rt[aria-current="true"] .rf{transform:translateY(-6px)}
+  .rtop{margin:0 2px 0 -8px;padding:13px 8px}.rtop span{display:none}.rtop svg{width:11px;height:10px}
+  .rail.show .rtop{opacity:1;pointer-events:auto}
 }
 @media (max-width:760px){
   :root{--fw:88vw}
@@ -390,6 +412,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .wk-ch{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent)} /* the row scrolls: fade its edge */
   .headline{top:64px}
   .headline h1{font-size:clamp(34px,10.4vw,46px)}
+  .scrawl{display:none} /* the button fills the width here; it speaks for itself */
   .press{font-size:14px;gap:12px;padding:11px 22px 11px 11px}.press .pi{width:32px;height:32px}
   .dmain,.su{position:static;height:100%;box-sizing:border-box;padding:112px 16px 110px} /* each project is one screen, so a swipe snaps to the next */
   .dmain{display:flex;flex-direction:column;gap:12px;align-items:stretch}
@@ -430,6 +453,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 }
 @media (prefers-reduced-motion:reduce){
   .spinning .reel,.eq i,.wk-pan .pg,.fx *,.wk-reel{animation:none!important}
+  .scrawl i{clip-path:none}.scrawl path{stroke-dashoffset:0}
   .scene,.wk-pan .pg,.pv,.rail.fade .rt{transition:none}
 }
 </style>
@@ -458,7 +482,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   <!-- ===== EDIT: HOME HEADLINE ===== -->
   <div class="headline"><h1>I <em>design and build</em> AI products, end to end.</h1>
     <div class="byrow"><div class="by">10 years of product design &amp; engineering</div></div>
-    <div class="playrow"><button class="press" id="pressBtn" aria-pressed="false"></button></div></div>
+    <div class="playrow"><span class="pw"><button class="press" id="pressBtn" aria-pressed="false"></button>
+      <span class="scrawl" id="scrawl" aria-hidden="true"><span class="sw">push here plz</span><svg viewBox="0 0 64 44"><path d="M3 4.5c4 9.5 13.5 20 30.5 24.5 7 1.8 14 2.4 23.4 1.6"/><path class="hd" d="M47.6 22.8c3.3 2.6 6 5.3 9.6 7.6-3.7 1.8-7.4 4.4-10.6 7.9"/></svg></span></span></div></div>
   <div class="hint" aria-live="polite"><div class="pv" id="pv" aria-hidden="true"><img alt=""></div><div class="ht"><b id="hintT">&nbsp;</b><span class="small" id="hintS">Each tape is a project</span></div></div>
   </section>
 
@@ -812,6 +837,15 @@ function syncListen(){ const b=$('soundBtn'); document.body.classList.toggle('ro
 $('soundBtn').onclick=()=>toggleListen(pageNote());
 $('pressBtn').onclick=()=>{ if(listening){ stopListening(); return; } introNext=active==='home'; listen(pageNote()); }; // from the shelf: the intro, then Step Up
 syncListen();
+(function scrawl(){ // split the note into letters, each a touch off its neighbours, then write it on once the pen font is in
+  const el=$('scrawl'), w=el.querySelector('.sw'); let t=0;
+  w.innerHTML=[...w.textContent].map((c,i)=>{ if(c===' '){ t+=150; return ' '; }
+    const d=60+(i*37%5)*9, y=(((i*53)%5)-2)*.7-i*.12, r=(((i*29)%7)-3)*1.1; t+=d;
+    return `<i style="--t:${t-d}ms;--d:${d}ms;--y:${y.toFixed(1)}px;--r:${r.toFixed(1)}deg">${c}</i>`; }).join('');
+  el.querySelectorAll('path').forEach(p=>p.setAttribute('pathLength',1)); el.style.setProperty('--t',t+120+'ms');
+  const go=()=>setTimeout(()=>el.classList.add('go'),3900); // a nudge for anyone who hasn't pressed it yet
+  if(document.fonts&&document.fonts.load) document.fonts.load('24px "Covered By Your Grace"').then(go,go); else go();
+})();
 
 /* ================= faces in 2D (floor + minis) ================= */
 function fitFaces(){ document.querySelectorAll('[data-fit]').forEach(f=>{ const p=f.parentElement; if(p.clientWidth) f.style.transform=`scale(${p.clientWidth/(+f.dataset.fit||240)})`; }); }
@@ -892,11 +926,12 @@ syncListen();
 /* ================= the tape menu ================= */
 function buildRail(){
   const face=t=>t.box ? `<div class="bfront" data-fit="300">${BOXFRONT}</div>` : `<div class="fface s-${t.style}" data-fit style="${vars(t)}">${faceHTML(t)}</div>`;
-  $('rail').innerHTML=TRACKS.map((t,i)=>`<a class="rt${t.step?' sub':''}${t.step&&!(TRACKS[i+1]||{}).step?' end':''}${t.box?' box':''}" href="${routeOf(t.id)}" data-id="${t.id}" aria-label="${t.contact?'Contact':t.name}"${t.box?'':` style="${vars(t)}"`}><span class="rf">${face(t)}</span></a>`).join('')
+  $('rail').innerHTML=`<button class="rtop" id="railTop" aria-label="Back to the shelf"><svg viewBox="0 0 12 11" aria-hidden="true"><path d="M6 0l6 7H0z"/><rect y="8.6" width="12" height="2.4"/></svg><span>Shelf</span></button>`+TRACKS.map((t,i)=>`<a class="rt${t.step?' sub':''}${t.step&&!(TRACKS[i+1]||{}).step?' end':''}${t.box?' box':''}" href="${routeOf(t.id)}" data-id="${t.id}" aria-label="${t.contact?'Contact':t.name}"${t.box?'':` style="${vars(t)}"`}><span class="rf">${face(t)}</span></a>`).join('')
     ;
   $('rail').querySelectorAll('.rt').forEach(a=>{ const show=()=>railPv(a), hide=()=>railPv(null);
     a.addEventListener('pointerenter',show); a.addEventListener('focus',show); a.addEventListener('pointerleave',hide); a.addEventListener('blur',hide);
     a.onclick=e=>{ e.preventDefault(); railPv(null); go(a.dataset.id==='stepup'?'stepup':'t/'+a.dataset.id,{focus:true}); }; });
+  $('railTop').onclick=()=>{ railPv(null); go('home',{focus:true}); };
   fitFaces(); requestAnimationFrame(fitFaces);
 }
 function railPv(a){ // the little preview card beside a hovered tape
