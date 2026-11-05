@@ -715,7 +715,7 @@ function pick(i){ if(view!=='home') return; showHint(-1); go(ITEMS[i].box?'stepu
 /* ================= liner notes: Daniel's voice over a beat, silent until someone presses play ================= */
 /* ===== EDIT: LINER NOTES — the beats, and the words of each recording =====
    Each page has its own beat at assets/audio/<id>.m4a and your recording at assets/voice/<id>.m4a
-   ("home" is the shelf intro, also used on About). Each list is the caption text, so keep it matching what you say. */
+   ("home" is the shelf intro; About has no recording and plays Contact's beat). Each list is the caption text, so keep it matching what you say. */
 const BEAT={level:1,under:.45,lead:2}; // beat volume on its own, how far it dips under your voice, and seconds of beat before you start
 const NOTES={
  home:["Hey, I'm Daniel. I design and build AI products, end to end.","Every tape on the shelf is something I've made,","so pick one and press play."],
@@ -764,12 +764,13 @@ function beatFor(id,to){ // crossfade to this page's beat once it's actually pla
   nx.el.addEventListener('playing',()=>{ if(decks[deck]!==nx||nx.id!==id||!listening) return;
     fadeDeck(nx,to,.5); fadeDeck(cur,0,.9); setTimeout(()=>{ if(decks[deck]!==cur) cur.el.pause(); },950); },{once:true});
   nx.el.play().catch(()=>{}); }
-const pageNote=()=>view==='about'||active==='home' ? 'home' : active; // About and the shelf share the intro
+const pageNote=()=>active==='home' ? 'home' : active; // the shelf plays the intro
 function unlockVoice(id){ // iPhones only start audio from a tap, so start the voice muted during the first tap and pause it right away
   if(unlocked) return; unlocked=true; voiceEl.muted=true; voiceEl.src=voiceSrc(id);
   const done=()=>{ if(voiceEl.muted){ voiceEl.pause(); voiceEl.muted=false; } }, p=voiceEl.play();
   if(p&&p.then) p.then(done,done); else done(); }
 function listen(id){ // the beat plays on its own for a couple of seconds, then dips under the voice while the captions follow along
+  if(id==='about') return beatOnly('contact'); // About has no recording: just Contact's music, carried on from the section above
   if(!NOTES[id]||!audioSetup()) return;
   listening=true; noteId=id; heard.add(id); voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); if(actx) actx.resume();
   unlockVoice(id); voiceEl.pause(); ccHide(); beatFor(id,BEAT.level); syncListen();
@@ -786,9 +787,12 @@ function voiceDone(){ if(!listening) return; fade(BEAT.level,1.2); ccTimer=setTi
 function stopListening(){ introNext=false; listening=false; noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); ccHide();
   if(decks){ voiceEl.pause(); decks.forEach(d=>fadeDeck(d,0,.4)); setTimeout(()=>{ if(!listening) decks.forEach(d=>d.el.pause()); },450); }
   syncListen(); }
+function beatOnly(id){ // just the beat, no voice
+  if(!audioSetup()) return; unlockVoice(id); listening=true; noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); if(actx) actx.resume();
+  voiceEl.pause(); ccHide(); beatFor(id,BEAT.level); syncListen(); }
 function followPage(){ // keep the tape rolling as people move around; the intro only plays once
-  const id=pageNote();
-  if(id==='home'&&heard.has('home')){ noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); voiceEl.pause(); ccHide(); beatFor('home',BEAT.level); } else listen(id); }
+  const id=pageNote(); if(id===noteId||id==='about'&&noteId==='contact') return; // Contact's note plays on into About and back, without starting over
+  if(id==='home'&&heard.has('home')) beatOnly('home'); else listen(id); }
 function toggleListen(id){ if(listening) stopListening(); else listen(id); }
 function ccAt(p){ // pick the caption line by how far into the recording we are, weighted by line length
   const ls=NOTES[noteId]; if(!ls) return; const tot=ls.reduce((a,l)=>a+l.length,0);
