@@ -213,6 +213,8 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .wk-frame>video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .wk-pan .pg{position:absolute;inset:0;opacity:0;transition:opacity 1.2s;animation:kb 16s ease-in-out infinite alternate}
 .wk-pan .pg.on{opacity:1}
+.wk-note{position:absolute;left:12px;top:10px;z-index:2;color:rgba(235,227,211,.8);text-shadow:0 1px 3px rgba(0,0,0,.6);pointer-events:none;transition:opacity .6s} /* a photo's own caption, e.g. what made it */
+.wk-note.off,.wk-note:empty{opacity:0}
 .wk-pan img,.wk-pan .fx{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 @keyframes kb{from{transform:scale(1.02) translate(-1%,1%)}to{transform:scale(1.1) translate(1.5%,-1.5%)}}
 .wk-pan .pg.ui{animation-name:kbui} /* app screens zoom less, so their edges stay in frame */
@@ -527,7 +529,7 @@ const SHELF=[ // index 0 = front of the shelf (newest)
  {id:"hero",name:"Hero Chat",style:"marker",c1:"#efe9dc",c2:"#f2a7c3",c3:"#c2185b",ink2:"#1b1b1b",year:"2023",role:"Full stack · UX/UI",result:"**715** ratings worldwide, **4.8★**",what:"AI chatbots, with other people's chats to explore. Built with my brother; live on the App Store as **WWJD**",link:"https://apps.apple.com/us/app/wwjd-what-would-jesus-do/id6445903415?platform=iphone",linkLabel:"iPhone app"},
  {id:"ease",name:"Ease.",style:"block",c1:"#1F4D3A",c2:"#8fc9a9",c3:"#FAF8F3",ink2:"#FAF8F3",year:"2023",role:"Solo builder",result:"Drafts the notes that take therapists **10 hours** a month",what:"Records a therapy session, with the client's consent, and drafts notes and themes for the therapist to approve"},
  {id:"tfw",name:"That Feeling When",style:"grid",c1:"#a77bff",c2:"#f5c518",c3:"#e63946",ink2:"#111",year:"2020–21",role:"Product lead · team of 4",result:"**19 of 20** kids wanted to play again",what:"My senior capstone, built during the pandemic to help kids learn the words for their emotions. It plays like Among Us: everyone picks how they'd feel in the same situation, except a secret imposter with a different one, and kids explain their feelings to find them. Tested with 40+ kids, then rebuilt as an online game in 2021",link:"https://dhalps.webflow.io/works/that-feeling-when-card-game",linkLabel:"Case study"},
- {id:"quikstik",name:"Quikstik",style:"block",c1:"#1d6fd1",c2:"#9ad1f5",c3:"#fff",ink2:"#fff",year:"2019",role:"Product design",result:"Pitched to **IKEA**",what:"Social home-workout gear with sensor handles",link:"https://dhalps.webflow.io/works/quikstik",linkLabel:"Case study"},
+ {id:"quikstik",name:"Quikstik",style:"block",c1:"#1d6fd1",c2:"#9ad1f5",c3:"#fff",ink2:"#fff",year:"2019",role:"Product design",result:"Pitched to **IKEA**",what:"Social home-workout gear with sensor handles, plus an app for working out with friends",link:"https://dhalps.webflow.io/works/quikstik",linkLabel:"Case study"},
  {id:"bills",name:"Essential Bills",style:"marker",c1:"#efe9dc",c2:"#2a6f3e",c3:"#1b4d2b",ink2:"#1b1b1b",year:"2019",role:"Client design",result:"Strangers paying strangers' bills",what:"Donation app designed for a venture studio",link:"https://dhalps.webflow.io/works/essential-bills",linkLabel:"Case study"},
  {id:"troops",name:"Troops",style:"stripes",c1:"#14806b",c2:"#f0e6c8",c3:"#e2533b",ink2:"#fff",year:"2017",role:"Co-founder",result:"**100s** of deliveries + a **YC** interview",what:"Campus delivery, by students for students",link:"https://dhalps.webflow.io/works/troops",linkLabel:"Case study"},
  {id:"contact",name:"Your track here",style:"marker",c1:"#efe9dc",c2:"#7cffc4",c3:"#111",ink2:"#1b1b1b",year:"Next",role:"Open to talk",result:"Let's make the next one",what:"Got an idea or a role in mind? Email is fastest.",link:"mailto:danielhalper4@gmail.com",linkLabel:"Email Daniel",contact:true}
@@ -581,7 +583,7 @@ const STEP=[
    kind: 'video' (a recording), 'pan' (still images, slowly panned), 'scene' (the contact drawing),
    or 'demo' (a clickable look-alike in assets/demos/<id>.js). aspect: the frame's shape.
    chapters: buttons under it, {id,label}, plus t (seconds) for a video, or i (the photo) for a pan.
-   A pan's photo can carry ms (how long it stays, 6000 by default), mv (a move of its own: a @keyframes name) and faces (see facesSVG). lookalike: adds the "Demo · sample data" label; tag: a label of its own instead.
+   A pan's photo can carry ms (how long it stays, 6000 by default), mv (a move of its own: a @keyframes name), note (a caption in the corner) and faces (see facesSVG). lookalike: adds the "Demo · sample data" label; tag: a label of its own instead.
    A look-alike carries the size it was built to be drawn at (size.json); it's scaled to fit the frame. */
 const WALK={
  sidekick:{kind:'demo',lookalike:true,chapters:[{id:'feedback',label:'Feedback'},{id:'problems',label:'Problems'},{id:'explain',label:'Explanations'}]},
@@ -613,10 +615,11 @@ const WALK={
    {src:'assets/tfw-card.jpg',alt:'A That Feeling When situation card listing five situations, beside a Recognize card asking what emotion you would feel'},
    {src:'assets/tfw-decks.jpg',alt:'The full card set: scenario cards, and prompt cards for emotional vocabulary, coping skills, social comprehension and social support'},{src:'assets/tfw-prototype.jpg',alt:'The first prototype decks: prompts, scenarios and roles'}],
    chapters:[{id:'online',label:'Online game',i:0},{id:'wheel',label:'Emotion wheel',i:3},{id:'cards',label:'The cards',i:6},{id:'proto',label:'First prototype',i:8}]},
- quikstik:{kind:'pan',imgs:[{src:'assets/quikstik-kit.jpg',mv:'push',ms:5000,alt:'The Quikstik kit: a hand grip, jump rope handles and a resistance band with handles'},{src:'assets/quikstik-rope.jpg',mv:'panr',ms:5000,alt:'The Quikstik jump rope handles'},
-   {src:'assets/quikstik-grip.jpg',mv:'pull',ms:5000,alt:'The Quikstik hand grip'},{src:'assets/quikstik-band.jpg',mv:'panl',ms:5000,alt:'The Quikstik arm curl band you stand on, with its cords, the two handles and their end caps'},
-   {src:'assets/quikstik-app.jpg',mv:'nudge',ms:6000,ui:1,alt:'The Quikstik app on three phones: a thigh crunch set, a jump rope set and an arm curl set, with friends on video, live rankings and coaching'},{src:'assets/quikstik-sketch.jpg',mv:'pand',ms:6000,alt:'Concept sketch: one pair of Quikstik handles becoming a thigh and arm crunch, a jump rope and an arm curl band'}],
-   chapters:[{id:'kit',label:'The kit',i:0},{id:'app',label:'The app',i:4},{id:'sketch',label:'Sketch',i:5}]},
+ quikstik:{kind:'pan',imgs:[{src:'assets/quikstik-app.jpg',mv:'nudge',ms:6000,ui:1,alt:'The Quikstik app on three phones: a thigh crunch set, a jump rope set and an arm curl set, with friends on video, live rankings and coaching'},
+   {src:'assets/quikstik-kit.jpg',mv:'push',ms:5000,note:'* High-fidelity 3D models I created',alt:'The Quikstik kit: a hand grip, jump rope handles and a resistance band with handles'},{src:'assets/quikstik-rope.jpg',mv:'panr',ms:5000,note:'* High-fidelity 3D models I created',alt:'The Quikstik jump rope handles'},
+   {src:'assets/quikstik-grip.jpg',mv:'pull',ms:5000,note:'* High-fidelity 3D models I created',alt:'The Quikstik hand grip'},{src:'assets/quikstik-band.jpg',mv:'panl',ms:5000,note:'* High-fidelity 3D models I created',alt:'The Quikstik arm curl band you stand on, with its cords, the two handles and their end caps'},
+   {src:'assets/quikstik-sketch.jpg',mv:'pand',ms:6000,alt:'Concept sketch: one pair of Quikstik handles becoming a thigh and arm crunch, a jump rope and an arm curl band'}],
+   chapters:[{id:'app',label:'The app',i:0},{id:'kit',label:'The kit',i:1},{id:'sketch',label:'Sketch',i:5}]},
  bills:{kind:'video',tag:'Figma prototype · 2019',src:'assets/bills-walk.mp4',poster:'assets/bills-walk.jpg',aspect:'4/3',alt:'Essential Bills, Daniel\'s 2019 Figma prototype: Jack\'s video story and his overdue electric bill, paying it ($123 plus a $6 fee) and confirming, then a thank-you screen with a Keep The Lights On badge',
    chapters:[{id:'story',label:'Meet Jack',t:0},{id:'pay',label:'Pay the bill',t:8.9},{id:'thanks',label:'Thank you',t:20.1}]},
  troops:{kind:'video',tag:'Figma prototype · 2017',src:'assets/troops-walk.mp4',poster:'assets/troops-walk.jpg',aspect:'4/3',alt:'Troops, Daniel\'s 2017 Figma prototype: a dorm group chat with live offers, joining a food pickup order, then posting a laundry task to the dorm',
@@ -958,7 +961,7 @@ function facesSVG(fs,id,k){ const FACES='assets/tfw-faces.png', FACES_WH=[1180,9
 function walkHTML(t){
   const w=WALK[t.id]||{kind:'scene'}, ar=w.aspect||'16/10', [x,y]=ar.split('/').map(Number);
   const media = w.kind==='video' ? `<video muted loop playsinline preload="none" aria-label="${w.alt}"></video>`
-    : w.kind==='pan' ? `<div class="wk-pan">${w.imgs.map((m,k)=>`<div class="pg${k?'':' on'}${m.ui?' ui':''}${m.mv?' mv':''}"${m.mv?` style="--mv:${m.mv};--ms:${(m.ms||6000)+1200}ms"`:''}><img alt="${m.alt}" decoding="async">${m.faces?facesSVG(m.faces,t.id,k):''}</div>`).join('')}</div>`
+    : w.kind==='pan' ? `<span class="small wk-note">${w.imgs[0].note||''}</span><div class="wk-pan">${w.imgs.map((m,k)=>`<div class="pg${k?'':' on'}${m.ui?' ui':''}${m.mv?' mv':''}"${m.mv?` style="--mv:${m.mv};--ms:${(m.ms||6000)+1200}ms"`:''}><img alt="${m.alt}" decoding="async">${m.faces?facesSVG(m.faces,t.id,k):''}</div>`).join('')}</div>`
     : w.kind==='scene' ? sceneSVG(t.id,ACC[t.id]||t.c1) : '';
   const ch=(w.chapters||[]).map((c,k)=>`<button class="wk-c" role="tab" data-ch="${c.id}"${c.t!=null?` data-t="${c.t}"`:''} aria-selected="${k===0}">${c.label}</button>`).join('');
   return `<div class="card wk" style="--ar:${ar};--arv:${(x/y).toFixed(3)}"><div class="wk-frame">${media}</div>
@@ -985,7 +988,8 @@ function walkPlay(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=tr
   if(w.kind==='pan'&&w.imgs.length>1&&!s.xf) panNext(id); }
 function panNext(id){ const s=wsOf(id), w=WALK[id], k=[...frameOf(id).querySelectorAll('.pg')].findIndex(p=>p.classList.contains('on')); clearTimeout(s.xf); // each photo stays its own ms, six seconds unless it says
   s.xf=setTimeout(()=>{ panShow(id,(k+1)%w.imgs.length); panNext(id); },w.imgs[k].ms||6000); }
-function panShow(id,k){ const w=WALK[id]; frameOf(id).querySelectorAll('.wk-pan .pg').forEach((p,j)=>{ p.classList.toggle('out',j!==k&&p.classList.contains('on')); p.classList.toggle('on',j===k); }); // out: still fading, so its move carries on
+function panShow(id,k){ const w=WALK[id], n=frameOf(id).querySelector('.wk-note'); if(w.imgs[k].note) n.textContent=w.imgs[k].note; n.classList.toggle('off',!w.imgs[k].note);
+  frameOf(id).querySelectorAll('.wk-pan .pg').forEach((p,j)=>{ p.classList.toggle('out',j!==k&&p.classList.contains('on')); p.classList.toggle('on',j===k); }); // out: still fading, so its move carries on
   const c=(w.chapters||[]).filter(c=>c.i<=k).pop(); if(!c) return; // the lit chapter follows the photo
   secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===c.id)); litIntoView(id); }
 function walkPause(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=false; f.parentNode.classList.remove('run');
