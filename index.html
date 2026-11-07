@@ -741,7 +741,8 @@ function pick(i){ if(view!=='home') return; showHint(-1); go(ITEMS[i].box?'stepu
 /* ===== EDIT: LINER NOTES — the beats, and the words of each recording =====
    Each page has its own beat at assets/audio/<id>.m4a and your recording at assets/voice/<id>.m4a
    ("home" is the shelf intro; About has no recording and plays Contact's beat). Each list is the caption text, so keep it matching what you say. */
-const BEAT={level:1,under:.45,lead:2}; // beat volume on its own, how far it dips under your voice, and seconds of beat before you start
+const BEAT={level:1,under:.45,lead:2,tail:.9,lift:.25,
+  page:{home:{under:.35,lead:1}}}; // the opener's celebration beat starts sooner and sits lower under the voice; tail = reverb after the last word // beat volume on its own, how far it dips under your voice, and seconds of beat before you start
 const NOTES={
  home:["Hey, I'm Daniel. I design and build AI products, end to end.","Every tape on the shelf is something I've made,","so pick one and press play."],
  stepup:["Step Up is the big one.", "I co-founded it in 2020, during the pandemic, when students were stuck at home with nothing to do.", "I've always had a passion for education and for building, so it just made sense.", "I built most of the systems it runs on, on both product and engineering.", "We've grown to well over 6,000 students and 350,000 hours of tutoring,", "and we're still scaling, with almost 7,000 hours of tutoring every week."],
@@ -774,7 +775,8 @@ function audioSetup(){ if(decks) return true;
     if(actx){ gain=actx.createGain(); gain.gain.value=0; actx.createMediaElementSource(el).connect(gain); gain.connect(actx.destination); } else el.volume=0;
     return {el,gain,id:null}; });
   // tools/clean_voice.py leaves ~0.7s of reverb after the last word, so the captions pace against the speech itself
-  voiceEl.addEventListener('timeupdate',()=>{ if(voiceEl.duration) ccAt(voiceEl.currentTime/Math.max(1,voiceEl.duration-.7)); });
+  voiceEl.addEventListener('timeupdate',()=>{ if(!voiceEl.duration) return; ccAt(voiceEl.currentTime/Math.max(1,voiceEl.duration-.7));
+    if(voiceOn&&!lifted&&voiceEl.currentTime>=voiceEl.duration-BEAT.tail){ lifted=true; fade(BEAT.level,BEAT.lift); } }); // the beat comes back up the moment the talking stops
   voiceEl.addEventListener('ended',voiceDone);
   voiceEl.addEventListener('error',()=>{ if(listening&&noteId&&voiceOn) readAlong(); }); // no recording yet: the captions carry it
   return true; }
@@ -803,11 +805,13 @@ function listen(id){ // the beat plays on its own for a couple of seconds, then 
   const beat=decks[deck].el, tok=++leadTok;
   const lead=()=>{ if(tok!==leadTok) return; leadTok++; clearTimeout(leadTimer); if(!listening||noteId!==id) return;
     leadTimer=setTimeout(()=>{ if(!listening||noteId!==id) return;
-      voiceOn=true; fade(BEAT.level*BEAT.under,.6); voiceEl.muted=false; voiceEl.src=voiceSrc(id); voiceEl.play().catch(()=>{});
-      $('cc').hidden=false; stage.classList.add('cc-on'); ccAt(0); },BEAT.lead*1000); };
+      voiceOn=true; fade(BEAT.level*beatSet(id,'under'),.6); lifted=false; voiceEl.muted=false; voiceEl.src=voiceSrc(id); voiceEl.play().catch(()=>{});
+      $('cc').hidden=false; stage.classList.add('cc-on'); ccAt(0); },beatSet(id,'lead')*1000); };
   if(!beat.paused&&beat.readyState>2) lead(); else { beat.addEventListener('playing',lead,{once:true}); leadTimer=setTimeout(lead,3000); } }
 let introNext=false;
-function voiceDone(){ if(!listening) return; fade(BEAT.level,1.2); ccTimer=setTimeout(ccHide,1200);
+let lifted=false;
+const beatSet=(id,k)=>(BEAT.page[id]&&BEAT.page[id][k]!=null?BEAT.page[id][k]:BEAT[k]);
+function voiceDone(){ if(!listening) return; if(!lifted){ lifted=true; fade(BEAT.level,BEAT.lift); } ccTimer=setTimeout(ccHide,1200);
   if(introNext&&noteId==='home'){ introNext=false; setTimeout(()=>{ if(listening&&active==='home'&&view==='home') go('stepup',{focus:true}); },6700); } } // a few bars after the intro, unless they've moved on
 function stopListening(){ introNext=false; listening=false; noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); ccHide();
   if(decks){ voiceEl.pause(); decks.forEach(d=>fadeDeck(d,0,.4)); setTimeout(()=>{ if(!listening) decks.forEach(d=>d.el.pause()); },450); }
