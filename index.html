@@ -741,9 +741,10 @@ function pick(i){ if(view!=='home') return; showHint(-1); go(ITEMS[i].box?'stepu
 /* ===== EDIT: LINER NOTES — the beats, and the words of each recording =====
    Each page has its own beat at assets/audio/<id>.m4a and your recording at assets/voice/<id>.m4a
    ("home" is the shelf intro; About has no recording and plays Contact's beat). Each list is the caption text, so keep it matching what you say. */
-const BEAT={level:1,under:.45,lead:2,tail:.9,lift:.25,
-  page:{home:{under:.35,lead:1,swell:'assets/audio/home-swell.m4a',hit:2.323}}}; // the opener builds in with a swell, then sits lower under the voice; tail = reverb after the last word
-// a page's swell: a reverse reverb of its beat's own hit, as long as the lead-in to that hit (see tools/make_swell.py)
+const BEAT={level:1,under:.45,lead:2,tail:.9,lift:.25,from:1,
+  page:{home:{under:.35,lead:1,swell:'assets/audio/home-tape.m4a',hit:2.323,from:.8}}}; // the opener builds in with a cassette, then sits lower under the voice; tail = reverb after the last word
+// a page's swell: a one-shot that ends exactly on its beat's hit (the opener's: a play-button clunk, tape hiss, then the beat
+// spinning up to speed; see tools/cassette.py). `from` = where the loop starts: early enough that the hit is at least a swell away
 const swellData={},swells={}; let swellSrc=null;
 Object.entries(BEAT.page).forEach(([id,p])=>{ if(p.swell) swellData[id]=fetch(p.swell).then(r=>r.ok?r.arrayBuffer():null).catch(()=>null); }); // beat volume on its own, how far it dips under your voice, and seconds of beat before you start
 const NOTES={
@@ -794,8 +795,8 @@ function beatFor(id,to){ // crossfade to this page's beat once it's actually pla
   const cur=decks[deck], fresh=!cur.id||cur.el.paused;
   if(cur.id===id){ if(cur.el.paused) cur.el.play().catch(()=>{}); fadeDeck(cur,to,.5); return; }
   const nx=decks[1-deck]; nx.id=id; deck=1-deck;
-  nx.el.src=beatSrc(id)+'#t=1'; nx.openIn=0; // each loop fades in over its first second; skip that so the beat starts full
-  nx.el.addEventListener('loadedmetadata',()=>{ if(nx.id===id&&nx.el.currentTime<1) nx.el.currentTime=1; },{once:true});
+  nx.el.src=beatSrc(id)+'#t='+beatSet(id,'from'); nx.openIn=0; // each loop fades in over its first second; skip that so the beat starts full
+  nx.el.addEventListener('loadedmetadata',()=>{ const from=beatSet(id,'from'); if(nx.id===id&&nx.el.currentTime<from-.05) nx.el.currentTime=from; },{once:true});
   nx.el.addEventListener('playing',()=>{ if(decks[deck]!==nx||nx.id!==id||!listening) return;
     const sw=fresh&&swells[id]; // the swell ends as the loop reaches its hit, so the beat opens right on it
     if(sw){ const openIn=Math.max(sw.duration,(BEAT.page[id].hit||0)-nx.el.currentTime); nx.openIn=openIn;
