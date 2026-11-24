@@ -335,6 +335,15 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .hls{margin-top:clamp(18px,3.4vh,40px);display:flex;flex-direction:column;gap:6px;font:400 clamp(15px,1.3vw,18px)/1.45 var(--mono);color:rgba(235,227,211,.75);opacity:0;transition:opacity .8s}
 .hls.on{opacity:1}
 .hls a{color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+/* partners: one quiet line of logos drifting past, under everything else on the page; each keeps a pale wash of its own colours */
+.lw{display:flex;align-items:center;gap:18px;margin-top:clamp(18px,4vh,44px);opacity:0;transition:opacity .8s}
+.lw.on{opacity:1}
+.lwk{flex:none;font:400 10px/1 var(--mono);letter-spacing:.18em;text-transform:uppercase;color:rgba(235,227,211,.5)}
+.lwv{flex:1;min-width:0;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(90deg,transparent,#000 40px,#000 calc(100% - 40px),transparent)}
+.lwt{display:flex;width:max-content;animation:lw 51s linear infinite paused} /* 2305px of logos at about 45px a second */
+.lw.run .lwt{animation-play-state:running}
+.lwt img{display:block;flex:none;width:2305px;height:25px;opacity:.7}
+@keyframes lw{to{transform:translateX(-50%)}}
 .g{color:var(--gold)}
 
 @media (min-width:761px) and (max-height:940px){ /* laptop screens: tighten Step Up so it clears the header and the five tools */
@@ -437,6 +446,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
   .ml{margin-top:7px;font-size:14px}
   .ml::before{display:none}
   .hls{font-size:14px;margin-top:14px}
+  .lw{margin-top:16px;gap:12px}.lwk{font-size:9px}.lwv{-webkit-mask-image:linear-gradient(90deg,transparent,#000 20px,#000 calc(100% - 20px),transparent);mask-image:linear-gradient(90deg,transparent,#000 20px,#000 calc(100% - 20px),transparent)}
   .wide{display:none}
   .about{position:static;height:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:flex-start;gap:18px;padding:112px 16px 110px}
   .me{width:150px;transform:rotate(-2deg);justify-self:auto}
@@ -448,11 +458,12 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 }
 @media (max-width:760px) and (min-height:740px){ .what{display:block;margin-top:8px;line-height:1.45} } /* taller phones have room for what each project is */
 @media (max-width:760px) and (max-height:739px){ /* short phones: About still fits one screen */
+  .lw{display:none} /* and Step Up has no room left under its button */
   .about{gap:10px}.me{width:84px}.about h2{font-size:26px}.about p{font-size:12px;line-height:1.6;margin-top:8px}
   .facts{gap:8px;margin-top:10px;padding-top:10px}.facts b{font-size:15px}.about .acts{margin-top:10px}
 }
 @media (prefers-reduced-motion:reduce){
-  .spinning .reel,.eq i,.wk-pan .pg,.fx *,.wk-reel{animation:none!important}
+  .spinning .reel,.eq i,.wk-pan .pg,.fx *,.wk-reel,.lwt{animation:none!important}
   .scrawl i{clip-path:none}.scrawl path{stroke-dashoffset:0}
   .scene,.wk-pan .pg,.pv,.rail.fade .rt{transition:none}
 }
@@ -503,6 +514,11 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
         <div>Partners with the country's biggest school districts, including <span class="g">LA Unified</span></div>
       </div>
       <div class="acts" id="sListenWrap"></div>
+      <!-- assets/partners.webp is one strip of every logo, shown twice so the loop has no seam -->
+      <div class="lw" id="partners" role="img" aria-label="Step Up’s partners include LA Unified, USC, KIPP SoCal, UCLA, Glendale Unified, the National Student Support Accelerator, UC Davis, Compton Unified, Rocketship Public Schools, UC San Diego, Sacramento State, Arizona State University, Cal, Riverside Unified, Pomona College, New York Cares, UC Riverside, Pepperdine, Cal Poly Pomona, Compton College and East Los Angeles College">
+        <span class="lwk">Partners</span>
+        <div class="lwv"><div class="lwt"><img src="assets/partners.webp" alt="" width="2305" height="25" decoding="async" fetchpriority="low"><img src="assets/partners.webp" alt="" width="2305" height="25" decoding="async" fetchpriority="low"></div></div>
+      </div>
     </div>
   </section>
   <div id="secs"></div><!-- one section per project, built from SHELF and STEP below -->
@@ -811,7 +827,7 @@ function unlockVoice(id){ // iPhones only start audio from a tap, so start the v
 function listen(id){ // the beat plays on its own for a couple of seconds, then dips under the voice while the captions follow along
   if(id==='about') return beatOnly('contact'); // About has no recording: just Contact's music, carried on from the section above
   if(!NOTES[id]||!audioSetup()) return;
-  listening=true; noteId=id; heard.add(id); voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); if(actx) actx.resume();
+  listening=true; noteId=id; heard.add(id); voiceOn=false; turnOff(); clearTimeout(ccTimer); clearTimeout(leadTimer); if(actx) actx.resume();
   unlockVoice(id); voiceEl.pause(); ccHide(); beatFor(id,BEAT.level); syncListen();
   // count the lead-in from when the beat is audible, not from the tap (it may still be loading); give up waiting after 3s
   const beat=decks[deck].el, tok=++leadTok;
@@ -824,12 +840,13 @@ let introNext=false;
 let lifted=false;
 const beatSet=(id,k)=>(BEAT.page[id]&&BEAT.page[id][k]!=null?BEAT.page[id][k]:BEAT[k]);
 function voiceDone(){ if(!listening) return; if(!lifted){ lifted=true; fade(BEAT.level,BEAT.lift); } ccTimer=setTimeout(ccHide,1200);
-  if(introNext&&noteId==='home'){ introNext=false; setTimeout(()=>{ if(listening&&active==='home'&&view==='home') go('stepup',{focus:true}); },6700); } } // a few bars after the intro, unless they've moved on
-function stopListening(){ stopSwell(); introNext=false; listening=false; noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); ccHide();
+  if(introNext&&noteId==='home'){ introNext=false; setTimeout(()=>{ if(listening&&active==='home'&&view==='home') go('stepup',{focus:true}); },6700); } // a few bars after the intro, unless they've moved on
+  else if(noteId&&noteId!=='home'){ spoke=noteId; spokeAt=performance.now(); turnSoon(); } }
+function stopListening(){ stopSwell(); introNext=false; listening=false; noteId=null; voiceOn=false; turnOff(); clearTimeout(ccTimer); clearTimeout(leadTimer); ccHide();
   if(decks){ voiceEl.pause(); decks.forEach(d=>fadeDeck(d,0,.4)); setTimeout(()=>{ if(!listening) decks.forEach(d=>d.el.pause()); },450); }
   syncListen(); }
 function beatOnly(id){ // just the beat, no voice
-  if(!audioSetup()) return; unlockVoice(id); listening=true; noteId=null; voiceOn=false; clearTimeout(ccTimer); clearTimeout(leadTimer); if(actx) actx.resume();
+  if(!audioSetup()) return; unlockVoice(id); listening=true; noteId=null; voiceOn=false; turnOff(); clearTimeout(ccTimer); clearTimeout(leadTimer); if(actx) actx.resume();
   voiceEl.pause(); ccHide(); beatFor(id,BEAT.level); syncListen(); }
 function followPage(){ // keep the tape rolling as people move around; the intro only plays once
   const id=pageNote(); if(id===noteId||id==='about'&&noteId==='contact') return; // Contact's note plays on into About and back, without starting over
@@ -843,6 +860,21 @@ function readAlong(){ const ls=NOTES[noteId]; let k=0; clearTimeout(ccTimer);
   const next=()=>{ if(!listening) return; if(k>=ls.length){ voiceDone(); return; } $('ccLine').textContent=ls[k]; ccTimer=setTimeout(next,Math.max(2200,ls[k++].length*65)); };
   next(); }
 function ccHide(){ $('cc').hidden=true; stage.classList.remove('cc-on'); }
+/* ---- the tape turns the page: while it plays, a page hands over to the next once its voice note has been over for TURN_MS and its demo has shown every screen, whichever comes last ---- */
+const TURN_MS=8000;
+let seen={id:'home',done:true}, spoke=null, spokeAt=0, turnT=0, handsAt=-1e9; // seen: how much of the demo on screen has played; spoke: the page whose note has finished; handsAt: the visitor's last click, key or scroll
+function seenStart(id){ const w=WALK[id], s=w&&wsOf(id); // a page comes on screen: its demo starts from nothing watched (a drawing, a single photo or a board with no tour has nothing to wait for)
+  seen={id,ch:new Set(),t:0,last:-1,done:reduce||!w||w.kind==='scene'||w.kind==='pan'&&w.imgs.length<2||w.kind==='demo'&&(!!s.still||!!s.root&&!(s.demo.steps&&s.demo.chapters.length))}; }
+function seenMark(id,k,n){ if(id!==seen.id||seen.done) return; seen.ch.add(k); if(seen.ch.size>=n) seenDone(id); } // one more of its n screens has had its time
+function seenDone(id){ if(id!==seen.id||seen.done) return; seen.done=true; turnSoon(); }
+function turnOff(){ spoke=null; clearTimeout(turnT); }
+function turnSoon(){ clearTimeout(turnT); const id=active, i=TRACKS.findIndex(t=>t.id===id), nx=TRACKS[i+1];
+  if(!listening||spoke!==id||seen.id!==id||!seen.done||i<0||!nx) return; // Contact is the last stop
+  const now=performance.now(), s=WS[id];
+  if(target||document.hidden||document.fullscreenElement||secOf(id).querySelector('.story[open]')||s&&s.root&&held(s)){ spokeAt=now; turnT=setTimeout(turnSoon,300); return; } // reading the story, full screen, typing in the demo or away: the wait starts over once they're back
+  const at=Math.max(spokeAt+TURN_MS,handsAt+RESUME_MS); // and never under someone's hands: the same pause the demo gives a click
+  if(now<at){ turnT=setTimeout(turnSoon,at-now); return; }
+  const a=document.activeElement; go('t/'+nx.id,{focus:!a||a===document.body||!!a.closest('#scroller')}); } // focus follows the page, unless they're holding a header button such as Pause
 const listenBtn=note=>`<button class="listen" data-note="${note}" aria-pressed="false"><span aria-hidden="true">▶</span> <span class="lt">Hear it from me</span></button>`;
 function syncListen(){ const b=$('soundBtn'); document.body.classList.toggle('rolling',listening);
   b.innerHTML = listening ? '<span aria-hidden="true">❚❚</span> Pause' : '<span aria-hidden="true">▶</span> Play<span class="lg"> the tape</span>';
@@ -875,7 +907,7 @@ function setHash(h){ try{ history.replaceState(null,'',h||location.pathname+loca
 let target=null, targetT=0; // while go() scrolls somewhere, the sections it passes on the way don't count
 function setActive(id){ if(id===active) return; active=id;
   if(view!=='about') setHash(routeOf(id));
-  walkSync(id); // only the section on screen moves; it and its neighbours load
+  seenStart(id); walkSync(id); // only the section on screen moves; it and its neighbours load
   if(id==='stepup') landStep();
   syncInert(); onActive.forEach(f=>f(id)); }
 function go(route,opt){ opt=opt||{};
@@ -898,6 +930,7 @@ function endTarget(){ if(!target) return; target=null; clearTimeout(targetT); se
 function grab(){ if(!target) return; const sc=$('scroller'); sc.scrollTo({top:sc.scrollTop,behavior:'auto'}); endTarget(); } // someone took over mid-jump: stop where they are
 $('scroller').addEventListener('scrollend',endTarget);
 ['wheel','touchstart','pointerdown'].forEach(t=>$('scroller').addEventListener(t,grab,{passive:true}));
+['wheel','touchstart','pointerdown','keydown'].forEach(t=>window.addEventListener(t,()=>{ handsAt=performance.now(); },{passive:true,capture:true})); // for turnSoon
 function syncInert(){ $('scroller').inert=view==='about'; $('rail').inert=view==='about'||active==='home'; } // the menu can't be tabbed to while it's invisible
 $('brand').onclick=()=>go('home',{focus:true});
 document.querySelectorAll('[data-go]').forEach(a=>a.onclick=e=>{ e.preventDefault(); go(a.dataset.go,{focus:true}); });
@@ -1027,10 +1060,13 @@ const frameOf=id=>secOf(id).querySelector('.wk-frame');
 function walkLoad(id){ const s=wsOf(id); if(s.loaded) return s.ready; s.loaded=true; // fetched only when its section is on screen or next door
   const w=WALK[id], f=frameOf(id);
   if(w.kind==='demo') return s.ready=new Promise(res=>{ // a classic script, so it also works from file://
-    const done=()=>{ if(window.DEMOS&&DEMOS[id]) mountDemo(id); else walkStill(id); res(); };
+    const done=()=>{ if(window.DEMOS&&DEMOS[id]) mountDemo(id); else walkStill(id); if(!s.root||!(s.demo.steps&&s.demo.chapters.length)) seenDone(id); res(); }; // nothing to tour
     if(window.DEMOS&&DEMOS[id]) return done();
     const sc=document.createElement('script'); sc.src=`assets/demos/${id}.js`; sc.onload=done; sc.onerror=()=>{ walkStill(id); res(); }; document.head.appendChild(sc); });
   if(w.kind==='video'){ const v=f.querySelector('video'); v.poster=w.poster; v.src=w.src;
+    v.addEventListener('timeupdate',()=>{ if(seen.id!==id||seen.done) return; const t=v.currentTime, d=t-seen.last; seen.last=t; // watched once it has played for its own length, wherever it started
+      if(d>0&&d<1) seen.t+=d; if(v.duration&&seen.t>=v.duration-.6) seenDone(id); });
+    v.addEventListener('error',()=>seenDone(id));
     if(w.chapters&&w.chapters.length) v.addEventListener('timeupdate',()=>{ const c=[...w.chapters].reverse().find(c=>v.currentTime>=c.t-.05); // the lit chapter follows the video
       if(c){ secOf(id).querySelectorAll('.wk-c').forEach(b=>b.setAttribute('aria-selected',b.dataset.ch===c.id)); litIntoView(id); } }); }
   if(w.kind==='pan'){ f.querySelectorAll('.pg>img').forEach((im,k)=>{ im.src=w.imgs[k].src; }); f.querySelectorAll('image[data-href]').forEach(im=>im.setAttribute('href',im.getAttribute('data-href'))); }
@@ -1038,11 +1074,11 @@ function walkLoad(id){ const s=wsOf(id); if(s.loaded) return s.ready; s.loaded=t
 function walkPlay(id){ const s=wsOf(id), w=WALK[id], f=frameOf(id); s.running=true; f.parentNode.classList.add('run');
   if(reduce) return;
   if(w.kind==='demo'&&s.root){ if(s.demo.play) s.demo.play(s.root); if(held(s)) walkTakeover(id); else walkTour(id); }
-  if(w.kind==='video') f.querySelector('video').play().catch(()=>{});
+  if(w.kind==='video') f.querySelector('video').play().catch(e=>{ if(e&&e.name==='NotAllowedError') seenDone(id); }); // a phone saving power won't play it: nothing to wait for
   if(w.kind==='scene'){ const svg=f.querySelector('svg'); if(svg&&svg.unpauseAnimations) svg.unpauseAnimations(); }
   if(w.kind==='pan'&&w.imgs.length>1&&!s.xf) panNext(id); }
 function panNext(id){ const s=wsOf(id), w=WALK[id], k=[...frameOf(id).querySelectorAll('.pg')].findIndex(p=>p.classList.contains('on')); clearTimeout(s.xf); // each photo stays its own ms, six seconds unless it says
-  s.xf=setTimeout(()=>{ panShow(id,(k+1)%w.imgs.length); panNext(id); },w.imgs[k].ms||6000); }
+  s.xf=setTimeout(()=>{ seenMark(id,k,w.imgs.length); panShow(id,(k+1)%w.imgs.length); panNext(id); },w.imgs[k].ms||6000); }
 function panShow(id,k){ const w=WALK[id], n=frameOf(id).querySelector('.wk-note'); if(w.imgs[k].note) n.textContent=w.imgs[k].note; n.classList.toggle('off',!w.imgs[k].note);
   frameOf(id).querySelectorAll('.wk-pan .pg').forEach((p,j)=>{ p.classList.toggle('out',j!==k&&p.classList.contains('on')); p.classList.toggle('on',j===k); }); // out: still fading, so its move carries on
   const c=(w.chapters||[]).filter(c=>c.i<=k).pop(); if(!c) return; // the lit chapter follows the photo
@@ -1063,7 +1099,7 @@ function walkChapter(id,ch,opt){ const w=WALK[id], c=(w.chapters||[]).find(x=>x.
 const RESUME_MS=6000, CURSOR_MS=650; // the tour waits this long after the last click or key inside it; one cursor move
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const CURSOR=`<svg viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.6-7.4L20.5 11z" fill="#111" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/></svg>`;
-function walkStill(id){ const f=frameOf(id); if(f.querySelector('.wk-still')) return; // the demo didn't load: show its screenshot instead
+function walkStill(id){ const f=frameOf(id); wsOf(id).still=true; if(f.querySelector('.wk-still')) return; // the demo didn't load: show its screenshot instead
   const im=new Image(); im.className='wk-still'; im.alt=(byId[id]||{}).name||''; im.src=PREV[id]; f.appendChild(im); }
 function mountDemo(id){ const d=DEMOS[id], s=wsOf(id), f=frameOf(id), [W,H]=d.size||[1280,800];
   if(d.fonts&&!document.getElementById('wkf-'+id)){ const st=document.createElement('style'); st.id='wkf-'+id; st.textContent=d.fonts; document.head.appendChild(st); } // fonts must live in the page
@@ -1094,7 +1130,7 @@ async function walkTour(id){ const s=WS[id], d=s.demo; if(reduce||!d.steps||!d.c
   clearTimeout(s.idle); let i=Math.max(0,d.chapters.indexOf(s.chapter));
   while(live()){ walkShow(id,d.chapters[i]);
     for(const st of d.steps[d.chapters[i]]||[]){ if(!live()) return; await walkStep(s,st,live); }
-    if(!live()) return; i=(i+1)%d.chapters.length; } }
+    if(!live()) return; seenMark(id,d.chapters[i],d.chapters.length); i=(i+1)%d.chapters.length; } }
 async function walkStep(s,st,live){
   if(st.wait) return sleep(st.wait);
   if(st.run) return st.run(s.root);
@@ -1129,11 +1165,12 @@ let stepLanded=false;
 function landStep(){ // the first time Step Up comes on screen, its three numbers land one by one, then the highlights
   if(stepLanded) return; stepLanded=true;
   const mets=[...document.querySelectorAll('.met')], hls=document.querySelector('.hls');
-  if(reduce){ mets.forEach(m=>m.classList.add('on')); hls.classList.add('on'); return; }
+  if(reduce){ mets.forEach(m=>m.classList.add('on')); hls.classList.add('on'); $('partners').classList.add('on'); return; }
   reveal([document.querySelector('.su .kick'),document.querySelector('.sut')]);
   mets.forEach((m,i)=>setTimeout(()=>landMetric(m,i), 200+i*300)); // quick, so the numbers are read, not waited for
-  setTimeout(()=>hls.classList.add('on'), 200+3*300+150);
+  setTimeout(()=>{ hls.classList.add('on'); $('partners').classList.add('on'); }, 200+3*300+150);
 }
+if(window.IntersectionObserver) new IntersectionObserver(es=>$('partners').classList.toggle('run',es[es.length-1].isIntersecting)).observe($('partners')); else $('partners').classList.add('run'); // the logos drift only while they're on screen
 function landMetric(m,i){ // swoops down, lands with weight, and stays
   m.classList.add('on'); if(active!=='stepup') return;
   m.animate([{transform:'translateY(-120px) scale(1.25)',opacity:0},{transform:'translateY(10px) scale(.97)',opacity:1,offset:.62},{transform:'translateY(-3px) scale(1.01)',offset:.82},{transform:'none'}],
