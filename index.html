@@ -318,6 +318,7 @@ button:focus-visible,a:focus-visible,.tape:focus-visible,.floor:focus-visible{ou
 .story dl{margin:12px 0 0;display:grid;gap:9px}
 .story dt{font:700 10px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--a)}
 .story dd{margin:4px 0 0;font-size:14px;line-height:1.45;color:rgba(235,227,211,.85)}
+.story dd a{color:var(--a);text-decoration:underline;text-underline-offset:2px}
 .story[open] dl{animation:storyIn .25s ease-out}
 @keyframes storyIn{from{opacity:0;transform:translateY(-4px)}}
 
@@ -614,7 +615,7 @@ const ACC={neat:'#f5c518',jimmy:'#f08a24',swayzee:'#ff5c6c',kyron:'#9ad1f5',hero
   sidekick:'#64c9d0',engine:'#64c9d0',onboard:'#64c9d0',portal:'#64c9d0',match:'#64c9d0'}; // Step Up's turquoise
 /* ===== EDIT: THE FIVE STEP UP TOOLS — their sections follow Step Up's, and sit under it in the menu ===== */
 const STEP=[
- {id:"sidekick",name:"Sidekick",result:"Novice tutors teach like **experts**",what:"Runs on our own video platform. Session analysis drives a one-minute briefing, in-session curriculum and coaching",story:{problem:"Our tutors are mostly new to teaching, and the third-party math curriculum we used wasn't moving the needle: student outcome data stayed flat, and tutors couldn't see what each student was getting wrong.",built:"AI that supports the tutor at both ends: specific feedback after every session, then a curriculum driven by each student's mistakes and misconceptions, live in the session. I led product, user research, the AI analysis and engineering.",impact:"Tutors widely appreciate it, and results improved across the board. A NewSchools study found students' math confidence and outcomes rose, earning an **ESSA Tier 3** badge."},when:"2024–26",role:"Product & engineering lead",link:"https://sidekick.stepuptutoring.org",linkLabel:"Visit"},
+ {id:"sidekick",name:"Sidekick",result:"Novice tutors teach like **experts**",what:"Runs on our own video platform. Session analysis drives a one-minute briefing, in-session curriculum and coaching",story:{problem:"Our tutors are mostly new to teaching, and the third-party math curriculum we used wasn't moving the needle: student outcome data stayed flat, and tutors couldn't see what each student was getting wrong.",built:"AI that supports the tutor at both ends: specific feedback after every session, then a curriculum driven by each student's mistakes and misconceptions, live in the session. I led product, user research, the AI analysis and engineering.",impact:"Tutors widely appreciate it, and results improved across the board. A NewSchools study found students' math confidence and outcomes rose, earning an **ESSA Tier 3** badge.",research:"We worked with the Allen Institute for AI, MIT and Stanford on [TutorMoments](https://tutormoments.allen.ai), a benchmark that tests whether AI tutors know when to help and when to push."},when:"2024–26",role:"Product & engineering lead",link:"https://sidekick.stepuptutoring.org",linkLabel:"Visit"},
  {id:"engine",name:"Efficiency Engine",result:"**200,000+** automations a month",what:"AI in all four parts of Step Up, a handbook that updates itself from CRM tickets, and MatchLink messaging",story:{problem:"A team of 20 serves thousands of families, and would otherwise spend its days answering the same emails and texts.",built:"Automations and AI chatbots across our operations, plus a work tracker that follows what everyone is doing across Slack, Google Docs, Calendar, Zendesk and our own apps, so progress across projects and teams is visible without the overhead.",impact:"**200,000+** automations a month; over **90%** of ops emails and messages go out automatically."},when:"2020–26",role:"Automation engineer",link:CASE,linkLabel:"Case study"},
  {id:"onboard",name:"Onboarding Portal",result:"**16% → 37%** of applicants became tutors",what:"From application to a tutor's first match: 25,000 applicants and 50,000+ user hours logged",story:{problem:"Applicants got lost between application, background check and training. Only **16%** became tutors.",built:"One portal, built in code, that walks every applicant through each step and always shows what's next. I led product and design and got hands-on in the engineering.",impact:"**25,000** applicants have logged **50,000+** hours in it; the share who become tutors more than doubled, from **16%** to **37%**."},when:"2022–23",role:"Product & design lead",link:CASE,linkLabel:"Case study"},
  {id:"portal",name:"Tutor Portal",result:"**3 tools → 1** for **1,000s** of tutors",what:"Replaced a Facebook group, Remind and email: schedule, resources, announcements and events in one place",when:"2022–23",role:"Product lead",link:CASE,linkLabel:"Case study"},
@@ -671,7 +672,7 @@ const WALK={
 const PREV={sidekick:'assets/sidekick-clean.jpg',engine:'assets/engine-collage.jpg',onboard:'assets/prev-onboarding.jpg',portal:'assets/prev-tutorportal.jpg',
   match:'assets/prev-matchmate.jpg',neat:'assets/neatfreak-ui.jpg',jimmy:'assets/jimmy.jpg',swayzee:'assets/swayzee-phone.jpg',kyron:'assets/kyron.jpg',
   hero:'assets/prev-hero-chat.jpg',ease:'assets/prev-ease.jpg',tfw:'assets/prev-tfw.jpg',quikstik:'assets/prev-quikstik.jpg',bills:'assets/prev-essential-bills.jpg',troops:'assets/prev-troops.jpg'};
-const md=x=>String(x).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>');
+const md=x=>String(x).replace(/\*\*(.+?)\*\*/g,'<span class="hl">$1</span>').replace(/\[([^\]]+)\]\((https:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>'); // **stars** highlight, [text](https://…) links
 const plain=x=>String(x).replace(/\*\*/g,'');
 const byId=Object.fromEntries([...SHELF,...STEP].map(t=>[t.id,t]));
 const TRACKS=[{id:'stepup',name:'Step Up Tutoring',box:true},...STEP,...SHELF]; // the page's sections, top to bottom
@@ -948,7 +949,7 @@ function reveal(els){ if(reduce) return; els.forEach((el,k)=>el&&el.animate([{op
 function pauseSVG(card){ const s=card.querySelector('svg'); if(s&&reduce&&s.pauseAnimations){ try{ s.setCurrentTime(3.2); s.pauseAnimations(); }catch(e){} } }
 
 /* ================= project sections ================= */
-const storyHTML=st=>!st?'':`<details class="story"><summary>The story</summary><dl>${[['Problem',st.problem],['What I built',st.built],['Impact',st.impact]]
+const storyHTML=st=>!st?'':`<details class="story"><summary>The story</summary><dl>${[['Problem',st.problem],['What I built',st.built],['Impact',st.impact],['Research',st.research]]
   .filter(r=>r[1]).map(([k,v])=>`<dt>${k}</dt><dd>${md(v)}</dd>`).join('')}</dl></details>`; // the story stays in the page while closed, so search engines read it too
 function sectionHTML(t){
   const isC=!!t.contact;
